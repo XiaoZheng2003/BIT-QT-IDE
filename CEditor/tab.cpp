@@ -3,7 +3,7 @@
 
 Tab::Tab(int index, QString text, QWidget *parent) :
     QWidget(parent),
-    curIndexId(index)
+    curIndexId(index),
     ui(new Ui::Tab)
 {
     ui->setupUi(this);
@@ -35,7 +35,7 @@ Tab::~Tab()
 
 void Tab::update(int blockCount)
 {
-    qDebug()<<blockCount;
+    //qDebug()<<blockCount;
     int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     int digit=0,totalRow=blockCount;
     while(totalRow!=0)

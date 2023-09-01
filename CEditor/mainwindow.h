@@ -37,6 +37,12 @@ private slots:
     void on_actionSaveas_triggered();
     void on_actionCloseAll_triggered();
 
+    void on_compile_triggered();
+
+    void on_run_triggered();
+
+    void on_c_r_triggered();
+
 signals:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
