@@ -6,8 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-
+    Tab *test=new Tab;
+    ui->tabWidget->addTab(test,"hello.cpp");
+    ui->tabWidget->setTabText(2,"hello.cpp");
 }
 
 MainWindow::~MainWindow()

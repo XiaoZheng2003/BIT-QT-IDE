@@ -9,6 +9,7 @@
 #include <QByteArray>
 #include <QFileDialog>
 #include <QMainWindow>
+#include "tab.h"
 #include <QMessageBox>
 
 QT_BEGIN_NAMESPACE

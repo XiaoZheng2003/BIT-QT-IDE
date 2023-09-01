@@ -1,13 +1,20 @@
 #ifndef TAB_H
 #define TAB_H
 
-#include <QDialog>
+#include <QWidget>
+#include <QString>
+#include <QPlainTextEdit>
+#include <QTextDocument>
+#include <QTextBlock>
+#include "codeeditor.h"
+
+class CodePlainTextEdit;
 
 namespace Ui {
 class Tab;
 }
 
-class Tab : public QDialog
+class Tab : public QWidget
 {
     Q_OBJECT
 
@@ -30,6 +37,7 @@ private slots:
 
 private:
     Ui::Tab *ui;
+    void update(int blockCount);
     int curIndexId;
 };
 
