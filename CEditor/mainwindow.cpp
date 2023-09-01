@@ -229,7 +229,7 @@ void MainWindow::closeTab(int index)
     emit tabClosed(index);
 }
 
-void MainWindow::on_compile_triggered()
+void MainWindow::on_actionCompile_triggered()
 {
     // 处理未打开任何文件的情况
     if(ui->tabWidget->count() == 0)
@@ -290,7 +290,7 @@ void MainWindow::on_compile_triggered()
     infoFile.remove();
 }
 
-void MainWindow::on_run_triggered()
+void MainWindow::on_actionRun_triggered()
 {
     if(ui->tabWidget->count() == 0)
     {
@@ -314,9 +314,9 @@ void MainWindow::on_run_triggered()
     }
 }
 
-void MainWindow::on_c_r_triggered()
+void MainWindow::on_actionCompileRun_triggered()
 {
-    on_compile_triggered();
-    on_run_triggered();
+    on_actionCompile_triggered();
+    on_actionRun_triggered();
 }
 
