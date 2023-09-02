@@ -7,7 +7,6 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     curIndexId(index)
 {
     ui->setupUi(this);
-
     ui->lineNumberArea->setSpacing(0);
     connect(ui->plainTextEdit,&CodeEditor::updateLineNumberArea,this,&Tab::update);
     //禁用行数显示条的滚动条并隐藏

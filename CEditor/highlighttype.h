@@ -30,4 +30,3 @@ enum HighLightType{
     OPERATE_LESS
 };
 #endif // HIGHLIGHTTYPE_H
-
