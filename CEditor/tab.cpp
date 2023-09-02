@@ -133,6 +133,28 @@ void Tab::tabClosed(int indexId)
     if(indexId<curIndexId) curIndexId--;   //当前标签前面的标签被关闭
 }
 
+void Tab::editOperate(int indexId, editType type)
+{
+    if(indexId!=curIndexId) return;
+    switch(type){
+    case Undo:
+        ui->plainTextEdit->undo();
+        break;
+    case Redo:
+        ui->plainTextEdit->redo();
+        break;
+    case Cut:
+        ui->plainTextEdit->cut();
+        break;
+    case Copy:
+        ui->plainTextEdit->copy();
+        break;
+    case Paste:
+        ui->plainTextEdit->paste();
+        break;
+    }
+}
+
 void Tab::updateCursorPosition()
 {
     //更新光标位置

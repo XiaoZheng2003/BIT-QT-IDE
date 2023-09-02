@@ -20,7 +20,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -61,7 +61,7 @@
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QTabWidget" name="tabWidget">
@@ -140,11 +140,13 @@
     <property name="title">
      <string>编辑</string>
     </property>
-    <addaction name="recover"/>
-    <addaction name="redo"/>
-    <addaction name="copy"/>
-    <addaction name="stick"/>
-    <addaction name="cut"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+    <addaction name="separator"/>
     <addaction name="selectall"/>
     <addaction name="exegesis"/>
    </widget>
@@ -232,29 +234,50 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="recover">
+  <action name="actionUndo">
+   <property name="text">
+    <string>撤销</string>
+   </property>
+   <property name="toolTip">
+    <string>撤销</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
    <property name="text">
     <string>恢复</string>
    </property>
-  </action>
-  <action name="redo">
-   <property name="text">
-    <string>重做</string>
+   <property name="toolTip">
+    <string>恢复</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
-  <action name="copy">
+  <action name="actionCopy">
    <property name="text">
     <string>复制</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
   </action>
-  <action name="stick">
+  <action name="actionPaste">
    <property name="text">
     <string>粘贴</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
   </action>
-  <action name="cut">
+  <action name="actionCut">
    <property name="text">
     <string>剪切</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
    </property>
   </action>
   <action name="selectall">

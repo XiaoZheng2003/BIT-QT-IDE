@@ -1,6 +1,7 @@
 ﻿#ifndef TAB_H
 #define TAB_H
 
+#include <QDialog>
 #include <QWidget>
 #include <QString>
 #include <QPlainTextEdit>
@@ -12,6 +13,14 @@
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "highlighttype.h"
+
+enum editType{
+    Redo,
+    Undo,
+    Cut,
+    Copy,
+    Paste
+};
 
 class CodePlainTextEdit;
 
@@ -33,6 +42,7 @@ public slots:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
+    void editOperate(int indexId, editType type);
 
 signals:
     void returnTextForSave(int indexId, QString str);
