@@ -1,4 +1,4 @@
-#ifndef TAB_H
+﻿#ifndef TAB_H
 #define TAB_H
 
 #include <QWidget>
@@ -6,10 +6,12 @@
 #include <QPlainTextEdit>
 #include <QTextDocument>
 #include <QTextBlock>
-#include "codeeditor.h"
+#include <QTimer>
 #include <QDialog>
-#include"highlighter.h"
-#include"highlighttype.h"
+#include <QFont>
+#include "codeeditor.h"
+#include "highlighter.h"
+#include "highlighttype.h"
 
 class CodePlainTextEdit;
 
@@ -36,6 +38,7 @@ signals:
     void returnTextForSave(int indexId, QString str);
     void returnTextForSaveAs(int indexId, QString str);
     void textChanged(int indexId);
+    void scollBarValueChanged(int value);
 
 private slots:
     void updateCursorPosition();
@@ -46,11 +49,12 @@ private:
     Ui::Tab *ui;
     void update(int blockCount);
     int curIndexId;
+    void sendScrollBarValue();
     std::map<QString,HighLightType> codeTable;
     std::map<HighLightType,QColor>* codeColor;
     std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
 
-     Highlighter* highlighter;
+    Highlighter* highlighter;
 };
 
 #endif // TAB_H
