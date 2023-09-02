@@ -38,11 +38,8 @@ signals:
     void textChanged(int indexId);
 
 private slots:
-    void on_plainTextEdit_textChanged();
-
     void updateCursorPosition();
     void updateTotalLineCount();
-
     void on_jumpto_clicked();
 
 private:

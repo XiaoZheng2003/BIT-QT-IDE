@@ -7,7 +7,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     curIndexId(index)
 {
     ui->setupUi(this);
-    ui->plainTextEdit->setPlainText(text);
+
     ui->lineNumberArea->setSpacing(0);
     connect(ui->plainTextEdit,&CodeEditor::updateLineNumberArea,this,&Tab::update);
     //禁用行数显示条的滚动条并隐藏
@@ -28,27 +28,32 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
 
     int crow=0;
-       int ccol=0;
-       int call=ui->plainTextEdit->blockCount();
-       //设置光标位置
-       QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
-       ui->rowLabel->setText(text1);
-       //设置总行数
-       QString text2 = QString("总行数：%1").arg(call);
-       ui->allLabel->setText(text2);
+    int ccol=0;
+    int call=ui->plainTextEdit->blockCount();
+    //设置光标位置
+    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+                    ui->rowLabel->setText(text1);
+    //设置总行数
+    QString text2 = QString("总行数：%1").arg(call);
+                        ui->allLabel->setText(text2);
 
-       //光标位置更新
-       connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
-       //总行数更新
-       connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
-       QFont font;
-       font.setFamily("Courier");
-       font.setFixedPitch(true);
-       font.setPointSize(20);
-        //应用关键字高亮
-       ui->plainTextEdit->setFont(font);
-       highlighter = new Highlighter(ui->plainTextEdit->document());
-       ui->plainTextEdit->setPlainText(text);
+    //光标位置更新
+    connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
+    //总行数更新
+    connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(20);
+    //应用关键字高亮
+    ui->plainTextEdit->setFont(font);
+    highlighter = new Highlighter(ui->plainTextEdit->document());
+    ui->plainTextEdit->setPlainText(text);
+
+    connect(ui->plainTextEdit,&CodeEditor::textChanged,[=](){
+        //当文本被修改
+        emit textChanged(curIndexId);
+    });
 }
 
 Tab::~Tab()
@@ -102,12 +107,6 @@ void Tab::tabClosed(int indexId)
     //关闭标签
     if(indexId==curIndexId) curIndexId=-1; //当前标签被关闭
     if(indexId<curIndexId) curIndexId--;   //当前标签前面的标签被关闭
-}
-
-void Tab::on_plainTextEdit_textChanged()
-{
-    //当文本被修改
-    emit textChanged(curIndexId);
 }
 
 void Tab::updateCursorPosition()
