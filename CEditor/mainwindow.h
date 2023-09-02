@@ -4,6 +4,7 @@
 #include "tab.h"
 
 #include <QDir>
+#include <QMap>
 #include <QList>
 #include <QProcess>
 #include <QDateTime>
@@ -12,6 +13,8 @@
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QTreeWidgetItem>
+#include <QFileIconProvider>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,6 +43,8 @@ private slots:
     void on_actionCompile_triggered();
     void on_actionRun_triggered();
     void on_actionCompileRun_triggered();
+    void on_actionOpenProject_triggered();
+    void on_compileInfoButton_clicked();
 
 signals:
     void prepareTextForSave(int indexId);
@@ -49,10 +54,14 @@ signals:
 private:
     Ui::MainWindow *ui;
     QList<QString> filePath;
+    QMap<QString,QString> projectNameToPath;
+    QMap<QString,QString> fileNameToPath;
+    QMap<QString,QStringList> projectToChildren;
 
     void refreshFilename(int index);
     void initConnection(Tab *tab);
     void closeTab(int index);
     QString getCorrentUnicode(const QByteArray &text);
+    void createProjectTree(QTreeWidgetItem *root,QString projectName,QString projectPath);
 };
 #endif // MAINWINDOW_H
