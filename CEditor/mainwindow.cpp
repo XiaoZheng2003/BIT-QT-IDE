@@ -8,9 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     ui->compileTextBrowser->setMaximumHeight(0);
-    //Tab *test=new Tab;
-    //ui->tabWidget->addTab(test,"hello.cpp");
-    //ui->tabWidget->setTabText(2,"hello.cpp");
+
 }
 
 MainWindow::~MainWindow()
@@ -83,35 +81,7 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }
 
-    QFile openFile(openFilePath);
-    if(!openFile.exists()){
-        QMessageBox::warning(this,"提示","文件不存在！");
-        return;
-    }
-    if(!openFile.open(QIODevice::ReadOnly|QIODevice::Text)){
-        QMessageBox::warning(this,"提示",QString("无法读取文件 %1:\n%2.")
-                             .arg(openFilePath,openFile.errorString()));
-        return;
-    }
-
-    //获取文件内容
-    QByteArray strBytes=openFile.readAll();
-    QString str=getCorrentUnicode(strBytes);
-    openFile.close();
-
-    //获取文件名
-    QString singleFileName=openFilePath.split("/").last();
-
-    //添加新标签页
-    int newTabNo=ui->tabWidget->count();
-    Tab *tab=new Tab(newTabNo,str);
-    int index=ui->tabWidget->insertTab(newTabNo,tab,singleFileName);
-    ui->tabWidget->setCurrentIndex(index);
-
-    //绑定文件路径
-    filePath.append(openFilePath);
-
-    initConnection(tab);
+    openFile(openFilePath);
 }
 
 QString MainWindow::getCorrentUnicode(const QByteArray &text)
@@ -220,20 +190,6 @@ void MainWindow::on_actionClose_triggered()
 {
     //关闭文件
     int curIndex=ui->tabWidget->currentIndex();
-    QString filename=filePath[curIndex].split("/").last();
-    if(ui->tabWidget->tabText(curIndex).startsWith("*")){
-        //当前文件未保存
-        int ret=QMessageBox::information(this,"提示",
-                                           QString("%1 已被修改，是否保存对此文件所做的更改？").arg(filename),
-                                           QMessageBox::Save|QMessageBox::Discard|QMessageBox::Cancel,
-                                           QMessageBox::Save);
-        switch(ret){
-        case QMessageBox::Cancel:
-            return;
-        case QMessageBox::Save:
-            on_actionSave_triggered();
-        }
-    }
     closeTab(curIndex);
 }
 
@@ -276,9 +232,57 @@ void MainWindow::initConnection(Tab *tab)
     connect(tab,&Tab::textChanged,this,&MainWindow::tabTextChanged);
 }
 
+void MainWindow::openFile(QString openFilePath)
+{
+
+    QFile openFile(openFilePath);
+    if(!openFile.exists()){
+        QMessageBox::warning(this,"提示","文件不存在！");
+        return;
+    }
+    if(!openFile.open(QIODevice::ReadOnly|QIODevice::Text)){
+        QMessageBox::warning(this,"提示",QString("无法读取文件 %1:\n%2.")
+                             .arg(openFilePath,openFile.errorString()));
+        return;
+    }
+
+    //获取文件内容
+    QByteArray strBytes=openFile.readAll();
+    QString str=getCorrentUnicode(strBytes);
+    openFile.close();
+
+    //获取文件名
+    QString singleFileName=openFilePath.split("/").last();
+
+    //添加新标签页
+    int newTabNo=ui->tabWidget->count();
+    Tab *tab=new Tab(newTabNo,str);
+    int index=ui->tabWidget->insertTab(newTabNo,tab,singleFileName);
+    ui->tabWidget->setCurrentIndex(index);
+
+    //绑定文件路径
+    filePath.append(openFilePath);
+
+    initConnection(tab);
+}
+
 void MainWindow::closeTab(int index)
 {
     //关闭标签页
+    QString filename=filePath[index].split("/").last();
+    if(ui->tabWidget->tabText(index).startsWith("*")){
+        //当前文件未保存
+        int ret=QMessageBox::information(this,"提示",
+                                           QString("%1 已被修改，是否保存对此文件所做的更改？").arg(filename),
+                                           QMessageBox::Save|QMessageBox::Discard|QMessageBox::Cancel,
+                                           QMessageBox::Save);
+        switch(ret){
+        case QMessageBox::Cancel:
+            return;
+        case QMessageBox::Save:
+            on_actionSave_triggered();
+        }
+    }
     ui->tabWidget->removeTab(index);
     filePath.removeAt(index);
     emit tabClosed(index);
@@ -375,7 +379,6 @@ void MainWindow::on_actionCompileRun_triggered()
     on_actionRun_triggered();
 }
 
-
 void MainWindow::on_actionOpenProject_triggered()
 {
     //打开项目
@@ -400,10 +403,32 @@ void MainWindow::on_actionOpenProject_triggered()
     ui->projectTreeWidget->insertTopLevelItem(0,root);
 }
 
-
 void MainWindow::on_compileInfoButton_clicked()
 {
     int height=ui->compileTextBrowser->height();
     ui->compileTextBrowser->setMaximumHeight(height>0?0:220);
+}
+
+void MainWindow::on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    //双击项目打开
+    QString text=item->text(column);
+
+    //切换当前项目
+    QTreeWidgetItem *root=item;
+    while(root->parent()!=nullptr)
+        root=root->parent();
+    ui->currentProject->setText(root->text(0));
+
+    //双击目标非文件
+    if(fileNameToPath.find(text)==fileNameToPath.end()) return;
+    //获取当前文件路径
+    QString itemPath=fileNameToPath.find(item->text(column)).value();
+    openFile(itemPath);
+}
+
+void MainWindow::on_tabWidget_tabCloseRequested(int index)
+{
+    closeTab(index);
 }
 
