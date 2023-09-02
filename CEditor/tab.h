@@ -22,6 +22,8 @@ public:
     explicit Tab(int index, QString text, QWidget *parent = nullptr);
     ~Tab();
 
+    void jumpToLine(int);
+
 public slots:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
@@ -34,6 +36,11 @@ signals:
 
 private slots:
     void on_plainTextEdit_textChanged();
+
+    void updateCursorPosition();
+    void updateTotalLineCount();
+
+    void on_jumpto_clicked();
 
 private:
     Ui::Tab *ui;
