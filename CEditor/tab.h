@@ -7,10 +7,11 @@
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTimer>
-#include "codeeditor.h"
 #include <QDialog>
-#include"highlighter.h"
-#include"highlighttype.h"
+#include <QFont>
+#include "codeeditor.h"
+#include "highlighter.h"
+#include "highlighttype.h"
 
 class CodePlainTextEdit;
 
@@ -40,11 +41,8 @@ signals:
     void scollBarValueChanged(int value);
 
 private slots:
-    void on_plainTextEdit_textChanged();
-
     void updateCursorPosition();
     void updateTotalLineCount();
-
     void on_jumpto_clicked();
 
 private:

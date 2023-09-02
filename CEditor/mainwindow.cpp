@@ -75,6 +75,7 @@ void MainWindow::tabTextChanged(int index)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     //窗口关闭前，关闭所有标签页
+    Q_UNUSED(event);
     on_actionCloseAll_triggered();
 }
 
