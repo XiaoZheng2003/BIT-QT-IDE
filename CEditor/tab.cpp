@@ -7,7 +7,6 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     curIndexId(index)
 {
     ui->setupUi(this);
-    ui->plainTextEdit->setPlainText(text);
     ui->lineNumberArea->setSpacing(0);
     connect(ui->plainTextEdit,&CodeEditor::updateLineNumberArea,this,&Tab::update);
     //禁用行数显示条的滚动条并隐藏
@@ -44,7 +43,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
        QFont font;
        font.setFamily("Courier");
        font.setFixedPitch(true);
-       font.setPointSize(20);
+       font.setPointSize(14);//设置字体大小
         //应用关键字高亮
        ui->plainTextEdit->setFont(font);
        highlighter = new Highlighter(ui->plainTextEdit->document());
