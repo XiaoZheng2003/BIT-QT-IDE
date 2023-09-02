@@ -7,12 +7,10 @@ CodeEditor::CodeEditor(QWidget *parent):
 
 //void CodeEditor::keyPressEvent(QKeyEvent *event)
 //{
-//    QPlainTextEdit::keyPressEvent(event);
-
 //    switch(event->key())
 //    {
 //    case Qt::Key_Enter:
-//        //emit lineNumberChange();
+//        emit lineNumberChange();
 //        break;
 //    }
 //}

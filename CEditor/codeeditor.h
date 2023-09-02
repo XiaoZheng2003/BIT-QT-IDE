@@ -1,4 +1,4 @@
-﻿#ifndef CODEEDITOR_H
+#ifndef CODEEDITOR_H
 #define CODEEDITOR_H
 
 #include <QPlainTextEdit>
