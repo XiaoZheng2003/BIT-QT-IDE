@@ -45,11 +45,9 @@ Tab::Tab(int index, QString text, QWidget *parent) :
        font.setFamily("Courier");
        font.setFixedPitch(true);
        font.setPointSize(20);
-
+        //应用关键字高亮
        ui->plainTextEdit->setFont(font);
-
        highlighter = new Highlighter(ui->plainTextEdit->document());
-
        ui->plainTextEdit->setPlainText(text);
 }
 
