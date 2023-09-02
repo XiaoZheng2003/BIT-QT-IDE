@@ -14,6 +14,10 @@ class Search : public QDialog
 public:
     explicit Search(QWidget *parent = nullptr);
     ~Search();
+signals:
+    void  sendSearchDataToMain(QString,int,int);
+private slots:
+    void  on_search_button_clicked();
 
 private:
     Ui::Search *ui;

@@ -118,7 +118,7 @@
      <x>0</x>
      <y>0</y>
      <width>784</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -154,8 +154,8 @@
     <property name="title">
      <string>搜索</string>
     </property>
-    <addaction name="search"/>
-    <addaction name="replace"/>
+    <addaction name="actionSearch"/>
+    <addaction name="actionReplace"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -290,12 +290,12 @@
     <string>注释</string>
    </property>
   </action>
-  <action name="search">
+  <action name="actionSearch">
    <property name="text">
     <string>搜索</string>
    </property>
   </action>
-  <action name="replace">
+  <action name="actionReplace">
    <property name="text">
     <string>替换</string>
    </property>

@@ -446,3 +446,32 @@ void MainWindow::on_actionPaste_triggered()
 {
     emit editOperate(ui->tabWidget->currentIndex(),Paste);
 }
+
+void MainWindow::receiveSearchDataForMain(QString data,int state,int begin) //从搜索对话框接收搜索数据，发送给指定页面
+{
+    int index = ui->tabWidget->currentIndex();
+    emit sendSearchDataToTab(data,index,state,begin);
+}
+
+
+
+void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state,int begin) //接受替换数据
+{
+    int index = ui->tabWidget->currentIndex();
+    emit sendReplaceDataToTab(sear,rep,index,state,begin);
+}
+
+void MainWindow::on_actionSearch_triggered() //搜索
+{
+    search = new Search(this);
+    search->setModal(false);  //设置为非模态对话框,在其没有关闭前，用户可以与其它窗口交互
+    search->show();
+}
+
+void MainWindow::on_actionReplace_triggered() //替换
+{
+    replace = new class replace(this);
+    replace->setModal(false);
+    replace->show();
+}
+
