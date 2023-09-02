@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "tab.h"
+#include "compilationthread.h"
 
 #include <QDir>
 #include <QMap>
@@ -16,6 +17,7 @@
 #include <QMessageBox>
 #include <QTreeWidgetItem>
 #include <QFileIconProvider>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -70,5 +72,7 @@ private:
     void closeTab(int index);
     QString getCorrentUnicode(const QByteArray &text);
     void createProjectTree(QTreeWidgetItem *root,QString projectName,QString projectPath);
+    void handleCompilationFinished(int exitCode, const QString &outputText);
+    void handleRunFinished(int exitCode, const QString &outputText);
 };
 #endif // MAINWINDOW_H
