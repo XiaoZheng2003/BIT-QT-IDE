@@ -72,6 +72,12 @@ void MainWindow::tabTextChanged(int index)
     ui->tabWidget->setTabText(index,"* "+filename);
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //窗口关闭前，关闭所有标签页
+    on_actionCloseAll_triggered();
+}
+
 void MainWindow::on_actionOpen_triggered()
 {
     //打开文件
@@ -160,11 +166,7 @@ void MainWindow::on_actionNewFile_triggered()
     }
 
     QFile newFile(newFilePath);
-    if(newFile.exists()){
-        QMessageBox::warning(this,"提示","文件已存在！");
-        return;
-    }
-    if(!newFile.open(QIODevice::ReadWrite|QIODevice::Text)){
+    if(!newFile.open(QIODevice::WriteOnly|QIODevice::Text)){
         QMessageBox::warning(this,"提示",QString("文件创建失败 %1:\n%2.")
                              .arg(newFilePath,newFile.errorString()));
         return;
