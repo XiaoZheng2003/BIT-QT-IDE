@@ -1,6 +1,5 @@
 ﻿#include "tab.h"
 #include "ui_tab.h"
-#include <QDebug>
 
 Tab::Tab(int index, QString text, QWidget *parent) :
     QWidget(parent),
@@ -15,36 +14,18 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->lineNumberArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->verticalScrollBar()->setDisabled(true);
+    //设置行数显示条与文本编辑块一起滚动
+    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,[=](int value){
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
-    //设置行数显示条与文本编辑块一起滚动
-    connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
-    ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
-    if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
-    ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
-    }
-    else{
-        ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
-    }
-    });
-    connect(this,&Tab::scollBarValueChanged,[=](int value){
-        ui->lineNumberArea->verticalScrollBar()->setValue(value);
-        if(value!=0){
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
-        }
-        else{
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
-        }
-    });
-    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,this,[=](int value){
-        ui->lineNumberArea->verticalScrollBar()->setValue(value);
-        if(value!=0){
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
-        }
-        else{
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
-        }
-    });
 
     int crow=0;
        int ccol=0;
@@ -69,6 +50,7 @@ Tab::~Tab()
 
 void Tab::update(int blockCount)
 {
+    //qDebug()<<blockCount;
     int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     int digit=0,totalRow=blockCount;
     while(totalRow!=0)
@@ -92,7 +74,6 @@ void Tab::update(int blockCount)
         }
         ui->lineNumberArea->addItem(item);
     }
-    QTimer::singleShot(1,this,&Tab::sendScrollBarValue);
 }
 void Tab::prepareTextForSave(int indexId)
 {
@@ -113,11 +94,6 @@ void Tab::tabClosed(int indexId)
     //关闭标签
     if(indexId==curIndexId) curIndexId=-1; //当前标签被关闭
     if(indexId<curIndexId) curIndexId--;   //当前标签前面的标签被关闭
-}
-
-void Tab::sendScrollBarValue()
-{
-    emit scollBarValueChanged(ui->plainTextEdit->verticalScrollBar()->value());
 }
 
 void Tab::on_plainTextEdit_textChanged()

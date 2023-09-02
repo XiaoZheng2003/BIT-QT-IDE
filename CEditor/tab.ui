@@ -89,12 +89,6 @@ padding-top:4px;</string>
            <height>16777215</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <family>Consolas</family>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
          <property name="autoFillBackground">
           <bool>true</bool>
          </property>
