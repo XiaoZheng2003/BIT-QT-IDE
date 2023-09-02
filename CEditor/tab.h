@@ -1,4 +1,4 @@
-﻿#ifndef TAB_H
+#ifndef TAB_H
 #define TAB_H
 
 #include <QWidget>
@@ -8,6 +8,9 @@
 #include <QTextBlock>
 #include <QTimer>
 #include "codeeditor.h"
+#include <QDialog>
+#include"highlighter.h"
+#include"highlighttype.h"
 
 class CodePlainTextEdit;
 
@@ -49,6 +52,11 @@ private:
     void update(int blockCount);
     int curIndexId;
     void sendScrollBarValue();
+    std::map<QString,HighLightType> codeTable;
+    std::map<HighLightType,QColor>* codeColor;
+    std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
+
+     Highlighter* highlighter;
 };
 
 #endif // TAB_H
