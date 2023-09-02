@@ -1,4 +1,4 @@
-#include "tab.h"
+﻿#include "tab.h"
 #include "ui_tab.h"
 
 Tab::Tab(int index, QString text, QWidget *parent) :
@@ -9,7 +9,6 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->setupUi(this);
     ui->plainTextEdit->setPlainText(text);
     ui->lineNumberArea->setSpacing(0);
-    connect(ui->plainTextEdit,&CodeEditor::updateLineNumberArea,this,&Tab::update);
     //禁用行数显示条的滚动条并隐藏
     ui->lineNumberArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -26,6 +25,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     });
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
+    connect(ui->plainTextEdit,&CodeEditor::updateLineNumberArea,this,&Tab::update);
 }
 
 Tab::~Tab()
@@ -35,7 +35,7 @@ Tab::~Tab()
 
 void Tab::update(int blockCount)
 {
-    //qDebug()<<blockCount;
+    qDebug()<<blockCount;
     int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     int digit=0,totalRow=blockCount;
     while(totalRow!=0)

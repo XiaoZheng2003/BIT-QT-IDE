@@ -5,12 +5,11 @@
 
 #include <QDir>
 #include <QList>
-#include <QProcess>
-#include <QDateTime>
 #include <QTextCodec>
 #include <QByteArray>
 #include <QFileDialog>
 #include <QMainWindow>
+#include "tab.h"
 #include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
@@ -37,9 +36,6 @@ private slots:
     void on_actionSave_triggered();
     void on_actionSaveas_triggered();
     void on_actionCloseAll_triggered();
-    void on_actionCompile_triggered();
-    void on_actionRun_triggered();
-    void on_actionCompileRun_triggered();
 
 signals:
     void prepareTextForSave(int indexId);
