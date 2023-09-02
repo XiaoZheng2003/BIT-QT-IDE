@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->compileTextBrowser->setMaximumHeight(0);
     //Tab *test=new Tab;
     //ui->tabWidget->addTab(test,"hello.cpp");
     //ui->tabWidget->setTabText(2,"hello.cpp");
@@ -125,6 +127,59 @@ QString MainWindow::getCorrentUnicode(const QByteArray &text)
     return strtext;
 }
 
+void MainWindow::createProjectTree(QTreeWidgetItem *root, QString projectName, QString projectPath)
+{
+    //创建项目树
+    QFileIconProvider iconProvider;
+    QIcon folderIcon = iconProvider.icon(QFileIconProvider::Folder);
+    root->setIcon(0,folderIcon);
+    root->setCheckState(1,Qt::Checked);
+
+    //获取项目文件夹
+    QDir dir(projectPath);
+    if(!dir.exists()){
+        QMessageBox::information(this,"提示","文件夹不存在，请重试！");
+        return;
+    }
+
+    //分别筛选头文件，源文件
+    QTreeWidgetItem *headerRoot=new QTreeWidgetItem(root,QStringList()<<"头文件");
+    QTreeWidgetItem *sourceRoot=new QTreeWidgetItem(root,QStringList()<<"源文件");
+    headerRoot->setIcon(0,folderIcon);
+    sourceRoot->setIcon(0,folderIcon);
+    QFileInfoList headerFileList=dir.entryInfoList(QStringList()<<"*.hpp"<<"*.h");
+    QFileInfoList sourceFileList=dir.entryInfoList(QStringList()<<"*.cpp"<<"*.c");
+    QStringList childrenNameList;
+
+    //头文件处理
+    for(QFileInfo fileInfo:headerFileList){
+        QString name=fileInfo.fileName();
+        fileNameToPath.insert(name,fileInfo.absoluteFilePath());
+        //TODO: bug 同名文件可能会发生覆盖
+
+        QTreeWidgetItem *child=new QTreeWidgetItem(QStringList()<<name);
+        child->setCheckState(1,Qt::Checked);
+        child->setIcon(0,iconProvider.icon(fileInfo));
+        headerRoot->addChild(child);
+    }
+
+    //源文件处理
+    for(QFileInfo fileInfo:sourceFileList){
+        QString name=fileInfo.fileName();
+        fileNameToPath.insert(name,fileInfo.absoluteFilePath());
+        //TODO: bug 同名文件可能会发生覆盖
+
+        QTreeWidgetItem *child=new QTreeWidgetItem(QStringList()<<name);
+        child->setCheckState(1,Qt::Checked);
+        child->setIcon(0,iconProvider.icon(fileInfo));
+        sourceRoot->addChild(child);
+        childrenNameList.append(fileInfo.absoluteFilePath());
+        //TODO: 理解为什么只需加源文件
+    }
+
+    projectToChildren.insert(projectName,childrenNameList);
+}
+
 void MainWindow::on_actionNewFile_triggered()
 {
     //新建文件
@@ -240,7 +295,7 @@ void MainWindow::on_actionCompile_triggered()
     // 保存当前文件
     on_actionSave_triggered();
     // 打开编译信息框
-    ui->compile_plainTextEdit->setMaximumHeight(600);
+    ui->compileTextBrowser->setMaximumHeight(220);
     // 获得当前编译文件对应序号
     int index = ui->tabWidget->currentIndex();
     // 获得文件对应路径
@@ -264,7 +319,7 @@ void MainWindow::on_actionCompile_triggered()
     int exitCode = compileProcess.exitCode();
 
     QFile infoFile(outputFileName);
-    ui->compile_plainTextEdit->setPlainText("10");
+    ui->compileTextBrowser->setPlainText("10");
     if (exitCode == 0)
     {
         QFileInfo info(exePath);
@@ -275,7 +330,7 @@ void MainWindow::on_actionCompile_triggered()
             size /= 1024;
             unitIndex++;
         }
-        ui->compile_plainTextEdit->setPlainText("编译成功\n""输出文件名："+exePath+"\n"
+        ui->compileTextBrowser->setPlainText("编译成功\n""输出文件名："+exePath+"\n"
                       "最后修改时间："+info.lastModified().toString("yyyy-MM-dd hh:mm:ss")+"\n"
                       "文件大小："+QString::number(size)+sizeUnits[unitIndex]+"\n");
     }
@@ -283,7 +338,7 @@ void MainWindow::on_actionCompile_triggered()
     {
         // 读取编译错误信息
         infoFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        ui->compile_plainTextEdit->setPlainText(infoFile.readAll());
+        ui->compileTextBrowser->setPlainText(infoFile.readAll());
         infoFile.close();
     }
     // 删除临时文件
@@ -318,5 +373,37 @@ void MainWindow::on_actionCompileRun_triggered()
 {
     on_actionCompile_triggered();
     on_actionRun_triggered();
+}
+
+
+void MainWindow::on_actionOpenProject_triggered()
+{
+    //打开项目
+    QString projectPath = QFileDialog::getExistingDirectory(
+        this,"打开一个项目",QDir::currentPath());
+    if(projectPath.isEmpty()){
+        return;
+    }
+
+    //获取项目名
+    QString projectName=projectPath.split('/').last();
+    if(projectNameToPath.count(projectName)){
+        QMessageBox::information(this,"提示","同名项目已经打开！");
+        return;
+    }
+    projectNameToPath.insert(projectName,projectPath);
+    ui->currentProject->setText(projectName);
+
+    //添加项目树
+    QTreeWidgetItem *root=new QTreeWidgetItem(QStringList()<<projectName);
+    createProjectTree(root,projectName,projectPath);
+    ui->projectTreeWidget->insertTopLevelItem(0,root);
+}
+
+
+void MainWindow::on_compileInfoButton_clicked()
+{
+    int height=ui->compileTextBrowser->height();
+    ui->compileTextBrowser->setMaximumHeight(height>0?0:220);
 }
 

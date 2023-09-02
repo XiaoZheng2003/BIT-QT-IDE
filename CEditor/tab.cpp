@@ -26,6 +26,21 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     });
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
+
+    int crow=0;
+       int ccol=0;
+       int call=ui->plainTextEdit->blockCount();
+       //设置光标位置
+       QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+       ui->rowLabel->setText(text1);
+       //设置总行数
+       QString text2 = QString("总行数：%1").arg(call);
+       ui->allLabel->setText(text2);
+
+       //光标位置更新
+       connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
+       //总行数更新
+       connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
 }
 
 Tab::~Tab()
@@ -86,3 +101,55 @@ void Tab::on_plainTextEdit_textChanged()
     //当文本被修改
     emit textChanged(curIndexId);
 }
+
+void Tab::updateCursorPosition()
+{
+    //更新光标位置
+    QTextCursor cursor=ui->plainTextEdit->textCursor();
+    int row=cursor.blockNumber()+1;
+    int col=cursor.columnNumber()+1;
+    QString text=QString("行：%1，列：%2").arg(row).arg(col);
+    ui->rowLabel->setText(text);
+}
+
+void Tab::updateTotalLineCount()
+{
+    //更新文本框内的总行数
+    int totalLineCount=ui->plainTextEdit->blockCount();
+    QString text=QString("总行数：%1").arg(totalLineCount);
+    ui->allLabel->setText(text);
+}
+
+void Tab::on_jumpto_clicked()
+{
+    int linenum=ui->lineEdit->text().toInt();
+     jumpToLine(linenum);
+}
+
+void Tab::jumpToLine(int line)
+{
+    //跳转到某一行
+    QTextCursor cursor(ui->plainTextEdit->document());
+    int lineNumber=0;
+
+    while (!cursor.atEnd()) {
+        cursor.movePosition(QTextCursor::StartOfLine);
+        lineNumber++;
+        if (lineNumber==line) {
+            ui->plainTextEdit->setTextCursor(cursor);
+            //获取目标行所在的列表项
+            QListWidgetItem* item=ui->lineNumberArea->item(lineNumber - 1);
+            if (item!=nullptr) {
+                //设置列表项为当前选中项
+                ui->lineNumberArea->setCurrentItem(item);
+                //行数进度条和文本框同步跳转
+                ui->lineNumberArea->scrollToItem(item,QAbstractItemView::PositionAtCenter);
+            }
+            break;
+        }
+        cursor.movePosition(QTextCursor::NextBlock);
+    }
+}
+
+
+

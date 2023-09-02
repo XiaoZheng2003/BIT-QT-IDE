@@ -14,78 +14,98 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="1,3">
-      <item row="0" column="0">
-       <widget class="QTreeWidget" name="treeWidget">
-        <column>
-         <property name="text">
-          <string notr="true">1</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0,0,0">
-        <item>
-         <widget class="QTabWidget" name="tabWidget">
-          <property name="currentIndex">
-           <number>-1</number>
-          </property>
-         </widget>
-        </item>
+     <widget class="QSplitter" name="splitter_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>编译器</string>
+             <string>当前打开项目</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QLabel" name="currentProject">
             <property name="text">
-             <string>编译日志</string>
+             <string>无</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="text">
-             <string> 关闭</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="compile_plainTextEdit"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>行……列……总行数……</string>
-          </property>
+         <widget class="QTreeWidget" name="projectTreeWidget">
+          <column>
+           <property name="text">
+            <string notr="true">项目</string>
+           </property>
+          </column>
          </widget>
         </item>
        </layout>
-      </item>
-     </layout>
+      </widget>
+      <widget class="QSplitter" name="splitter">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>4</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QTabWidget" name="tabWidget">
+           <property name="currentIndex">
+            <number>-1</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QPushButton" name="compileInfoButton">
+             <property name="text">
+              <string>编译信息</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTextBrowser" name="compileTextBrowser">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>220</height>
+         </size>
+        </property>
+       </widget>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -103,9 +123,13 @@
      <string>文件</string>
     </property>
     <addaction name="actionNewFile"/>
+    <addaction name="separator"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpenProject"/>
+    <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveas"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
    </widget>
@@ -273,6 +297,14 @@
   <action name="aout">
    <property name="text">
     <string>关于CEditor</string>
+   </property>
+  </action>
+  <action name="actionOpenProject">
+   <property name="text">
+    <string>打开项目</string>
+   </property>
+   <property name="toolTip">
+    <string>打开项目</string>
    </property>
   </action>
  </widget>
