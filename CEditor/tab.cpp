@@ -41,6 +41,14 @@ Tab::Tab(int index, QString text, QWidget *parent) :
        connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
        //总行数更新
        connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+       QFont font;
+       font.setFamily("Courier");
+       font.setFixedPitch(true);
+       font.setPointSize(20);
+        //应用关键字高亮
+       ui->plainTextEdit->setFont(font);
+       highlighter = new Highlighter(ui->plainTextEdit->document());
+       ui->plainTextEdit->setPlainText(text);
 }
 
 Tab::~Tab()
