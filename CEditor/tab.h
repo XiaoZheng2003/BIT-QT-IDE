@@ -7,6 +7,9 @@
 #include <QTextDocument>
 #include <QTextBlock>
 #include "codeeditor.h"
+#include <QDialog>
+#include"highlighter.h"
+#include"highlighttype.h"
 
 class CodePlainTextEdit;
 
@@ -35,17 +38,19 @@ signals:
     void textChanged(int indexId);
 
 private slots:
-    void on_plainTextEdit_textChanged();
-
     void updateCursorPosition();
     void updateTotalLineCount();
-
     void on_jumpto_clicked();
 
 private:
     Ui::Tab *ui;
     void update(int blockCount);
     int curIndexId;
+    std::map<QString,HighLightType> codeTable;
+    std::map<HighLightType,QColor>* codeColor;
+    std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
+
+     Highlighter* highlighter;
 };
 
 #endif // TAB_H
