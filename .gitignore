@@ -41,6 +41,3 @@ target_wrapper.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
-
-# Error Files
-/.qtc_clangd/*
