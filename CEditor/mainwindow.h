@@ -10,6 +10,7 @@
 #include <QDateTime>
 #include <QTextCodec>
 #include <QByteArray>
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -33,6 +34,9 @@ public slots:
     void returnTextForSaveAs(int indexId, QString str);
     void tabTextChanged(int index);
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void on_actionOpen_triggered();
     void on_actionNewFile_triggered();
@@ -46,7 +50,6 @@ private slots:
     void on_actionOpenProject_triggered();
     void on_compileInfoButton_clicked();
     void on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
-
     void on_tabWidget_tabCloseRequested(int index);
 
 signals:
