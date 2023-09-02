@@ -1,10 +1,10 @@
-#include "tab.h"
+﻿#include "tab.h"
 #include "ui_tab.h"
 
 Tab::Tab(int index, QString text, QWidget *parent) :
     QWidget(parent),
-    curIndexId(index),
-    ui(new Ui::Tab)
+    ui(new Ui::Tab),
+    curIndexId(index)
 {
     ui->setupUi(this);
     ui->plainTextEdit->setPlainText(text);
