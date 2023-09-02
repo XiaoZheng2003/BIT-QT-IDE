@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "tab.h"
+#include "compilationthread.h"
 
 #include <QDir>
 #include <QMap>
@@ -16,6 +17,7 @@
 #include <QMessageBox>
 #include <QTreeWidgetItem>
 #include <QFileIconProvider>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -51,11 +53,17 @@ private slots:
     void on_compileInfoButton_clicked();
     void on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
     void on_tabWidget_tabCloseRequested(int index);
+    void on_actionUndo_triggered();
+    void on_actionRedo_triggered();
+    void on_actionCut_triggered();
+    void on_actionCopy_triggered();
+    void on_actionPaste_triggered();
 
 signals:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
+    void editOperate(int indexId, editType type);
 
 private:
     Ui::MainWindow *ui;
@@ -70,5 +78,7 @@ private:
     void closeTab(int index);
     QString getCorrentUnicode(const QByteArray &text);
     void createProjectTree(QTreeWidgetItem *root,QString projectName,QString projectPath);
+    void handleCompilationFinished(int exitCode, const QString &outputText);
+    void handleRunFinished(int exitCode, const QString &outputText);
 };
 #endif // MAINWINDOW_H

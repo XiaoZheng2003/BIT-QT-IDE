@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     codeeditor.cpp \
+    compilationthread.cpp \
     highlighter.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
     codeeditor.h \
+    compilationthread.h \
     highlighter.h \
     highlighttype.h \
     mainwindow.h \

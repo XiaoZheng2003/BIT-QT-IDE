@@ -14,7 +14,25 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->verticalScrollBar()->setDisabled(true);
     //设置行数显示条与文本编辑块一起滚动
-    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,[=](int value){
+    connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
+        ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
+        if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
+        ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(this,&Tab::scollBarValueChanged,[=](int value){
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,this,[=](int value){
         ui->lineNumberArea->verticalScrollBar()->setValue(value);
         if(value!=0){
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
@@ -27,27 +45,32 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
 
     int crow=0;
-       int ccol=0;
-       int call=ui->plainTextEdit->blockCount();
-       //设置光标位置
-       QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
-       ui->rowLabel->setText(text1);
-       //设置总行数
-       QString text2 = QString("总行数：%1").arg(call);
-       ui->allLabel->setText(text2);
+    int ccol=0;
+    int call=ui->plainTextEdit->blockCount();
+    //设置光标位置
+    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+                    ui->rowLabel->setText(text1);
+    //设置总行数
+    QString text2 = QString("总行数：%1").arg(call);
+                        ui->allLabel->setText(text2);
 
-       //光标位置更新
-       connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
-       //总行数更新
-       connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
-       QFont font;
-       font.setFamily("Courier");
-       font.setFixedPitch(true);
-       font.setPointSize(14);//设置字体大小
-        //应用关键字高亮
-       ui->plainTextEdit->setFont(font);
-       highlighter = new Highlighter(ui->plainTextEdit->document());
-       ui->plainTextEdit->setPlainText(text);
+    //光标位置更新
+    connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
+    //总行数更新
+    connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(14);
+    //应用关键字高亮
+    ui->plainTextEdit->setFont(font);
+    highlighter = new Highlighter(ui->plainTextEdit->document());
+    ui->plainTextEdit->setPlainText(text);
+
+    connect(ui->plainTextEdit,&CodeEditor::textChanged,[=](){
+        //当文本被修改
+        emit textChanged(curIndexId);
+    });
 }
 
 Tab::~Tab()
@@ -57,8 +80,6 @@ Tab::~Tab()
 
 void Tab::update(int blockCount)
 {
-    //qDebug()<<blockCount;
-    int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     int digit=0,totalRow=blockCount;
     while(totalRow!=0)
     {
@@ -66,6 +87,7 @@ void Tab::update(int blockCount)
         totalRow/=10;
     }
     //根据最大行数的位数调整大小
+    int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     ui->lineNumberArea->setMaximumSize(QSize((digit+3)*6,ui->plainTextEdit->height()));
     ui->lineNumberArea->resize(QSize((digit+3)*6,ui->plainTextEdit->height()));
     ui->lineNumberArea->clear();
@@ -81,7 +103,14 @@ void Tab::update(int blockCount)
         }
         ui->lineNumberArea->addItem(item);
     }
+    QTimer::singleShot(1,this,&Tab::sendScrollBarValue);
 }
+
+void Tab::sendScrollBarValue()
+{
+    emit scollBarValueChanged(ui->plainTextEdit->verticalScrollBar()->value());
+}
+
 void Tab::prepareTextForSave(int indexId)
 {
     //返回文件保存文本
@@ -103,10 +132,26 @@ void Tab::tabClosed(int indexId)
     if(indexId<curIndexId) curIndexId--;   //当前标签前面的标签被关闭
 }
 
-void Tab::on_plainTextEdit_textChanged()
+void Tab::editOperate(int indexId, editType type)
 {
-    //当文本被修改
-    emit textChanged(curIndexId);
+    if(indexId!=curIndexId) return;
+    switch(type){
+    case Undo:
+        ui->plainTextEdit->undo();
+        break;
+    case Redo:
+        ui->plainTextEdit->redo();
+        break;
+    case Cut:
+        ui->plainTextEdit->cut();
+        break;
+    case Copy:
+        ui->plainTextEdit->copy();
+        break;
+    case Paste:
+        ui->plainTextEdit->paste();
+        break;
+    }
 }
 
 void Tab::updateCursorPosition()
@@ -157,6 +202,3 @@ void Tab::jumpToLine(int line)
         cursor.movePosition(QTextCursor::NextBlock);
     }
 }
-
-
-
