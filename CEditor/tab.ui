@@ -99,20 +99,8 @@ border-left:none;</string>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="verticalScrollBarPolicy">
-          <enum>Qt::ScrollBarAsNeeded</enum>
-         </property>
-         <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAsNeeded</enum>
-         </property>
-         <property name="sizeAdjustPolicy">
-          <enum>QAbstractScrollArea::AdjustToContents</enum>
-         </property>
          <property name="lineWrapMode">
           <enum>QPlainTextEdit::NoWrap</enum>
-         </property>
-         <property name="centerOnScroll">
-          <bool>false</bool>
          </property>
         </widget>
        </item>

@@ -1,4 +1,4 @@
-﻿#ifndef TAB_H
+#ifndef TAB_H
 #define TAB_H
 
 #include <QWidget>

@@ -1,4 +1,4 @@
-﻿#include "codeeditor.h"
+#include "codeeditor.h"
 
 CodeEditor::CodeEditor(QWidget *parent):
     QPlainTextEdit(parent)
@@ -17,7 +17,7 @@ CodeEditor::CodeEditor(QWidget *parent):
 
 void CodeEditor::resizeEvent(QResizeEvent *event)
 {
-    QPlainTextEdit::resizeEvent(event);
+    Q_UNUSED(event);
 
     emit updateLineNumberArea(this->blockCount());
 }
