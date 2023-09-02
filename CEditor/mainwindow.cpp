@@ -233,6 +233,8 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::tabClosed,tab,&Tab::tabClosed);
     //文件未保存加*
     connect(tab,&Tab::textChanged,this,&MainWindow::tabTextChanged);
+    //绑定编辑操作
+    connect(this,&MainWindow::editOperate,tab,&Tab::editOperate);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -420,3 +422,27 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
     closeTab(index);
 }
 
+void MainWindow::on_actionUndo_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),Undo);
+}
+
+void MainWindow::on_actionRedo_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),Redo);
+}
+
+void MainWindow::on_actionCut_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),Cut);
+}
+
+void MainWindow::on_actionCopy_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),Copy);
+}
+
+void MainWindow::on_actionPaste_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),Paste);
+}

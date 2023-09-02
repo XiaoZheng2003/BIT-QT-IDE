@@ -53,11 +53,17 @@ private slots:
     void on_compileInfoButton_clicked();
     void on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
     void on_tabWidget_tabCloseRequested(int index);
+    void on_actionUndo_triggered();
+    void on_actionRedo_triggered();
+    void on_actionCut_triggered();
+    void on_actionCopy_triggered();
+    void on_actionPaste_triggered();
 
 signals:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
+    void editOperate(int indexId, editType type);
 
 private:
     Ui::MainWindow *ui;
