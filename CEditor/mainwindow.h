@@ -45,6 +45,9 @@ private slots:
     void on_actionCompileRun_triggered();
     void on_actionOpenProject_triggered();
     void on_compileInfoButton_clicked();
+    void on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
+    void on_tabWidget_tabCloseRequested(int index);
 
 signals:
     void prepareTextForSave(int indexId);
@@ -60,6 +63,7 @@ private:
 
     void refreshFilename(int index);
     void initConnection(Tab *tab);
+    void openFile(QString openFilePath);
     void closeTab(int index);
     QString getCorrentUnicode(const QByteArray &text);
     void createProjectTree(QTreeWidgetItem *root,QString projectName,QString projectPath);
