@@ -294,9 +294,8 @@ void MainWindow::closeTab(int index)
 void MainWindow::on_actionCompile_triggered()
 {
     // 处理未打开任何文件的情况
-    if(ui->tabWidget->count() == 0)
-    {
-        QMessageBox::warning(this,"警告","未打开任何文件");
+    if (ui->tabWidget->count() == 0) {
+        QMessageBox::warning(this, "警告", "未打开任何文件");
         return;
     }
     // 保存当前文件
@@ -307,72 +306,58 @@ void MainWindow::on_actionCompile_triggered()
     int index = ui->tabWidget->currentIndex();
     // 获得文件对应路径
     QString currentFilePath = filePath.at(index);
-    // 可执行文件路径
-    QString exePath = currentFilePath;
-    exePath.replace(".cpp", ".exe");
-    // 信息文件
-    QFileInfo fileInfo(currentFilePath);
-    QString outputFileName = fileInfo.path()+"info.txt";
-    QProcess compileProcess;
-    QStringList parameterList; // 参数列表
-    parameterList << currentFilePath << "-o" << exePath << "-g";
-    // 设置标准输出和标准错误输出到临时文件
-    compileProcess.setStandardOutputFile(outputFileName);
-    compileProcess.setStandardErrorFile(outputFileName);
-    // 编译
-    compileProcess.start("g++", parameterList);
-    compileProcess.waitForFinished();
 
-    int exitCode = compileProcess.exitCode();
+    // 创建编译线程并连接信号槽
+    CompilationThread *compileThread = new CompilationThread(0, currentFilePath, this);
+    connect(compileThread, &CompilationThread::compilationFinished, this, &MainWindow::handleCompilationFinished);
 
-    QFile infoFile(outputFileName);
-    ui->compileTextBrowser->setPlainText("10");
-    if (exitCode == 0)
-    {
-        QFileInfo info(exePath);
-        qint64 size = info.size();
-        const QStringList sizeUnits = {"B", "KB", "MB", "GB"};
-        int unitIndex = 0;
-        while (size > 1024 && unitIndex < sizeUnits.size() - 1) {
-            size /= 1024;
-            unitIndex++;
-        }
-        ui->compileTextBrowser->setPlainText("编译成功\n""输出文件名："+exePath+"\n"
-                      "最后修改时间："+info.lastModified().toString("yyyy-MM-dd hh:mm:ss")+"\n"
-                      "文件大小："+QString::number(size)+sizeUnits[unitIndex]+"\n");
+    // 启动编译线程
+    compileThread->start();
+}
+
+
+void MainWindow::handleCompilationFinished(int exitCode, const QString &outputText)
+{
+    if (exitCode == 0) {
+        // 编译成功，处理编译结果
+        ui->compileTextBrowser->setPlainText(outputText);
+    } else {
+        // 编译失败，显示错误信息
+        QMessageBox::critical(this, "编译失败", "编译过程中出现错误");
+        ui->compileTextBrowser->setPlainText(outputText);
     }
-    else
-    {
-        // 读取编译错误信息
-        infoFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        ui->compileTextBrowser->setPlainText(infoFile.readAll());
-        infoFile.close();
-    }
-    // 删除临时文件
-    infoFile.remove();
 }
 
 void MainWindow::on_actionRun_triggered()
 {
-    if(ui->tabWidget->count() == 0)
-    {
-        QMessageBox::warning(this,"警告","未打开任何文件");
+    if (ui->tabWidget->count() == 0) {
+        QMessageBox::warning(this, "警告", "未打开任何文件");
         return;
     }
+
     int index = ui->tabWidget->currentIndex();
     QString currentFilePath = filePath.at(index);
     QString exePath = currentFilePath;
     exePath.replace(".cpp", ".exe");
     QFile exefile(exePath);
-    if(!exefile.exists())
-    {
-        QMessageBox::warning(this,"提示","还没有进行编译");
+    if (!exefile.exists()) {
+        QMessageBox::warning(this, "提示", "还没有进行编译");
+        return;
     }
-    QString cmd = QString("%1").arg(exePath) + " && pause";
-    int flag=system(cmd.toStdString().c_str());
-    if(flag != 0)
-    {
-        QMessageBox::information(this,"提示","运行失败");
+    // 创建编译线程并连接信号槽
+    CompilationThread *compileThread = new CompilationThread(1, exePath, this);
+    connect(compileThread, &CompilationThread::compilationFinished, this, &MainWindow::handleRunFinished);
+
+    // 启动编译线程
+    compileThread->start();
+}
+
+void MainWindow::handleRunFinished(int exitCode, const QString &outputText) {
+    if (exitCode == 0) {
+        ui->compileTextBrowser->setPlainText("运行成功");
+    } else {
+        QMessageBox::critical(this, "运行失败", "运行过程中出现错误");
+        ui->compileTextBrowser->setPlainText("运行失败");
     }
 }
 
