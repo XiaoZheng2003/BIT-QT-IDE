@@ -1,4 +1,4 @@
-#ifndef TAB_H
+﻿#ifndef TAB_H
 #define TAB_H
 
 #include <QWidget>
@@ -6,6 +6,7 @@
 #include <QPlainTextEdit>
 #include <QTextDocument>
 #include <QTextBlock>
+#include <QTimer>
 #include "codeeditor.h"
 
 class CodePlainTextEdit;
@@ -33,6 +34,7 @@ signals:
     void returnTextForSave(int indexId, QString str);
     void returnTextForSaveAs(int indexId, QString str);
     void textChanged(int indexId);
+    void scollBarValueChanged(int value);
 
 private slots:
     void on_plainTextEdit_textChanged();
@@ -46,6 +48,7 @@ private:
     Ui::Tab *ui;
     void update(int blockCount);
     int curIndexId;
+    void sendScrollBarValue();
 };
 
 #endif // TAB_H
