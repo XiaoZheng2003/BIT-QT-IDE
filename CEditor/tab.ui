@@ -92,7 +92,7 @@ padding-top:4px;</string>
          <property name="font">
           <font>
            <family>Consolas</family>
-           <pointsize>20</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="autoFillBackground">

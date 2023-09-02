@@ -59,6 +59,14 @@ Tab::Tab(int index, QString text, QWidget *parent) :
        connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
        //总行数更新
        connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+       QFont font;
+       font.setFamily("Courier");
+       font.setFixedPitch(true);
+       font.setPointSize(14);
+        //应用关键字高亮
+       ui->plainTextEdit->setFont(font);
+       highlighter = new Highlighter(ui->plainTextEdit->document());
+       ui->plainTextEdit->setPlainText(text);
 }
 
 Tab::~Tab()
@@ -68,8 +76,6 @@ Tab::~Tab()
 
 void Tab::update(int blockCount)
 {
-    //qDebug()<<blockCount;
-    int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     int digit=0,totalRow=blockCount;
     while(totalRow!=0)
     {
@@ -77,6 +83,7 @@ void Tab::update(int blockCount)
         totalRow/=10;
     }
     //根据最大行数的位数调整大小
+    int lineHeight=ui->plainTextEdit->fontMetrics().lineSpacing();
     ui->lineNumberArea->setMaximumSize(QSize((digit+3)*6,ui->plainTextEdit->height()));
     ui->lineNumberArea->resize(QSize((digit+3)*6,ui->plainTextEdit->height()));
     ui->lineNumberArea->clear();
