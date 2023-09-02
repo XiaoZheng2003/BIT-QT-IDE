@@ -15,7 +15,25 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->verticalScrollBar()->setDisabled(true);
     //设置行数显示条与文本编辑块一起滚动
-    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,[=](int value){
+    connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
+        ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
+        if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
+        ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(this,&Tab::scollBarValueChanged,[=](int value){
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,this,[=](int value){
         ui->lineNumberArea->verticalScrollBar()->setValue(value);
         if(value!=0){
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
@@ -74,7 +92,14 @@ void Tab::update(int blockCount)
         }
         ui->lineNumberArea->addItem(item);
     }
+    QTimer::singleShot(1,this,&Tab::sendScrollBarValue);
 }
+
+void Tab::sendScrollBarValue()
+{
+    emit scollBarValueChanged(ui->plainTextEdit->verticalScrollBar()->value());
+}
+
 void Tab::prepareTextForSave(int indexId)
 {
     //返回文件保存文本
@@ -150,6 +175,3 @@ void Tab::jumpToLine(int line)
         cursor.movePosition(QTextCursor::NextBlock);
     }
 }
-
-
-
