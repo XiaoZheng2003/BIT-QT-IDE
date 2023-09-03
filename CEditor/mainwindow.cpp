@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(all_row);
 
     ui->compileTextBrowser->setMaximumHeight(0);
-    connect(search,SIGNAL(sendSearchDataToMain(QString,int,int)),this,SLOT(receiveSearchDataForMain(QString,int,int)));  //接受搜索信号
-    connect(replace,SIGNAL(sendReplaceDataToMain(QString,QString,int,int)),this,SLOT(receiveReplaceDataForMain(QString,QString,int,int)));  //接受替换信号
+    connect(search,&Search::sendSearchDataToMain,this,&MainWindow::receiveSearchDataForMain);  //接受搜索信号
+    connect(replace,&replace::sendReplaceDataToMain,this,&MainWindow::receiveReplaceDataForMain);  //接受替换信号
 }
 
 MainWindow::~MainWindow()
@@ -250,8 +250,8 @@ void MainWindow::initConnection(Tab *tab)
     //总行数更新
     connect(tab,&Tab::updateTotalLineSignal,this,&MainWindow::totalCountReceive);
     //查找替换
-    connect(this,SIGNAL(sendSearchDataToTab(QString,int,int,int)),tab,SLOT(receiveSearchDataForTab(QString,int,int,int)));
-    connect(this,SIGNAL(sendReplaceDataToTab(QString,QString,int,int,int)),tab,SLOT(receiveReplaceDataForTab(QString,QString,int,int,int)));
+    connect(this,&MainWindow::sendSearchDataToTab,tab,&Tab::receiveSearchDataForTab);
+    connect(this,&MainWindow::sendReplaceDataToTab,tab,&Tab::receiveReplaceDataForTab);
 }
 
 void MainWindow::openFile(QString openFilePath)

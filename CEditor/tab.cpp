@@ -203,7 +203,7 @@ void Tab::jumpToLine(int line)
 
 void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//开始搜索指定字符串
 {
-//    if(index != ownIndex)
+//    if(index != curIndexId)
 //        return;
     QString real_search_str = data;
     QByteArray ba=real_search_str.toLatin1();
@@ -276,7 +276,7 @@ void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//�
 
 void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int state,int begin)//开始替换指定字符串
 {
-//    if(index != ownIndex) return;
+//    if(index != curIndexId) return;
     QStringList qslist;
     QTextDocument* doc=ui->plainTextEdit->document(); //文本对象
     int row_num=doc->blockCount () ;//回车符是一个 block

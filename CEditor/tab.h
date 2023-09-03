@@ -64,7 +64,6 @@ private slots:
 private:
     Ui::Tab *ui;
     void update(int blockCount);
-    int ownIndex;
     int curIndexId;
     void sendScrollBarValue();
     std::map<QString,HighLightType> codeTable;
