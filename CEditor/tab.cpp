@@ -1,7 +1,6 @@
 ﻿#include "tab.h"
 #include "ui_tab.h"
 
-
 Tab::Tab(int index, QString text, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Tab),
@@ -140,16 +139,15 @@ void Tab::jumpToLine(int line)
                 // 将光标选中的行居中显示
                 ui->plainTextEdit->centerCursor();
                 ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+
+                // 设置编辑器的焦点
+                ui->plainTextEdit->setFocus();
             }
             break;
         }
         cursor.movePosition(QTextCursor::NextBlock);
     }
 }
-
-
-
-
 
 void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//开始搜索指定字符串
 {
