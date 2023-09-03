@@ -10,7 +10,7 @@ class CompilationThread : public QThread
     Q_OBJECT
 
 public:
-    CompilationThread(int flag, QString filePath, QObject *parent = nullptr);
+    CompilationThread(int flag, QString filePath, QStringList arguments, QObject *parent = nullptr);
 
 signals:
     void compilationFinished(int exitCode, const QString &outputText);//0-compile,1-run
@@ -20,6 +20,7 @@ protected:
 
 private:
     QString filePath;
+    QStringList arguments;
     int flag;
 };
 
