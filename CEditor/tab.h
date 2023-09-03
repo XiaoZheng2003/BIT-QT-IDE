@@ -52,7 +52,6 @@ signals:
     void returnTextForSave(int indexId, QString str);
     void returnTextForSaveAs(int indexId, QString str);
     void textChanged(int indexId);
-    void scollBarValueChanged(int value);
     void updateCursorSignal(int row,int ccl);
     void updateTotalLineSignal(int count);
 
@@ -63,9 +62,7 @@ private slots:
 
 private:
     Ui::Tab *ui;
-    void update(int blockCount);
     int curIndexId;
-    void sendScrollBarValue();
     std::map<QString,HighLightType> codeTable;
     std::map<HighLightType,QColor>* codeColor;
     std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
