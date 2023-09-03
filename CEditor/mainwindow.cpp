@@ -12,8 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(row_col);
     ui->statusBar->addWidget(all_row);
 
+    //初始状态隐藏编译信息栏
     ui->compileTextBrowser->setMaximumHeight(0);
-
+    //初始化项目右键菜单
+    initProjectTreeMenu();
 }
 
 MainWindow::~MainWindow()
@@ -136,27 +138,26 @@ void MainWindow::createProjectTree(QTreeWidgetItem *root, QString projectName, Q
     //头文件处理
     for(QFileInfo fileInfo:headerFileList){
         QString name=fileInfo.fileName();
-        fileNameToPath.insert(name,fileInfo.absoluteFilePath());
-        //TODO: bug 同名文件可能会发生覆盖
+        fileNameToPath.insert(projectName+"@"+name,fileInfo.absoluteFilePath());
 
         QTreeWidgetItem *child=new QTreeWidgetItem(QStringList()<<name);
         child->setCheckState(1,Qt::Checked);
         child->setIcon(0,iconProvider.icon(fileInfo));
+        child->setData(0,Qt::UserRole,QVariant(projectName+"@"+name));
         headerRoot->addChild(child);
     }
 
     //源文件处理
     for(QFileInfo fileInfo:sourceFileList){
         QString name=fileInfo.fileName();
-        fileNameToPath.insert(name,fileInfo.absoluteFilePath());
-        //TODO: bug 同名文件可能会发生覆盖
+        fileNameToPath.insert(projectName+"@"+name,fileInfo.absoluteFilePath());
 
         QTreeWidgetItem *child=new QTreeWidgetItem(QStringList()<<name);
         child->setCheckState(1,Qt::Checked);
         child->setIcon(0,iconProvider.icon(fileInfo));
+        child->setData(0,Qt::UserRole,QVariant(projectName+"@"+name));
         sourceRoot->addChild(child);
         childrenNameList.append(fileInfo.absoluteFilePath());
-        //TODO: 理解为什么只需加源文件
     }
 
     projectToChildren.insert(projectName,childrenNameList);
@@ -250,7 +251,7 @@ void MainWindow::initConnection(Tab *tab)
 
 void MainWindow::openFile(QString openFilePath)
 {
-
+    //打开文件
     QFile openFile(openFilePath);
     if(!openFile.exists()){
         QMessageBox::warning(this,"提示","文件不存在！");
@@ -284,6 +285,14 @@ void MainWindow::openFile(QString openFilePath)
     all_row->setText(text2);
 }
 
+void MainWindow::saveAllFile()
+{
+    //保存所有文件
+    int tabCount=ui->tabWidget->count();
+    for(int i=0;i<tabCount;i++)
+        emit prepareTextForSave(i);
+}
+
 void MainWindow::closeTab(int index)
 {
     //关闭标签页
@@ -304,6 +313,35 @@ void MainWindow::closeTab(int index)
     ui->tabWidget->removeTab(index);
     filePath.removeAt(index);
     emit tabClosed(index);
+}
+
+void MainWindow::closeProject(QTreeWidgetItem *project)
+{
+    //关闭项目
+    QString projectName=project->text(0);
+    //删除相关信息
+    projectNameToPath.remove(projectName);
+    projectToChildren.remove(projectName);
+    for(auto mapIt=fileNameToPath.begin();mapIt!=fileNameToPath.end();){
+        if(!mapIt.key().startsWith(projectName)){
+            mapIt++;
+            continue;
+        }
+        fileNameToPath.erase(mapIt++);
+    }
+    //若为当前打开项目，则关闭
+    if(ui->currentProject->text()==projectName)
+        ui->currentProject->setText("无");
+    removeItem(project);
+}
+
+void MainWindow::removeItem(QTreeWidgetItem *item)
+{
+    //递归删除item
+    int n=item->childCount();
+    for(int i=0;i<n;i++)
+        removeItem(item->child(0));
+    delete item;
 }
 
 void MainWindow::on_actionCompile_triggered()
@@ -376,8 +414,78 @@ void MainWindow::handleRunFinished(int exitCode, const QString &outputText) {
     }
 }
 
+void MainWindow::initProjectTreeMenu()
+{
+    //初始化项目树右键菜单
+    QMenu *popMenu=new QMenu(this);
+
+    //项目操作
+    QAction *actionCloseProject=new QAction("关闭项目",this);
+    QAction *actionOpenFile=new QAction("在资源管理器中显示",this);
+    //文件操作
+    QAction *actionOpenNode=new QAction("打开文件",this);
+    //公有
+    QAction *actionExpandAll=new QAction("展开全部",this);
+    QAction *actionCollapseAll=new QAction("折叠全部",this);
+
+    connect(ui->projectTreeWidget,&QTreeWidget::customContextMenuRequested,[=](QPoint pos){
+        QTreeWidgetItem *curItem=ui->projectTreeWidget->itemAt(pos);
+        popMenu->clear();
+        if(curItem!=nullptr){
+            //分层级添加
+            switch(getItemLevel(curItem)){
+            case 0:
+                popMenu->addAction(actionCloseProject);
+                popMenu->addAction(actionOpenFile);
+                break;
+            case 2:
+                popMenu->addAction(actionOpenNode);
+            }
+        }
+        popMenu->addAction(actionExpandAll);
+        popMenu->addAction(actionCollapseAll);
+        QAction *selectAction=popMenu->exec(QCursor::pos());
+        if(selectAction==actionCloseProject){
+            //关闭项目
+            closeProject(curItem);
+        }
+        else if(selectAction==actionOpenFile){
+            //在资源管理器中显示
+            QString projectName=curItem->text(0);
+            QDesktopServices::openUrl(projectNameToPath.value(projectName));
+        }
+        else if(selectAction==actionOpenNode){
+            //打开文件
+            on_projectTreeWidget_itemDoubleClicked(curItem,0);
+        }
+        else if(selectAction==actionExpandAll){
+            //展开全部
+            ui->projectTreeWidget->expandAll();
+        }
+        else if(selectAction==actionCollapseAll){
+            //折叠全部
+            ui->projectTreeWidget->collapseAll();
+        }
+    });
+}
+
+int MainWindow::getItemLevel(QTreeWidgetItem *item)
+{
+    int level=0;
+    while(item->parent()!=nullptr){
+        level++;
+        item=item->parent();
+    }
+    return level;
+}
+
 void MainWindow::on_actionCompileRun_triggered()
 {
+    // 处理未打开任何文件的情况
+    if (ui->tabWidget->count() == 0) {
+        QMessageBox::warning(this, "警告", "未打开任何文件");
+        return;
+    }
     on_actionCompile_triggered();
     on_actionRun_triggered();
 }
@@ -415,7 +523,7 @@ void MainWindow::on_compileInfoButton_clicked()
 void MainWindow::on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     //双击项目打开
-    QString text=item->text(column);
+    QString text=item->data(column,Qt::UserRole).toString();
 
     //切换当前项目
     QTreeWidgetItem *root=item;
@@ -426,7 +534,7 @@ void MainWindow::on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     //双击目标非文件
     if(fileNameToPath.find(text)==fileNameToPath.end()) return;
     //获取当前文件路径
-    QString itemPath=fileNameToPath.find(item->text(column)).value();
+    QString itemPath=fileNameToPath.find(text).value();
     openFile(itemPath);
 }
 
@@ -447,30 +555,84 @@ void MainWindow::totalCountReceive(int count)
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
+    //关闭标签页
     closeTab(index);
 }
 
 void MainWindow::on_actionUndo_triggered()
 {
+    //撤销
     emit editOperate(ui->tabWidget->currentIndex(),Undo);
 }
 
 void MainWindow::on_actionRedo_triggered()
 {
+    //恢复
     emit editOperate(ui->tabWidget->currentIndex(),Redo);
 }
 
 void MainWindow::on_actionCut_triggered()
 {
+    //剪切
     emit editOperate(ui->tabWidget->currentIndex(),Cut);
 }
 
 void MainWindow::on_actionCopy_triggered()
 {
+    //复制
     emit editOperate(ui->tabWidget->currentIndex(),Copy);
 }
 
 void MainWindow::on_actionPaste_triggered()
 {
+    //粘贴
     emit editOperate(ui->tabWidget->currentIndex(),Paste);
 }
+
+void MainWindow::on_actionCompileProject_triggered()
+{
+    //编译项目
+    QString projectName=ui->currentProject->text();
+    if(projectName=="无"){
+        //TODO: 如果项目名为"无"可能会出事
+        QMessageBox::warning(this,"警告","当前未打开任何项目！");
+        return;
+    }
+    //保存所有文件
+    saveAllFile();
+    //打开编译信息框
+    ui->compileTextBrowser->setMaximumHeight(220);
+
+    QString projectPath=projectNameToPath.find(projectName).value();
+    //TODO:编译项目
+
+}
+
+void MainWindow::on_actionRunProject_triggered()
+{
+    //运行项目
+    QString projectName=ui->currentProject->text();
+    if(projectName=="无"){
+        //TODO: 如果项目名为"无"可能会出事
+        QMessageBox::warning(this,"警告","当前未打开任何项目！");
+        return;
+    }
+    QString projectPath=projectNameToPath.find(projectName).value();
+    //TODO:运行项目
+
+}
+
+
+void MainWindow::on_actionCompileRunProject_triggered()
+{
+    //编译运行项目
+    QString projectName=ui->currentProject->text();
+    if(projectName=="无"){
+        //TODO: 如果项目名为"无"可能会出事
+        QMessageBox::warning(this,"警告","当前未打开任何项目！");
+        return;
+    }
+    on_actionCompileProject_triggered();
+    on_actionRunProject_triggered();
+}
+
