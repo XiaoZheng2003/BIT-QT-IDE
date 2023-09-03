@@ -102,6 +102,8 @@ private:
     void createProjectTree(QTreeWidgetItem *root, QString projectName, QString projectPath);
     void handleCompilationFinished(int exitCode, const QString &outputText);
     void handleRunFinished(int exitCode, const QString &outputText);
+    void handleProjectCompilationFinished(int exitCode, const QString &outputText);
+    void handleProjectRunFinished(int exitCode, const QString &outputText);
 
 
     Search *search;//搜索对话框
