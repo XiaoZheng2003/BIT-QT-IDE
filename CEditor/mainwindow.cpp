@@ -7,6 +7,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    row_col = new QLabel;
+    all_row = new QLabel;
+    ui->statusBar->addWidget(row_col);
+    ui->statusBar->addWidget(all_row);
+
     ui->compileTextBrowser->setMaximumHeight(0);
 
 }
@@ -185,19 +190,10 @@ void MainWindow::on_actionNewFile_triggered()
 
     //绑定文件路径
     filePath.append(newFilePath);
-
-
-    int crow=1;
-    int ccol=1;
-    //int call=0;
-    //设置光标位置
-    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
-    ui->rowLabel->setText(text1);
-    //设置总行数
-    QString text2 = QString("总行数：");
-    ui->allLabel->setText(text2);
-
     initConnection(tab);
+    row_col->setText("行：1 列：1");
+    QString text2 = QString("总行数：%1").arg(tab->getTotalLines());
+    all_row->setText(text2);
 }
 
 void MainWindow::on_actionClose_triggered()
@@ -282,18 +278,10 @@ void MainWindow::openFile(QString openFilePath)
 
     //绑定文件路径
     filePath.append(openFilePath);
-
-    int crow=1;
-    int ccol=1;
-    //int call=0;
-    //设置光标位置
-    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
-    ui->rowLabel->setText(text1);
-    //设置总行数
-    QString text2 = QString("总行数：");
-     ui->allLabel->setText(text2);
-
     initConnection(tab);
+    row_col->setText("行：1 列：1");
+    QString text2 = QString("总行数：%1").arg(tab->getTotalLines());
+    all_row->setText(text2);
 }
 
 void MainWindow::closeTab(int index)
@@ -446,15 +434,15 @@ void MainWindow::updateCursorReceive(int row,int col)
 {
     //光标位置更新
     QString text=QString("行：%1，列：%2").arg(row).arg(col);
-    ui->rowLabel->setText(text);
+    row_col->setText(text);
 
 }
 
 void MainWindow::totalCountReceive(int count)
 {
-    //总行数更新
+    //总行数更新;
     QString text=QString("总行数：%1").arg(count);
-    ui->allLabel->setText(text);
+    all_row->setText(text);
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
