@@ -18,12 +18,16 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QTreeWidgetItem>
+#include <QDesktopServices>
 #include <QFileIconProvider>
 #include <QDebug>
 #include <QLabel>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui
+{
+    class MainWindow;
+}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -38,7 +42,7 @@ public slots:
     void returnTextForSave(int indexId, QString str);
     void returnTextForSaveAs(int indexId, QString str);
     void tabTextChanged(int index);
-    void updateCursorReceive(int row,int col);
+    void updateCursorReceive(int row, int col);
     void totalCountReceive(int count);
 
 protected:
@@ -69,6 +73,8 @@ private slots:
     void receiveReplaceDataForMain(QString sear,QString rep,int state,int begin); //从替换框接受到消息
 
 
+    void on_actionCompileProject_triggered();
+
 signals:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
@@ -81,26 +87,28 @@ signals:
 private:
     Ui::MainWindow *ui;
     QList<QString> filePath;
-    QMap<QString,QString> projectNameToPath;
-    QMap<QString,QString> fileNameToPath;
-    QMap<QString,QStringList> projectToChildren;
+    QMap<QString, QString> projectNameToPath;
+    QMap<QString, QString> fileNameToPath;
+    QMap<QString, QStringList> projectToChildren;
 
     void refreshFilename(int index);
     void initConnection(Tab *tab);
     void openFile(QString openFilePath);
+    void saveAllFile();
     void closeTab(int index);
+    void closeProject(QTreeWidgetItem *project);
+    void removeItem(QTreeWidgetItem *item);
     QString getCorrentUnicode(const QByteArray &text);
-    void createProjectTree(QTreeWidgetItem *root,QString projectName,QString projectPath);
+    void createProjectTree(QTreeWidgetItem *root, QString projectName, QString projectPath);
     void handleCompilationFinished(int exitCode, const QString &outputText);
     void handleRunFinished(int exitCode, const QString &outputText);
 
 
     Search *search;//搜索对话框
     replace *replace;//替换对话框
-
-
     QLabel *row_col;
     QLabel *all_row;
-
+    void initProjectTreeMenu();
+    int getItemLevel(QTreeWidgetItem *item);
 };
 #endif // MAINWINDOW_H

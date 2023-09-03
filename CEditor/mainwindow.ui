@@ -37,6 +37,9 @@
       </item>
       <item>
        <widget class="QTreeWidget" name="projectTreeWidget">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
         <column>
          <property name="text">
           <string notr="true">项目</string>
@@ -113,7 +116,7 @@
      <x>0</x>
      <y>0</y>
      <width>784</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -123,7 +126,6 @@
     <addaction name="actionNewFile"/>
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
-    <addaction name="actionOpenProject"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveas"/>
@@ -167,10 +169,21 @@
     <addaction name="help"/>
     <addaction name="aout"/>
    </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>项目</string>
+    </property>
+    <addaction name="actionOpenProject"/>
+    <addaction name="separator"/>
+    <addaction name="actionCompileProject"/>
+    <addaction name="actionRunProject"/>
+    <addaction name="actionCompileRunProject"/>
+   </widget>
    <addaction name="menu1"/>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
+   <addaction name="menu_5"/>
    <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -330,6 +343,38 @@
    </property>
    <property name="toolTip">
     <string>打开项目</string>
+   </property>
+  </action>
+  <action name="actionCloseProject">
+   <property name="text">
+    <string>关闭项目</string>
+   </property>
+   <property name="toolTip">
+    <string>关闭项目</string>
+   </property>
+  </action>
+  <action name="actionCompileProject">
+   <property name="text">
+    <string>编译项目</string>
+   </property>
+   <property name="toolTip">
+    <string>编译项目</string>
+   </property>
+  </action>
+  <action name="actionRunProject">
+   <property name="text">
+    <string>运行项目</string>
+   </property>
+   <property name="toolTip">
+    <string>运行项目</string>
+   </property>
+  </action>
+  <action name="actionCompileRunProject">
+   <property name="text">
+    <string>编译运行项目</string>
+   </property>
+   <property name="toolTip">
+    <string>编译运行项目</string>
    </property>
   </action>
  </widget>
