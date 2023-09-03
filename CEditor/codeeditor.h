@@ -1,4 +1,4 @@
-#ifndef CODEEDITOR_H
+﻿#ifndef CODEEDITOR_H
 #define CODEEDITOR_H
 
 #include <QPlainTextEdit>
@@ -6,6 +6,9 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QScrollBar>
+#include <QTextBlock>
+#include <QPainter>
+#include <QTextDocument>
 #include <QTextBlock>
 
 class Brackets // 括号匹配类
@@ -27,17 +30,19 @@ class CodeEditor : public QPlainTextEdit
 public:
     explicit CodeEditor(QWidget *parent=nullptr);
     void matchBrackets();
+    void setLineNumberArea(QListWidget *lineNumberArea);
 
 protected:
     //void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 signals:
     void updateLineNumberArea(int blockCount);
 
 private:
     QList<Brackets> bralist; // 括号匹配情况
-
+    QListWidget *m_lineNumberArea;
 };
 
 
