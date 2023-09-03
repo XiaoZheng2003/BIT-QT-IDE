@@ -24,7 +24,7 @@ replace::~replace()
     delete ui;
 }
 
-void replace::on_pushButton_clicked()
+void replace::on_pushButton_3_clicked()
 {
     QString str_to_search = ui->lineEdit->text();
     QString str_replace = ui->lineEdit_2->text();

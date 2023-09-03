@@ -52,6 +52,8 @@ signals:
     void returnTextForSaveAs(int indexId, QString str);
     void textChanged(int indexId);
     void scollBarValueChanged(int value);
+    void updateCursorSignal(int row,int ccl);
+    void updateTotalLineSignal(int count);
 
 private slots:
     void updateCursorPosition();

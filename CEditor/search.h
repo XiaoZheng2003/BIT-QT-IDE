@@ -17,7 +17,7 @@ public:
 signals:
     void  sendSearchDataToMain(QString,int,int);
 private slots:
-    void  on_search_button_clicked();
+    void on_pushButton_3_clicked();
 
 private:
     Ui::Search *ui;

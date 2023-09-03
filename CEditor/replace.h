@@ -17,7 +17,7 @@ public:
 signals:
     void sendReplaceDataToMain(QString seastr,QString repstr,int state,int begin);
 private slots:
-    void on_pushButton_clicked();
+    void on_pushButton_3_clicked();
 
 private:
     Ui::replace *ui;

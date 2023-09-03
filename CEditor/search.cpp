@@ -17,7 +17,8 @@ Search::~Search()
     delete ui;
 }
 
-void Search::on_search_button_clicked()
+
+void Search::on_pushButton_3_clicked()
 {
     QString to_search_str = ui->lineEdit->text();
     int state = 0, begin = 0;

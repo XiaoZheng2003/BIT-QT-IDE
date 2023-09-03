@@ -6,9 +6,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    search = new Search(this);
+    replace = new class replace(this);
 
     ui->compileTextBrowser->setMaximumHeight(0);
-
+    connect(search,SIGNAL(sendSearchDataToMain(QString,int,int)),this,SLOT(receiveSearchDataForMain(QString,int,int)));  //接受搜索信号
+    connect(replace,SIGNAL(sendReplaceDataToMain(QString,QString,int,int)),this,SLOT(receiveReplaceDataForMain(QString,QString,int,int)));  //接受替换信号
 }
 
 MainWindow::~MainWindow()
@@ -186,6 +189,17 @@ void MainWindow::on_actionNewFile_triggered()
     //绑定文件路径
     filePath.append(newFilePath);
 
+
+    int crow=1;
+    int ccol=1;
+    //int call=0;
+    //设置光标位置
+    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+    ui->rowLabel->setText(text1);
+    //设置总行数
+    QString text2 = QString("总行数：");
+    ui->allLabel->setText(text2);
+
     initConnection(tab);
 }
 
@@ -235,6 +249,13 @@ void MainWindow::initConnection(Tab *tab)
     connect(tab,&Tab::textChanged,this,&MainWindow::tabTextChanged);
     //绑定编辑操作
     connect(this,&MainWindow::editOperate,tab,&Tab::editOperate);
+    //更新光标位置
+    connect(tab,&Tab::updateCursorSignal,this,&MainWindow::updateCursorReceive);
+    //总行数更新
+    connect(tab,&Tab::updateTotalLineSignal,this,&MainWindow::totalCountReceive);
+    //查找替换
+    connect(this,SIGNAL(sendSearchDataToTab(QString,int,int,int)),tab,SLOT(receiveSearchDataForTab(QString,int,int,int)));
+    connect(this,SIGNAL(sendReplaceDataToTab(QString,QString,int,int,int)),tab,SLOT(receiveReplaceDataForTab(QString,QString,int,int,int)));
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -267,6 +288,16 @@ void MainWindow::openFile(QString openFilePath)
 
     //绑定文件路径
     filePath.append(openFilePath);
+
+    int crow=1;
+    int ccol=1;
+    //int call=0;
+    //设置光标位置
+    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+    ui->rowLabel->setText(text1);
+    //设置总行数
+    QString text2 = QString("总行数：");
+     ui->allLabel->setText(text2);
 
     initConnection(tab);
 }
@@ -417,6 +448,21 @@ void MainWindow::on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     openFile(itemPath);
 }
 
+void MainWindow::updateCursorReceive(int row,int col)
+{
+    //光标位置更新
+    QString text=QString("行：%1，列：%2").arg(row).arg(col);
+    ui->rowLabel->setText(text);
+
+}
+
+void MainWindow::totalCountReceive(int count)
+{
+    //总行数更新
+    QString text=QString("总行数：%1").arg(count);
+    ui->allLabel->setText(text);
+}
+
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     closeTab(index);
@@ -463,14 +509,12 @@ void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state,i
 
 void MainWindow::on_actionSearch_triggered() //搜索
 {
-    search = new Search(this);
     search->setModal(false);  //设置为非模态对话框,在其没有关闭前，用户可以与其它窗口交互
     search->show();
 }
 
 void MainWindow::on_actionReplace_triggered() //替换
 {
-    replace = new class replace(this);
     replace->setModal(false);
     replace->show();
 }

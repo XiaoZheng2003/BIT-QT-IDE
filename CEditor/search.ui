@@ -18,8 +18,8 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>651</width>
-     <height>351</height>
+     <width>661</width>
+     <height>361</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_11" stretch="0,0,0,0">
@@ -34,11 +34,11 @@
      <widget class="QLineEdit" name="lineEdit"/>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_12">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_13">
+     <widget class="QWidget" name="widget_5" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QWidget" name="widget_3" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QLabel" name="label_7">
             <property name="text">
@@ -61,13 +61,11 @@
            </widget>
           </item>
          </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_16">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_17">
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_2" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QLabel" name="label_9">
             <property name="text">
@@ -80,6 +78,9 @@
             <property name="text">
              <string>从头开始</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -90,13 +91,11 @@
            </widget>
           </item>
          </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_18">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_19">
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_4" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QLabel" name="label_10">
             <property name="text">
@@ -109,6 +108,9 @@
             <property name="text">
              <string>向前</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -119,10 +121,10 @@
            </widget>
           </item>
          </layout>
-        </item>
-       </layout>
-      </item>
-     </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -156,6 +158,16 @@
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>370</y>
+     <width>120</width>
+     <height>80</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <resources/>
