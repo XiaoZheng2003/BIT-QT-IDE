@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QDialog>
 #include <QFont>
+#include <QMessageBox>
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "highlighttype.h"
@@ -44,6 +45,8 @@ public slots:
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
     void editOperate(int indexId, editType type);
+    void receiveSearchDataForTab(QString,int,int state,int);
+    void receiveReplaceDataForTab(QString,QString,int,int state,int);
 
 signals:
     void returnTextForSave(int indexId, QString str);

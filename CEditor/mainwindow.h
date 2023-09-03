@@ -3,6 +3,8 @@
 
 #include "tab.h"
 #include "compilationthread.h"
+#include "replace.h"
+#include "search.h"
 
 #include <QDir>
 #include <QMap>
@@ -65,6 +67,11 @@ private slots:
     void on_actionCut_triggered();
     void on_actionCopy_triggered();
     void on_actionPaste_triggered();
+    void on_actionSearch_triggered();
+    void on_actionReplace_triggered();
+    void receiveSearchDataForMain(QString data,int state,int begin);   //从搜索框接收到消息
+    void receiveReplaceDataForMain(QString sear,QString rep,int state,int begin); //从替换框接受到消息
+
 
     void on_actionCompileProject_triggered();
 
@@ -73,6 +80,9 @@ signals:
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
     void editOperate(int indexId, editType type);
+    void sendSearchDataToTab(QString,int,int state,int);  //把从搜索框接受的信息转发给指定页面
+    void sendReplaceDataToTab(QString,QString,int,int state,int);  //把从替换框接受的信息转发给指定页面
+
 
 private:
     Ui::MainWindow *ui;
@@ -93,6 +103,9 @@ private:
     void handleCompilationFinished(int exitCode, const QString &outputText);
     void handleRunFinished(int exitCode, const QString &outputText);
 
+
+    Search *search;//搜索对话框
+    replace *replace;//替换对话框
     QLabel *row_col;
     QLabel *all_row;
     void initProjectTreeMenu();

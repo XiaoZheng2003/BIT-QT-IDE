@@ -23,7 +23,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     search.cpp \
-    tab.cpp
+    tab.cpp\
+    replace.cpp
 
 HEADERS += \
     codeeditor.h \
@@ -32,12 +33,14 @@ HEADERS += \
     highlighttype.h \
     mainwindow.h \
     search.h \
-    tab.h
+    tab.h\
+    replace.h
 
 FORMS += \
     mainwindow.ui \
     search.ui \
-    tab.ui
+    tab.ui\
+    replace.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

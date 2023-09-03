@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    search = new Search(this);
+    replace = new class replace(this);
 
     row_col = new QLabel;
     all_row = new QLabel;
@@ -14,8 +16,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     //初始状态隐藏编译信息栏
     ui->compileTextBrowser->setMaximumHeight(0);
+
+    connect(search,&Search::sendSearchDataToMain,this,&MainWindow::receiveSearchDataForMain);  //接受搜索信号
+    connect(replace,&replace::sendReplaceDataToMain,this,&MainWindow::receiveReplaceDataForMain);  //接受替换信号
+
     //初始化项目右键菜单
     initProjectTreeMenu();
+
 }
 
 MainWindow::~MainWindow()
@@ -247,6 +254,9 @@ void MainWindow::initConnection(Tab *tab)
     connect(tab,&Tab::updateCursorSignal,this,&MainWindow::updateCursorReceive);
     //总行数更新
     connect(tab,&Tab::updateTotalLineSignal,this,&MainWindow::totalCountReceive);
+    //查找替换
+    connect(this,&MainWindow::sendSearchDataToTab,tab,&Tab::receiveSearchDataForTab);
+    connect(this,&MainWindow::sendReplaceDataToTab,tab,&Tab::receiveReplaceDataForTab);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -588,6 +598,32 @@ void MainWindow::on_actionPaste_triggered()
     //粘贴
     emit editOperate(ui->tabWidget->currentIndex(),Paste);
 }
+
+
+void MainWindow::receiveSearchDataForMain(QString data,int state,int begin) //从搜索对话框接收搜索数据，发送给指定页面
+{
+    int index = ui->tabWidget->currentIndex();
+    emit sendSearchDataToTab(data,index,state,begin);
+}
+
+
+
+void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state,int begin) //接受替换数据
+{
+    int index = ui->tabWidget->currentIndex();
+    emit sendReplaceDataToTab(sear,rep,index,state,begin);
+}
+
+void MainWindow::on_actionSearch_triggered() //搜索
+{
+    search->setModal(false);  //设置为非模态对话框,在其没有关闭前，用户可以与其它窗口交互
+    search->show();
+}
+
+void MainWindow::on_actionReplace_triggered() //替换
+{
+    replace->setModal(false);
+    replace->show();
 
 void MainWindow::on_actionCompileProject_triggered()
 {

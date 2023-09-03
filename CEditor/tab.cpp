@@ -200,3 +200,108 @@ void Tab::jumpToLine(int line)
         cursor.movePosition(QTextCursor::NextBlock);
     }
 }
+
+void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//开始搜索指定字符串
+{
+//    if(index != curIndexId)
+//        return;
+    QString real_search_str = data;
+    QByteArray ba=real_search_str.toLatin1();
+    char *c=ba.data();
+//    qDebug("%s\n",c);
+//    qDebug("%d\n",state);
+    if(real_search_str != NULL){
+        bool found = false;
+        QTextDocument *document = ui->plainTextEdit->document();
+        QTextCursor highlight_cursor(document);
+        QTextCursor cursor(document);
+        if(begin == 1){
+            highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
+        }
+        cursor.beginEditBlock();
+        QTextCharFormat color_format(highlight_cursor.charFormat());
+        color_format.setBackground(Qt::yellow);
+        while (!highlight_cursor.isNull() && !highlight_cursor.atEnd()){
+            switch (state) {
+            case 0:
+                highlight_cursor = document->find(real_search_str,highlight_cursor);//向前搜索、不区分大小写、不全字匹配
+                break;
+            case 1:
+                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords);//向前搜索、不区分大小写、全字匹配
+                break;
+            case 2:
+                //向前搜索、区分大小写、不全字匹配
+                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
+                break;
+            case 3:
+                //向前搜索、不区分大小写、全字匹配
+                highlight_cursor = document->find(real_search_str,highlight_cursor,
+                                                  QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
+                break;
+            case -4:
+                //向后搜索、不区分大小写、不全字匹配
+                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward);
+                break;
+            case -3:
+                //向后搜索、不区分大小写、全字匹配
+                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords);
+                break;
+            case -2:
+                //向后搜索、区分大小写、不全字匹配
+                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+                break;
+            case -1:
+                //向后搜索、区分大小写、全字匹配
+                highlight_cursor = document->find(real_search_str,highlight_cursor,
+                                                  QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
+                break;
+            }
+            if (!highlight_cursor.isNull())
+            {
+                if(!found)
+                {
+                    found = true;
+                }
+                highlight_cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
+                highlight_cursor.mergeCharFormat(color_format);
+            }
+        }
+        cursor.endEditBlock();
+
+        if(found == false){
+            qDebug("not found");
+        }
+    }
+}
+
+void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int state,int begin)//开始替换指定字符串
+{
+//    if(index != curIndexId) return;
+    QStringList qslist;
+    QTextDocument* doc=ui->plainTextEdit->document(); //文本对象
+    int row_num=doc->blockCount () ;//回车符是一个 block
+    if(state >= 0){
+        for (int i=0; i<row_num;i++)
+        {
+            QTextBlock textLine=doc->findBlockByNumber (i) ; // 文本中的一段
+            QString str=textLine.text();//将该段转换为QString
+            if(state == 2)//区分大小写且不全字匹配
+                str.replace(sear,rep);
+            else if(state == 0){//不区分大小写且不全字匹配
+                str.replace(sear,rep,Qt::CaseInsensitive);
+            }
+            qslist.append(str);
+        }
+        QStringList::Iterator it;
+        for(it = qslist.begin();it != qslist.end();it++){
+            if(it == qslist.begin()){
+                ui->plainTextEdit->setPlainText(*it);
+            }
+            else{
+                ui->plainTextEdit->appendPlainText(*it);
+            }
+        }
+    }
+    qDebug("suc!");
+    QMessageBox::information(NULL,"information","ok");
+}
