@@ -624,6 +624,7 @@ void MainWindow::on_actionReplace_triggered() //替换
 {
     replace->setModal(false);
     replace->show();
+}
 
 void MainWindow::on_actionCompileProject_triggered()
 {
