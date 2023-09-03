@@ -18,6 +18,7 @@
 #include <QTreeWidgetItem>
 #include <QFileIconProvider>
 #include <QDebug>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -82,5 +83,9 @@ private:
     void createProjectTree(QTreeWidgetItem *root,QString projectName,QString projectPath);
     void handleCompilationFinished(int exitCode, const QString &outputText);
     void handleRunFinished(int exitCode, const QString &outputText);
+
+
+    QLabel *row_col;
+    QLabel *all_row;
 };
 #endif // MAINWINDOW_H

@@ -37,6 +37,7 @@ public:
     ~Tab();
 
     void jumpToLine(int);
+    int getTotalLines();
 
 public slots:
     void prepareTextForSave(int indexId);
