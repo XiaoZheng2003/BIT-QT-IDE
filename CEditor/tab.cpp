@@ -165,7 +165,7 @@ void Tab::updateTotalLineCount()
 }
 int Tab::getTotalLines()
 {
-    // 返回总行数的逻辑
+    //返回总行数
     return(ui->plainTextEdit->blockCount());
 }
 
