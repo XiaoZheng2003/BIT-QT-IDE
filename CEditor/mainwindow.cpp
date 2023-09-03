@@ -608,10 +608,10 @@ void MainWindow::receiveSearchDataForMain(QString data,int state,int begin) //�
 
 
 
-void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state,int begin) //接受替换数据
+void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state) //接受替换数据
 {
     int index = ui->tabWidget->currentIndex();
-    emit sendReplaceDataToTab(sear,rep,index,state,begin);
+    emit sendReplaceDataToTab(sear,rep,index,state);
 }
 
 void MainWindow::on_actionSearch_triggered() //搜索

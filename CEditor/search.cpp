@@ -36,3 +36,8 @@ void Search::on_pushButton_3_clicked()
     }
     emit sendSearchDataToMain(to_search_str,state,begin);
 }
+
+void Search::on_pushButton_4_clicked()
+{
+     this->close();
+}

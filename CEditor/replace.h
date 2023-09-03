@@ -15,9 +15,11 @@ public:
     explicit replace(QWidget *parent = nullptr);
     ~replace();
 signals:
-    void sendReplaceDataToMain(QString seastr,QString repstr,int state,int begin);
+    void sendReplaceDataToMain(QString seastr,QString repstr,int state);
 private slots:
     void on_pushButton_3_clicked();
+
+    void on_pushButton_4_clicked();
 
 private:
     Ui::replace *ui;

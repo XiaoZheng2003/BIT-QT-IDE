@@ -70,7 +70,7 @@ private slots:
     void on_actionSearch_triggered();
     void on_actionReplace_triggered();
     void receiveSearchDataForMain(QString data,int state,int begin);   //从搜索框接收到消息
-    void receiveReplaceDataForMain(QString sear,QString rep,int state,int begin); //从替换框接受到消息
+    void receiveReplaceDataForMain(QString sear,QString rep,int state); //从替换框接受到消息
     void on_actionCompileProject_triggered();
     void on_actionRunProject_triggered();
     void on_actionCompileRunProject_triggered();
@@ -81,7 +81,7 @@ signals:
     void tabClosed(int indexId);
     void editOperate(int indexId, editType type);
     void sendSearchDataToTab(QString,int,int state,int);  //把从搜索框接受的信息转发给指定页面
-    void sendReplaceDataToTab(QString,QString,int,int state,int);  //把从替换框接受的信息转发给指定页面
+    void sendReplaceDataToTab(QString,QString,int,int state);  //把从替换框接受的信息转发给指定页面
 
 
 private:
