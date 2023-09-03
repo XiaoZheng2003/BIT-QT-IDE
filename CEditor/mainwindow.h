@@ -20,6 +20,7 @@
 #include <QTreeWidgetItem>
 #include <QFileIconProvider>
 #include <QDebug>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -93,7 +94,13 @@ private:
     void handleCompilationFinished(int exitCode, const QString &outputText);
     void handleRunFinished(int exitCode, const QString &outputText);
 
+<<<<<<< HEAD
     Search *search;//搜索对话框
     replace *replace;//替换对话框
+=======
+
+    QLabel *row_col;
+    QLabel *all_row;
+>>>>>>> 6e42cf359ed0cd4d9f21739dda80244f0249ed0f
 };
 #endif // MAINWINDOW_H

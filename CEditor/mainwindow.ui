@@ -44,24 +44,6 @@
         </column>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="rowLabel">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="allLabel">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
      </layout>
     </item>
     <item>
@@ -191,6 +173,7 @@
    <addaction name="menu_3"/>
    <addaction name="menu_4"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNewProject">
    <property name="text">
     <string>新建项目</string>

@@ -1,6 +1,7 @@
 ﻿#include "tab.h"
 #include "ui_tab.h"
 
+
 Tab::Tab(int index, QString text, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Tab),
@@ -43,13 +44,13 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     });
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
-
-
     //光标位置更新
     connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
     //总行数更新
-   // connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+    connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
     connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateTotalLineCount);
+
+
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -162,6 +163,12 @@ void Tab::updateTotalLineCount()
     emit(updateTotalLineSignal(totalLineCount));
 
 }
+int Tab::getTotalLines()
+{
+    //返回总行数
+    return(ui->plainTextEdit->blockCount());
+}
+
 
 void Tab::on_jumpto_clicked()
 {
