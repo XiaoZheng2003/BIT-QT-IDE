@@ -71,9 +71,9 @@ private slots:
     void on_actionReplace_triggered();
     void receiveSearchDataForMain(QString data,int state,int begin);   //从搜索框接收到消息
     void receiveReplaceDataForMain(QString sear,QString rep,int state,int begin); //从替换框接受到消息
-
-
     void on_actionCompileProject_triggered();
+    void on_actionRunProject_triggered();
+    void on_actionCompileRunProject_triggered();
 
 signals:
     void prepareTextForSave(int indexId);
