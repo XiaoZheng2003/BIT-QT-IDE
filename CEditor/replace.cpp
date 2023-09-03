@@ -33,5 +33,10 @@ void replace::on_pushButton_3_clicked()
     if(ui->checkBox_case->isChecked()){//区分大小写
         state += 2;
     }
-    emit sendReplaceDataToMain(str_to_search,str_replace,state,begin);
+    emit sendReplaceDataToMain(str_to_search,str_replace,state);
+}
+
+void replace::on_pushButton_4_clicked()
+{
+     this->close();
 }
