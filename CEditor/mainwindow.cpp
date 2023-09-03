@@ -186,6 +186,17 @@ void MainWindow::on_actionNewFile_triggered()
     //绑定文件路径
     filePath.append(newFilePath);
 
+
+    int crow=1;
+    int ccol=1;
+    //int call=0;
+    //设置光标位置
+    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+    ui->rowLabel->setText(text1);
+    //设置总行数
+    QString text2 = QString("总行数：");
+    ui->allLabel->setText(text2);
+
     initConnection(tab);
 }
 
@@ -235,6 +246,10 @@ void MainWindow::initConnection(Tab *tab)
     connect(tab,&Tab::textChanged,this,&MainWindow::tabTextChanged);
     //绑定编辑操作
     connect(this,&MainWindow::editOperate,tab,&Tab::editOperate);
+    //更新光标位置
+    connect(tab,&Tab::updateCursorSignal,this,&MainWindow::updateCursorReceive);
+    //总行数更新
+    connect(tab,&Tab::updateTotalLineSignal,this,&MainWindow::totalCountReceive);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -267,6 +282,16 @@ void MainWindow::openFile(QString openFilePath)
 
     //绑定文件路径
     filePath.append(openFilePath);
+
+    int crow=1;
+    int ccol=1;
+    //int call=0;
+    //设置光标位置
+    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
+    ui->rowLabel->setText(text1);
+    //设置总行数
+    QString text2 = QString("总行数：");
+     ui->allLabel->setText(text2);
 
     initConnection(tab);
 }
@@ -415,6 +440,21 @@ void MainWindow::on_projectTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     //获取当前文件路径
     QString itemPath=fileNameToPath.find(item->text(column)).value();
     openFile(itemPath);
+}
+
+void MainWindow::updateCursorReceive(int row,int col)
+{
+    //光标位置更新
+    QString text=QString("行：%1，列：%2").arg(row).arg(col);
+    ui->rowLabel->setText(text);
+
+}
+
+void MainWindow::totalCountReceive(int count)
+{
+    //总行数更新
+    QString text=QString("总行数：%1").arg(count);
+    ui->allLabel->setText(text);
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
