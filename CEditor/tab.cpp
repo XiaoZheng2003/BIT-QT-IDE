@@ -1,7 +1,6 @@
 ﻿#include "tab.h"
 #include "ui_tab.h"
 
-
 Tab::Tab(int index, QString text, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Tab),
@@ -148,22 +147,34 @@ void Tab::on_jumpto_clicked()
 
 void Tab::jumpToLine(int line)
 {
-    //跳转到某一行
+    // 跳转到某一行
     QTextCursor cursor(ui->plainTextEdit->document());
-    int lineNumber=0;
+    int lineNumber = 0;
 
     while (!cursor.atEnd()) {
         cursor.movePosition(QTextCursor::StartOfLine);
         lineNumber++;
-        if (lineNumber==line) {
+        if (lineNumber == line) {
             ui->plainTextEdit->setTextCursor(cursor);
-            //获取目标行所在的列表项
-            QListWidgetItem* item=ui->lineNumberArea->item(lineNumber - 1);
-            if (item!=nullptr) {
-                //设置列表项为当前选中项
+            // 获取目标行所在的列表项
+            QListWidgetItem* item = ui->lineNumberArea->item(lineNumber - 1);
+            if (item != nullptr) {
+                // 设置列表项为当前选中项
                 ui->lineNumberArea->setCurrentItem(item);
-                //行数进度条和文本框同步跳转
-                ui->lineNumberArea->scrollToItem(item,QAbstractItemView::PositionAtCenter);
+                // 行数进度条和文本框同步跳转
+                ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+
+                // 将光标移动到目标行开头
+                QTextCursor targetLineCursor = ui->plainTextEdit->textCursor();
+                targetLineCursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+                ui->plainTextEdit->setTextCursor(targetLineCursor);
+
+                // 将光标选中的行居中显示
+                ui->plainTextEdit->centerCursor();
+                ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+
+                // 设置编辑器的焦点
+                ui->plainTextEdit->setFocus();
             }
             break;
         }
