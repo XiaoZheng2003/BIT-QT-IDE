@@ -44,20 +44,12 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,this,&Tab::update);
 
-    int crow=0;
-    int ccol=0;
-    int call=ui->plainTextEdit->blockCount();
-    //设置光标位置
-    QString text1 = QString("行：%1，列：%2").arg(crow).arg(ccol);
-                    ui->rowLabel->setText(text1);
-    //设置总行数
-    QString text2 = QString("总行数：%1").arg(call);
-                        ui->allLabel->setText(text2);
 
     //光标位置更新
     connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
     //总行数更新
-    connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+   // connect(ui->plainTextEdit, &QPlainTextEdit::blockCountChanged, this, &Tab::updateTotalLineCount);
+    connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateTotalLineCount);
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -160,16 +152,15 @@ void Tab::updateCursorPosition()
     QTextCursor cursor=ui->plainTextEdit->textCursor();
     int row=cursor.blockNumber()+1;
     int col=cursor.columnNumber()+1;
-    QString text=QString("行：%1，列：%2").arg(row).arg(col);
-    ui->rowLabel->setText(text);
+    emit(updateCursorSignal(row,col));
 }
 
 void Tab::updateTotalLineCount()
 {
     //更新文本框内的总行数
     int totalLineCount=ui->plainTextEdit->blockCount();
-    QString text=QString("总行数：%1").arg(totalLineCount);
-    ui->allLabel->setText(text);
+    emit(updateTotalLineSignal(totalLineCount));
+
 }
 
 void Tab::on_jumpto_clicked()

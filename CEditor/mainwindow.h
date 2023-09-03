@@ -35,6 +35,8 @@ public slots:
     void returnTextForSave(int indexId, QString str);
     void returnTextForSaveAs(int indexId, QString str);
     void tabTextChanged(int index);
+    void updateCursorReceive(int row,int col);
+    void totalCountReceive(int count);
 
 protected:
     void closeEvent(QCloseEvent *event);
