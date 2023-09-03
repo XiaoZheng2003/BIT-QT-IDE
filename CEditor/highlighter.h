@@ -32,7 +32,7 @@ private:
     QTextCharFormat classFormat;
     QTextCharFormat singleLineCommentFormat;
     QTextCharFormat multiLineCommentFormat;
-    //QTextCharFormat quotationFormat;
+    QTextCharFormat quotationFormat;
     QTextCharFormat functionFormat;
 };
 

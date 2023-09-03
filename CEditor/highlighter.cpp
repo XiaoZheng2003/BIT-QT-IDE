@@ -5,7 +5,8 @@ Highlighter::Highlighter(QTextDocument *parent)
 {
     HighlightingRule rule;//引入高亮规则
 
-    keywordFormat.setForeground(Qt::green);//设置关键字颜色
+
+    keywordFormat.setForeground(Qt::darkBlue);//设置关键字颜色
     keywordFormat.setFontWeight(QFont::Bold);//设置关键字粗体样式
     QStringList keywordPatterns;
     keywordPatterns << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
@@ -14,7 +15,7 @@ Highlighter::Highlighter(QTextDocument *parent)
                     << "\\blong\\b" << "\\bnamespace\\b" << "\\boperator\\b"
                     << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
                     << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
+                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b" << "\\breturn\\b"
                     << "\\btemplate\\b" << "\\btypedef\\b" << "\\btypename\\b"
                     << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
                     << "\\bvoid\\b" << "\\bvolatile\\b" << "\\bbool\\b";
@@ -30,14 +31,27 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = classFormat;
     highlightingRules.append(rule);
 
+    //函数名
+    functionFormat.setFontItalic(true);
+    functionFormat.setForeground(Qt:: darkYellow);
+    rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
+    rule.format = functionFormat;
+    highlightingRules.append(rule);
+
     //单行注释
-    singleLineCommentFormat.setForeground(Qt::red);
+    singleLineCommentFormat.setForeground(Qt::darkGreen);
     rule.pattern = QRegularExpression("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
+    //头文件
+    singleLineCommentFormat.setForeground(Qt::darkGreen);
+    rule.pattern = QRegularExpression("\"[^\n]*\"");
+    rule.format = singleLineCommentFormat;
+    highlightingRules.append(rule);
+
     //多行注释
-    multiLineCommentFormat.setForeground(Qt::red);
+    multiLineCommentFormat.setForeground(Qt::darkGreen);
 
 
 //    quotationFormat.setForeground(Qt::green);
@@ -45,12 +59,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 //    rule.format = quotationFormat;
 //    highlightingRules.append(rule);
 
-    //函数名
-    functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
-    rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
-    rule.format = functionFormat;
-    highlightingRules.append(rule);
+
 
     //定义多行注释的标志
     commentStartExpression = QRegularExpression("/\\*");
