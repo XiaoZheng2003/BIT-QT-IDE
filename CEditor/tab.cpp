@@ -14,6 +14,39 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->verticalScrollBar()->setDisabled(true);
     ui->plainTextEdit->setLineNumberArea(ui->lineNumberArea);
+    //设置行数显示条与文本编辑块一起滚动
+    connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
+        ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
+        if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(ui->plainTextEdit,&CodeEditor::scrollBarValue,[=](int value){
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,this,[=](int value){
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+    });
+    connect(ui->lineNumberArea,&QListWidget::currentItemChanged,this,[=](){
+        ui->plainTextEdit->verticalScrollBar()->setValue(ui->lineNumberArea->verticalScrollBar()->value());
+    });
+    //当文本编辑块行数改变时更新行数显示条
+    connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,ui->plainTextEdit,&CodeEditor::updateLineNumberArea);
     //光标位置更新
     connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
     //总行数更新
@@ -22,7 +55,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
 
 
     QFont font;
-    font.setFamily("Courier");
+    font.setFamily("Consolas");
     font.setFixedPitch(true);
     font.setPointSize(14);
     //应用关键字高亮
