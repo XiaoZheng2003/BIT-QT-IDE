@@ -2,6 +2,7 @@
 #define SEARCH_H
 
 #include <QDialog>
+#include <QMessageBox>
 
 namespace Ui {
 class Search;
@@ -14,11 +15,12 @@ class Search : public QDialog
 public:
     explicit Search(QWidget *parent = nullptr);
     ~Search();
+
 signals:
-    void  sendSearchDataToMain(QString,int,int);
+    void  sendStartSearchDataToMain(QString,int,int);
+
 private slots:
     void on_pushButton_3_clicked();
-
     void on_pushButton_4_clicked();
 
 private:

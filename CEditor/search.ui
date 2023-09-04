@@ -74,9 +74,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_10">
+           <widget class="QRadioButton" name="radioButton_2">
             <property name="text">
-             <string>从头开始</string>
+             <string>从光标处开始</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -84,9 +84,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="radioButton_10">
             <property name="text">
-             <string>从光标处开始</string>
+             <string>从头开始</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -104,7 +107,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_13">
+           <widget class="QRadioButton" name="radioButton_forward">
             <property name="text">
              <string>向前</string>
             </property>
@@ -131,12 +134,12 @@
       <item>
        <widget class="QPushButton" name="pushButton_3">
         <property name="text">
-         <string>全文搜索</string>
+         <string>开始搜索</string>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_2">
+       <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

@@ -22,19 +22,24 @@ void Search::on_pushButton_3_clicked()
 {
     QString to_search_str = ui->lineEdit->text();
     int state = 0, begin = 0;
-    if(ui->checkBox_full->isChecked()){//全字匹配
-        state += 1;
+    if(to_search_str != nullptr){
+        if(ui->checkBox_full->isChecked()){//全字匹配
+            state += 1;
+        }
+        if(ui->checkBox_case->isChecked()){//区分大小写
+            state += 2;
+        }
+        if(ui->radioButton_forward->isChecked()){//向后查找
+            state -= 4;
+        }
+        if(ui->radioButton_2->isChecked()){//从光标开始
+            begin = 1;
+        }
+        emit sendStartSearchDataToMain(to_search_str,state,begin);
     }
-    if(ui->checkBox_case->isChecked()){//区分大小写
-        state += 2;
+    else{
+        QMessageBox::information(this,tr("注意"),tr("输入内容不能为空"),QMessageBox::Ok);
     }
-    if(ui->radioButton_backward->isChecked()){
-        state -= 4;
-    }
-    if(ui->radioButton_2->isChecked()){
-        begin = 1;
-    }
-    emit sendSearchDataToMain(to_search_str,state,begin);
 }
 
 void Search::on_pushButton_4_clicked()
