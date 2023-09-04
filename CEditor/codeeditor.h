@@ -17,14 +17,15 @@
 class Brackets // 括号匹配类
 {
 public:
-     Brackets(int currentPosition, int correspondingPosition, int bracketType) {
-         currentPos = currentPosition;
-         correspondingPos = correspondingPosition;
-         type = bracketType;
-     }
-     int currentPos = 0;
-     int correspondingPos = 0;
-     int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'
+    Brackets():currentPos(0),correspondingPos(0),type(0){};
+    Brackets(int currentPosition, int correspondingPosition, int bracketType) {
+        currentPos = currentPosition;
+        correspondingPos = correspondingPosition;
+        type = bracketType;
+    }
+    int currentPos = 0;
+    int correspondingPos = 0;
+    int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'
 };
 
 class CodeEditor : public QPlainTextEdit
@@ -35,11 +36,14 @@ public:
     void matchBrackets();
     void setLineNumberArea(QListWidget *lineNumberArea);
     void undo();
-//    void redo();
+    //    void redo();
 
 public slots:
     void updateLineNumberArea();
     void handleTextChanged();
+
+private slots:
+    void autoIndent();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -56,13 +60,14 @@ private:
     QListWidget *m_lineNumberArea;
     QString m_previousText;
     QStack<QString> m_undoStack;
-//    QStack<QString> m_redoStack;
+    //    QStack<QString> m_redoStack;
     QTimer *m_timer;
+    bool m_completeBrace = false;
 
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();
     void pushUndoStack();
-//    void clearRedoStack();
+    //    void clearRedoStack();
     void restartTimer();
 };
 
