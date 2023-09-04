@@ -117,35 +117,35 @@ void CodeEditor::matchBrackets() {
             if (!inComment) {
                 switch (currentChar.unicode()) {
                     case '{':
-                        stack1.append(Brackets(current_length + j, -1, 1)); // 向栈内加入
+                        stack1.append(Brackets(current_length + j, -1, 1, -1)); // 向栈内加入
                         break;
                     case '(':
-                        stack2.append(Brackets(current_length + j, -1, 2)); // 向栈内加入
+                        stack2.append(Brackets(current_length + j, -1, 2, -1)); // 向栈内加入
                         break;
                     case '}':
                         if (!stack1.isEmpty()) {
                             int end = current_length + j;
                             int start = stack1.last().currentPos;
-                            bramap.insert(end, Brackets(end, start, 1)); // 加入两个括号匹配
-                            bramap.insert(start, Brackets(start, end, 1));
+                            bramap.insert(end, Brackets(end, start, 1, stack1.count())); // 加入两个括号匹配
+                            bramap.insert(start, Brackets(start, end, 1, stack1.count()));
                             stack1.removeLast(); // 移除栈的最后一个
                         }
                         else{
                             int end = current_length + j;
-                            bramap.insert(end, Brackets(end, -1, 1)); // 无匹配的情况
+                            bramap.insert(end, Brackets(end, -1, 1, -1)); // 无匹配的情况
                         }
                         break;
                     case ')':
                         if (!stack2.isEmpty()) {
                             int end = current_length + j;
                             int start = stack2.last().currentPos;
-                            bramap.insert(end, Brackets(end, start, 2)); // 加入两个括号匹配
-                            bramap.insert(start, Brackets(start, end, 2));
+                            bramap.insert(end, Brackets(end, start, 2, stack2.count())); // 加入两个括号匹配
+                            bramap.insert(start, Brackets(start, end, 2, stack2.count()));
                             stack2.removeLast();
                         }
                         else{
                             int end = current_length + j;
-                            bramap.insert(end, Brackets(end, -1, 2));
+                            bramap.insert(end, Brackets(end, -1, 2, -1));
                         }
                         break;
                     case '/':
@@ -205,6 +205,7 @@ void CodeEditor::matchBrackets() {
 
         current_length += string.length() + 1; // 回车符
     }
+    // 栈内剩下的就是没匹配上的{或者(，需要的话可以加上
     stack1.clear();
     stack2.clear();
 }
@@ -223,6 +224,7 @@ void CodeEditor::updateLineNumberArea()
     //根据最大行数的位数调整大小
     QFont documentFont=this->font();
     QFontMetrics metrics(documentFont);
+    setTabStopDistance(metrics.averageCharWidth()*4);
     int maxItemSize=0;
 
     m_lineNumberArea->clear();
@@ -316,8 +318,8 @@ void CodeEditor::highlightMatchedBrackets()
     QChar before=document->characterAt(pos-1);
     QChar after=document->characterAt(pos);
     if(before=='}'||before==')'){
-        int matchingPos = bramap.value(pos-1, Brackets(-1, -1, 0)).correspondingPos;
-        qDebug()<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
+        int matchingPos = bramap.value(pos-1, Brackets(-1, -1, 0, -1)).correspondingPos;
+        qDebug()<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos<<"level:"<<bramap.value(pos-1, Brackets(-1, -1, 0, -1)).level;
         highlightCursor.setPosition(pos-1);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         highlightCursor.setCharFormat(highlightFormat);
@@ -329,8 +331,8 @@ void CodeEditor::highlightMatchedBrackets()
         }
     }
     if(after=='{'||after=='('){
-        int matchingPos = bramap.value(pos, Brackets(-1, -1, 0)).correspondingPos;
-        qDebug()<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
+        int matchingPos = bramap.value(pos, Brackets(-1, -1, 0, -1)).correspondingPos;
+        qDebug()<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos<<"level:"<<bramap.value(pos, Brackets(-1, -1, 0, -1)).level;
         highlightCursor.setPosition(pos);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         highlightCursor.setCharFormat(highlightFormat);

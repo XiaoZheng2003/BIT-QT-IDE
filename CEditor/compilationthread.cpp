@@ -43,6 +43,7 @@ void CompilationThread::run()
                 unitIndex++;
             }
             outputText="编译成功\n""输出文件名："+exePath+"\n"
+                       "创建时间："+info.created().toString("yyyy-MM-dd hh:mm:ss") +"\n"
                        "最后修改时间："+info.lastModified().toString("yyyy-MM-dd hh:mm:ss")+"\n"
                        "文件大小："+QString::number(size)+sizeUnits[unitIndex]+"\n";
         }
@@ -88,6 +89,7 @@ void CompilationThread::run()
                 unitIndex++;
             }
             outputText="编译成功\n""输出文件名："+exePath+"\n"
+                       "创建时间："+info.created().toString("yyyy-MM-dd hh:mm:ss") +"\n"
                        "最后修改时间："+info.lastModified().toString("yyyy-MM-dd hh:mm:ss")+"\n"
                        "文件大小："+QString::number(size)+sizeUnits[unitIndex]+"\n";
         }
