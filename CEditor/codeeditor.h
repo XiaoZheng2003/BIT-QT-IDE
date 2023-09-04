@@ -47,7 +47,7 @@ signals:
     void scrollBarValue(int value);
 
 private:
-    QList<Brackets> bralist; // 括号匹配情况
+    QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
     int highlightPos[4]={-1,-1,-1,-1};    //当前高亮位置
 
