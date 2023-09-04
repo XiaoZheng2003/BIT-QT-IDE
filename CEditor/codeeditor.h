@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QTextDocument>
 #include <QTextBlock>
+#include <QTimer>
 
 class Brackets // 括号匹配类
 {
@@ -32,17 +33,22 @@ public:
     void matchBrackets();
     void setLineNumberArea(QListWidget *lineNumberArea);
 
+public slots:
+    void updateLineNumberArea();
+
 protected:
     //void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    //void paintEvent(QPaintEvent *event) override;
 
 signals:
-    void updateLineNumberArea(int blockCount);
+    void scrollBarValue(int value);
 
 private:
     QList<Brackets> bralist; // 括号匹配情况
     QListWidget *m_lineNumberArea;
+    void sendCurrentScrollBarValue();
 };
 
 

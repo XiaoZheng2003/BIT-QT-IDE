@@ -54,6 +54,7 @@ signals:
     void textChanged(int indexId);
     void updateCursorSignal(int row,int ccl);
     void updateTotalLineSignal(int count);
+    void scrollBarValueChanged(int value);
 
 private slots:
     void updateCursorPosition();

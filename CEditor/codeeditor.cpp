@@ -15,16 +15,41 @@ CodeEditor::CodeEditor(QWidget *parent):
 //    }
 //}
 
-void CodeEditor::setLineNumberArea(QListWidget *lineNuberArea)
+void CodeEditor::setLineNumberArea(QListWidget *lineNumberArea)
 {
-    m_lineNumberArea=lineNuberArea;
+    m_lineNumberArea=lineNumberArea;
 }
 
 void CodeEditor::resizeEvent(QResizeEvent *event)
 {
     QPlainTextEdit::resizeEvent(event);
 
-    emit updateLineNumberArea(this->blockCount());
+    updateLineNumberArea();
+}
+
+void CodeEditor::wheelEvent(QWheelEvent *event)
+{
+    if(event->modifiers()==Qt::ControlModifier)
+    {
+        int delta=event->angleDelta().y();
+        QFont documentFont=this->font();
+
+        if(delta>0)
+        {
+            documentFont.setPointSize(documentFont.pointSize()+1);
+        }
+        else
+        {
+            if(documentFont.pointSize()>2)
+            documentFont.setPointSize(documentFont.pointSize()-1);
+        }
+        setFont(documentFont);
+        updateLineNumberArea();
+    }
+    else
+    {
+        QPlainTextEdit::wheelEvent(event);
+    }
 }
 
 void CodeEditor::matchBrackets() {
@@ -113,10 +138,8 @@ void CodeEditor::matchBrackets() {
     stack.clear();
 }
 
-void CodeEditor::paintEvent(QPaintEvent *event)
+void CodeEditor::updateLineNumberArea()
 {
-    QPlainTextEdit::paintEvent(event);
-
     int digit=0,totalRow=blockCount();
 
     QTextDocument *document=this->document();
@@ -127,26 +150,57 @@ void CodeEditor::paintEvent(QPaintEvent *event)
         totalRow/=10;
     }
     //根据最大行数的位数调整大小
-    m_lineNumberArea->setMaximumSize(QSize((digit+3)*6,this->height()));
-    m_lineNumberArea->resize(QSize((digit+3)*6,this->height()));
+    QFont documentFont=this->font();
+    QFontMetrics metrics(documentFont);
+    int maxItemSize=0;
+
     m_lineNumberArea->clear();
     for(int row=0;row<=blockCount();row++)
     {
         QListWidgetItem *item=new QListWidgetItem(QString::number(row+1),m_lineNumberArea);
+        item->setFont(documentFont);
         item->setText(QString::number(row+1));
+        int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
+        if(itemSize>maxItemSize)
+            maxItemSize=itemSize;
         item->setSizeHint(QSize(this->width(),qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height())));
         item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        if(row==blockCount()-1)
+        {
+            item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
+        }
         if(row==blockCount())
         {
+            item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
+            item->setFlags(item->flags() & ~Qt::ItemIsEnabled & ~Qt::ItemIsSelectable);
             item->setText("");
         }
         m_lineNumberArea->addItem(item);
     }
-    m_lineNumberArea->verticalScrollBar()->setValue(verticalScrollBar()->value());
-    if(verticalScrollBar()->value()){
-        m_lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+    qDebug()<<maxItemSize;
+    //对字体过小的情况特殊处理
+    if(maxItemSize>15)
+    {
+        m_lineNumberArea->setMaximumSize(QSize(1.5*maxItemSize,this->height()));
+        m_lineNumberArea->resize(QSize(1.5*maxItemSize,this->height()));
     }
-    else{
-        m_lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+    else
+    {
+        if(maxItemSize*2.2>22)
+        {
+            m_lineNumberArea->setMaximumSize(QSize(22,this->height()));
+            m_lineNumberArea->resize(QSize(22,this->height()));
+        }
+        else
+        {
+            m_lineNumberArea->setMaximumSize(QSize(2.2*maxItemSize,this->height()));
+            m_lineNumberArea->resize(QSize(2.2*maxItemSize,this->height()));
+        }
     }
+    QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
+}
+
+void CodeEditor::sendCurrentScrollBarValue()
+{
+    emit scrollBarValue(verticalScrollBar()->value());
 }
