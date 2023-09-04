@@ -194,6 +194,7 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
     if(index != curIndexId)
         return;
     QString real_search_str = data;
+    int n = data.length();
 
     if(real_search_str != nullptr){
         QTextDocument *document = ui->plainTextEdit->document();
@@ -215,7 +216,7 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
             highlight_cursor.movePosition(QTextCursor::End);
         }
 
-        cursor.beginEditBlock();
+//        cursor.beginEditBlock();
         QTextCharFormat color_format(highlight_cursor.charFormat());
         color_format.setBackground(Qt::yellow);
 
@@ -253,19 +254,28 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
             highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
             break;
         }
-        if (!highlight_cursor.isNull())
+        if (!highlight_cursor.isNull() && state < 0)//向前查找光标置于查找单词前
         {
             if(!found)
             {
                 found = true;
             }
-
+            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
+            highlight_cursor.mergeCharFormat(color_format);
+            highlight_cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor,n);
+            ui->plainTextEdit->setTextCursor(highlight_cursor);
+        }
+        else if (!highlight_cursor.isNull()){
+            if(!found)
+            {
+                found = true;
+            }
             highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
             highlight_cursor.mergeCharFormat(color_format);
             ui->plainTextEdit->setTextCursor(highlight_cursor);
         }
 
-        cursor.endEditBlock();
+//        cursor.endEditBlock();
 //        document->undo();
 
         if(found == false){
@@ -273,6 +283,110 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
             qDebug("not found");
         }
     }
+}
+
+void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始搜索指定字符串
+{
+    if(index != curIndexId)
+        return;
+    QString real_search_str = data;
+    int n = data.length();
+
+    if(real_search_str != nullptr){
+        QTextDocument *document = ui->plainTextEdit->document();
+        QTextCursor cursor(document);
+
+        //清除之前格式
+        QTextCharFormat clear_format;
+        cursor.setPosition(0);
+        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+        cursor.setCharFormat(clear_format);
+
+        bool found = false;
+        QTextCursor highlight_cursor(document);
+
+
+        highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
+
+//        cursor.beginEditBlock();
+        QTextCharFormat color_format(highlight_cursor.charFormat());
+        color_format.setBackground(Qt::yellow);
+
+        switch (state) {
+        case 0:
+            //向前搜索、不区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor);
+            break;
+        case 1:
+            //向前搜索、不区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords);
+            break;
+        case 2:
+            //向前搜索、区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
+            break;
+        case 3:
+            //向前搜索、不区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
+            break;
+        case -4:
+            //向后搜索、不区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward);
+            break;
+        case -3:
+            //向后搜索、不区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords);
+            break;
+        case -2:
+            //向后搜索、区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+            break;
+        case -1:
+            //向后搜索、区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
+            break;
+        }
+        if (!highlight_cursor.isNull() && state < 0)//向前查找光标置于查找单词前
+        {
+            if(!found)
+            {
+                found = true;
+            }
+            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
+            highlight_cursor.mergeCharFormat(color_format);
+            highlight_cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor,n);
+            ui->plainTextEdit->setTextCursor(highlight_cursor);
+        }
+        else if (!highlight_cursor.isNull()){
+            if(!found)
+            {
+                found = true;
+            }
+            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
+            highlight_cursor.mergeCharFormat(color_format);
+            ui->plainTextEdit->setTextCursor(highlight_cursor);
+        }
+
+//        cursor.endEditBlock();
+//        document->undo();
+
+        if(found == false){
+            QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
+            qDebug("not found");
+        }
+    }
+}
+
+void Tab::receiveCloseSearchDataForTab()
+{
+
+    QTextDocument *document = ui->plainTextEdit->document();
+    QTextCursor cursor(document);
+    QTextCharFormat clear_format;
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.setCharFormat(clear_format);
+    qDebug("suc!");
 }
 
 void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
