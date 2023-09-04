@@ -23,7 +23,33 @@ void CodeEditor::setLineNumberArea(QListWidget *lineNumberArea)
 void CodeEditor::resizeEvent(QResizeEvent *event)
 {
     QPlainTextEdit::resizeEvent(event);
+
     updateLineNumberArea();
+}
+
+void CodeEditor::wheelEvent(QWheelEvent *event)
+{
+    if(event->modifiers()==Qt::ControlModifier)
+    {
+        int delta=event->angleDelta().y();
+        QFont documentFont=this->font();
+
+        if(delta>0)
+        {
+            documentFont.setPointSize(documentFont.pointSize()+1);
+        }
+        else
+        {
+            if(documentFont.pointSize()>2)
+            documentFont.setPointSize(documentFont.pointSize()-1);
+        }
+        setFont(documentFont);
+        updateLineNumberArea();
+    }
+    else
+    {
+        QPlainTextEdit::wheelEvent(event);
+    }
 }
 
 void CodeEditor::matchBrackets() {
@@ -126,15 +152,17 @@ void CodeEditor::updateLineNumberArea()
     //根据最大行数的位数调整大小
     QFont documentFont=this->font();
     QFontMetrics metrics(documentFont);
-    int fontSize=metrics.averageCharWidth();
-    m_lineNumberArea->setMaximumSize(QSize((digit+1)*fontSize,this->height()));
-    m_lineNumberArea->resize(QSize((digit+3)*6,this->height()));
+    int maxItemSize=0;
+
     m_lineNumberArea->clear();
     for(int row=0;row<=blockCount();row++)
     {
         QListWidgetItem *item=new QListWidgetItem(QString::number(row+1),m_lineNumberArea);
         item->setFont(documentFont);
         item->setText(QString::number(row+1));
+        int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
+        if(itemSize>maxItemSize)
+            maxItemSize=itemSize;
         item->setSizeHint(QSize(this->width(),qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height())));
         item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
         if(row==blockCount()-1)
@@ -148,6 +176,26 @@ void CodeEditor::updateLineNumberArea()
             item->setText("");
         }
         m_lineNumberArea->addItem(item);
+    }
+    qDebug()<<maxItemSize;
+    //对字体过小的情况特殊处理
+    if(maxItemSize>15)
+    {
+        m_lineNumberArea->setMaximumSize(QSize(1.5*maxItemSize,this->height()));
+        m_lineNumberArea->resize(QSize(1.5*maxItemSize,this->height()));
+    }
+    else
+    {
+        if(maxItemSize*2.2>22)
+        {
+            m_lineNumberArea->setMaximumSize(QSize(22,this->height()));
+            m_lineNumberArea->resize(QSize(22,this->height()));
+        }
+        else
+        {
+            m_lineNumberArea->setMaximumSize(QSize(2.2*maxItemSize,this->height()));
+            m_lineNumberArea->resize(QSize(2.2*maxItemSize,this->height()));
+        }
     }
     QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
 }

@@ -39,6 +39,7 @@ public slots:
 protected:
     //void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
     //void paintEvent(QPaintEvent *event) override;
 
 signals:
