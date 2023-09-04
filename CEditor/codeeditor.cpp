@@ -177,7 +177,7 @@ void CodeEditor::updateLineNumberArea()
         }
         m_lineNumberArea->addItem(item);
     }
-    qDebug()<<maxItemSize;
+    //qDebug()<<maxItemSize;
     //对字体过小的情况特殊处理
     if(maxItemSize>15)
     {
