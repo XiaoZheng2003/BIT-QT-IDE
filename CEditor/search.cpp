@@ -46,3 +46,24 @@ void Search::on_pushButton_4_clicked()
 {
      this->close();
 }
+
+void Search::on_pushButton_clicked()
+{
+    QString to_search_str = ui->lineEdit->text();
+    int state = 0;
+    if(to_search_str != nullptr){
+        if(ui->checkBox_full->isChecked()){//全字匹配
+            state += 1;
+        }
+        if(ui->checkBox_case->isChecked()){//区分大小写
+            state += 2;
+        }
+        if(ui->radioButton_forward->isChecked()){//向后查找
+            state -= 4;
+        }
+        emit sendNextSearchDataToMain(to_search_str,state);
+    }
+    else{
+        QMessageBox::information(this,tr("注意"),tr("输入内容不能为空"),QMessageBox::Ok);
+    }
+}
