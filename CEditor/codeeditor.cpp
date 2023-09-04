@@ -57,7 +57,7 @@ void CodeEditor::matchBrackets() {
     QList<Brackets> stack; // 储存括号匹配情况的栈
     QTextDocument* document = this->document();
     int allrow = document->blockCount();
-    bralist.clear(); // 每一次匹配都清空之前的情况
+    bramap.clear();// 每一次匹配都清空之前的情况
 
     int inComment = 0; // 用于跟踪是否在注释内
 
@@ -82,10 +82,13 @@ void CodeEditor::matchBrackets() {
                         if (!stack.isEmpty()) {
                             int type = stack.last().type; // 判断是否对应
                             if (type == 1) {
-                                bralist.append(Brackets(current_length + j, stack.last().currentPos, 1)); // 加入两个括号匹配
-                                bralist.append(Brackets(stack.last().currentPos, current_length + j, 1));
+                                int end = current_length + j;
+                                int start = stack.last().currentPos;
+                                bramap.insert(end, Brackets(end, start, 1)); // 加入两个括号匹配
+                                bramap.insert(start, Brackets(end, start, 1));
                             } else {
-                                bralist.append(Brackets(current_length + j, -1, 1)); // 无匹配的情况
+                                int end = current_length + j;
+                                bramap.insert(end, Brackets(end, -1, 1)); // 无匹配的情况
                             }
                             stack.removeLast(); // 移除栈的最后一个
                         }
@@ -94,10 +97,13 @@ void CodeEditor::matchBrackets() {
                         if (!stack.isEmpty()) {
                             int type = stack.last().type;
                             if (type == 2) {
-                                bralist.append(Brackets(current_length + j, stack.last().currentPos, 2));
-                                bralist.append(Brackets(stack.last().currentPos, current_length + j, 2));
+                                int end = current_length + j;
+                                int start = stack.last().currentPos;
+                                bramap.insert(end, Brackets(end, start, 2)); // 加入两个括号匹配
+                                bramap.insert(start, Brackets(end, start, 2));
                             } else {
-                                bralist.append(Brackets(current_length + j, -1, 2));
+                                int end = current_length + j;
+                                bramap.insert(end, Brackets(end, -1, 2));
                             }
                             stack.removeLast();
                         }

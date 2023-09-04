@@ -11,6 +11,7 @@
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTimer>
+#include <QDebug>
 
 class Brackets // 括号匹配类
 {
@@ -46,7 +47,7 @@ signals:
     void scrollBarValue(int value);
 
 private:
-    QList<Brackets> bralist; // 括号匹配情况
+    QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
     void sendCurrentScrollBarValue();
 };
