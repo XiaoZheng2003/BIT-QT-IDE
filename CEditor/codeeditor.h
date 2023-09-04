@@ -12,6 +12,7 @@
 #include <QTextBlock>
 #include <QTimer>
 #include <QDebug>
+#include <QStack>
 
 class Brackets // 括号匹配类
 {
@@ -33,13 +34,15 @@ public:
     explicit CodeEditor(QWidget *parent=nullptr);
     void matchBrackets();
     void setLineNumberArea(QListWidget *lineNumberArea);
+    void undo();
+//    void redo();
 
 public slots:
     void updateLineNumberArea();
     void handleTextChanged();
 
 protected:
-    //void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     //void paintEvent(QPaintEvent *event) override;
@@ -52,9 +55,15 @@ private:
     QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
     QString m_previousText;
+    QStack<QString> m_undoStack;
+//    QStack<QString> m_redoStack;
+    QTimer *m_timer;
 
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();
+    void pushUndoStack();
+//    void clearRedoStack();
+    void restartTimer();
 };
 
 #endif // CODEEDITOR_H
