@@ -49,10 +49,10 @@ signals:
 private:
     QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
+    int highlightPos[4]={-1,-1,-1,-1};    //当前高亮位置
+
     void sendCurrentScrollBarValue();
+    void highlightMatchedBrackets();
 };
-
-
-
 
 #endif // CODEEDITOR_H

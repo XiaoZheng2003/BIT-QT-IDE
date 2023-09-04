@@ -3,6 +3,10 @@
 CodeEditor::CodeEditor(QWidget *parent):
     QPlainTextEdit(parent)
 {
+    //文本改变，自动匹配括号
+    connect(this,&CodeEditor::textChanged,this,&CodeEditor::matchBrackets);
+    //光标移动，高亮匹配括号
+    connect(this,&CodeEditor::cursorPositionChanged,this,&CodeEditor::highlightMatchedBrackets);
 }
 
 //void CodeEditor::keyPressEvent(QKeyEvent *event)
@@ -183,7 +187,7 @@ void CodeEditor::updateLineNumberArea()
         }
         m_lineNumberArea->addItem(item);
     }
-    qDebug()<<maxItemSize;
+    //qDebug()<<maxItemSize;
     //对字体过小的情况特殊处理
     if(maxItemSize>15)
     {
@@ -209,4 +213,59 @@ void CodeEditor::updateLineNumberArea()
 void CodeEditor::sendCurrentScrollBarValue()
 {
     emit scrollBarValue(verticalScrollBar()->value());
+}
+
+void CodeEditor::highlightMatchedBrackets()
+{
+    //将匹配括号高亮
+    QTextCursor cursor=this->textCursor();
+    QTextDocument* document = this->document();
+    QTextCursor highlightCursor(document);
+
+    //设置样式
+    QTextCharFormat normalFormat;
+    normalFormat.setForeground(Qt::black);
+    normalFormat.setBackground(Qt::transparent);
+    QTextCharFormat highlightFormat;
+    highlightFormat.setForeground(Qt::red); // 设置字体颜色为红色
+    highlightFormat.setBackground(Qt::green); // 设置背景色为绿色
+
+    //取消原高亮
+    for(int i=0;i<4;i++){
+        if(highlightPos[i]!=-1){
+            highlightCursor.setPosition(highlightPos[i]);
+            highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            highlightCursor.mergeCharFormat(normalFormat);
+        }
+        highlightPos[i]=-1;
+    }
+
+    //判断括号并高亮
+    int pos=cursor.position();
+    QChar before=document->characterAt(pos-1);
+    QChar after=document->characterAt(pos);
+    if(before=='}'||before==')'){
+        qDebug()<<"end";
+        highlightCursor.setPosition(pos-1);
+        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        highlightCursor.mergeCharFormat(highlightFormat);
+        highlightPos[0]=pos-1;
+        //TODO:匹配
+        highlightCursor.setPosition(0/*这里填匹配光标*/);
+        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        highlightCursor.mergeCharFormat(highlightFormat);
+        highlightPos[1]=0/*这里填匹配光标*/;
+    }
+    if(after=='{'||after=='('){
+        qDebug()<<"begin";
+        highlightCursor.setPosition(pos);
+        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        highlightCursor.mergeCharFormat(highlightFormat);
+        highlightPos[2]=pos;
+        //TODO:匹配
+        highlightCursor.setPosition(0/*这里填匹配光标*/);
+        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        highlightCursor.mergeCharFormat(highlightFormat);
+        highlightPos[3]=0/*这里填匹配光标*/;
+    }
 }

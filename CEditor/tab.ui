@@ -100,7 +100,9 @@ padding-top:4px;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">border:1px solid rgb(192, 191, 188);
-border-left:none;</string>
+border-left:none;
+background-color: rgb(255, 255, 255);
+border-radius:20px;</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -129,13 +131,44 @@ border-left:none;</string>
        </item>
        <item>
         <widget class="QPushButton" name="jumpto">
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+               background-color:#007BFF;
+               color: white;
+               padding: 5px;
+               border: none;
+               border-radius: 10px;  
+               height:25px;
+               width:75px;
+	           font: 9pt &quot;黑体&quot;;
+
+ }
+
+
+QPushButton:hover {
+              background-color:  #9cd3fa;
+}</string>
+         </property>
          <property name="text">
           <string>跳转</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit"/>
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="styleSheet">
+          <string notr="true">QLineEdit{
+	border:1px solid black;
+	border-radius:7px;
+	padding:2px 4px;
+	font: 10pt &quot;Candara&quot;;
+ }
+
+QLineEdit:hover {
+	border:1px groove grey;
+}</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

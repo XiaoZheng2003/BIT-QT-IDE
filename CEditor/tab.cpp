@@ -145,35 +145,41 @@ void Tab::on_jumpto_clicked()
      jumpToLine(linenum);
 }
 
-void Tab::jumpToLine(int line)
-{
-    // 跳转到某一行
+void Tab::jumpToLine(int line) {
     QTextCursor cursor(ui->plainTextEdit->document());
-    int lineNumber = 0;
-
+    int lineNumber=0;
     while (!cursor.atEnd()) {
         cursor.movePosition(QTextCursor::StartOfLine);
         lineNumber++;
-        if (lineNumber == line) {
+        if (lineNumber==line) {
             ui->plainTextEdit->setTextCursor(cursor);
-            // 获取目标行所在的列表项
-            QListWidgetItem* item = ui->lineNumberArea->item(lineNumber - 1);
-            if (item != nullptr) {
-                // 设置列表项为当前选中项
+
+            //获取目标行所在的列表项
+            QListWidgetItem* item=ui->lineNumberArea->item(lineNumber - 1);
+            if (item!=nullptr) {
+                //设置列表项为当前选中项
                 ui->lineNumberArea->setCurrentItem(item);
-                // 行数进度条和文本框同步跳转
+                //行数进度条和文本框同步跳转
                 ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
 
-                // 将光标移动到目标行开头
-                QTextCursor targetLineCursor = ui->plainTextEdit->textCursor();
-                targetLineCursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+                //遍历目标行，找到第一个非空字符的位置
+                QString lineText=cursor.block().text();
+                int column=lineText.indexOf(QRegularExpression("\\S"));
+                if (column==-1) {
+                    column=0; //如果该行没有字符，则将光标放在该行的第一列
+                }
+
+                //将光标移动到目标行的第一个字符前面
+                QTextCursor targetLineCursor=ui->plainTextEdit->textCursor();
+                targetLineCursor.setPosition(cursor.block().position() + column);
                 ui->plainTextEdit->setTextCursor(targetLineCursor);
 
-                // 将光标选中的行居中显示
+                //将光标选中的行居中显示
                 ui->plainTextEdit->centerCursor();
                 ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
 
-                // 设置编辑器的焦点
+
+                //设置编辑器的焦点
                 ui->plainTextEdit->setFocus();
             }
             break;
@@ -181,6 +187,7 @@ void Tab::jumpToLine(int line)
         cursor.movePosition(QTextCursor::NextBlock);
     }
 }
+
 
 void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begin)//开始搜索指定字符串
 {
