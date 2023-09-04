@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     //初始状态隐藏编译信息栏
     ui->compileTextBrowser->setMaximumHeight(0);
 
-    connect(search,&Search::sendSearchDataToMain,this,&MainWindow::receiveSearchDataForMain);  //接受搜索信号
+    connect(search,&Search::sendStartSearchDataToMain,this,&MainWindow::receiveStartSearchDataForMain);  //接受搜索信号
     connect(replace,&replace::sendReplaceDataToMain,this,&MainWindow::receiveReplaceDataForMain);  //接受替换信号
 
     //初始化项目右键菜单
@@ -255,7 +255,7 @@ void MainWindow::initConnection(Tab *tab)
     //总行数更新
     connect(tab,&Tab::updateTotalLineSignal,this,&MainWindow::totalCountReceive);
     //查找替换
-    connect(this,&MainWindow::sendSearchDataToTab,tab,&Tab::receiveSearchDataForTab);
+    connect(this,&MainWindow::sendStartSearchDataToTab,tab,&Tab::receiveStartSearchDataForTab);
     connect(this,&MainWindow::sendReplaceDataToTab,tab,&Tab::receiveReplaceDataForTab);
 }
 
@@ -600,14 +600,11 @@ void MainWindow::on_actionPaste_triggered()
     emit editOperate(ui->tabWidget->currentIndex(),Paste);
 }
 
-
-void MainWindow::receiveSearchDataForMain(QString data,int state,int begin) //从搜索对话框接收搜索数据，发送给指定页面
+void MainWindow::receiveStartSearchDataForMain(QString data,int state,int begin) //从搜索对话框接收搜索数据，发送给指定页面
 {
     int index = ui->tabWidget->currentIndex();
-    emit sendSearchDataToTab(data,index,state,begin);
+    emit sendStartSearchDataToTab(data,index,state,begin);
 }
-
-
 
 void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state) //接受替换数据
 {

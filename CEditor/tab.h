@@ -45,7 +45,7 @@ public slots:
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
     void editOperate(int indexId, editType type);
-    void receiveSearchDataForTab(QString,int,int state,int);
+    void receiveStartSearchDataForTab(QString,int,int state,int);
     void receiveReplaceDataForTab(QString,QString,int,int state);
 
 signals:

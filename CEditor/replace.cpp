@@ -28,12 +28,16 @@ void replace::on_pushButton_3_clicked()
 {
     QString str_to_search = ui->lineEdit->text();
     QString str_replace = ui->lineEdit_2->text();
-    int state = 0;
-    int begin = 0;
-    if(ui->checkBox_case->isChecked()){//区分大小写
-        state += 2;
+    if(str_replace != nullptr && str_to_search != nullptr){
+        int state = 0;
+        if(ui->checkBox_case->isChecked()){//区分大小写
+            state += 2;
+        }
+        emit sendReplaceDataToMain(str_to_search,str_replace,state);
     }
-    emit sendReplaceDataToMain(str_to_search,str_replace,state);
+    else{
+        QMessageBox::information(this,tr("注意"),tr("输入内容不能为空"),QMessageBox::Ok);
+    }
 }
 
 void replace::on_pushButton_4_clicked()

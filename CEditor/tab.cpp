@@ -182,7 +182,7 @@ void Tab::jumpToLine(int line)
     }
 }
 
-void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//开始搜索指定字符串
+void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begin)//开始搜索指定字符串
 {
     if(index != curIndexId)
         return;
@@ -192,6 +192,7 @@ void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//�
         QTextDocument *document = ui->plainTextEdit->document();
         QTextCursor cursor(document);
 
+        //清除之前格式
         QTextCharFormat clear_format;
         cursor.setPosition(0);
         cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
@@ -200,59 +201,63 @@ void Tab::receiveSearchDataForTab(QString data,int index,int state,int begin)//�
         bool found = false;
         QTextCursor highlight_cursor(document);
 
-        if (begin == 1) {
+        if(begin == 1) {
             highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
+        }
+        else if (begin == 0 && state < 0){
+            highlight_cursor.movePosition(QTextCursor::End);
         }
 
         cursor.beginEditBlock();
         QTextCharFormat color_format(highlight_cursor.charFormat());
         color_format.setBackground(Qt::yellow);
 
-        while (!highlight_cursor.isNull() && !highlight_cursor.atEnd()){
-            switch (state) {
-            case 0:
-                //向前搜索、不区分大小写、不全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor);
-                break;
-            case 1:
-                //向前搜索、不区分大小写、全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords);
-                break;
-            case 2:
-                //向前搜索、区分大小写、不全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
-                break;
-            case 3:
-                //向前搜索、不区分大小写、全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
-                break;
-            case -4:
-                //向后搜索、不区分大小写、不全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward);
-                break;
-            case -3:
-                //向后搜索、不区分大小写、全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords);
-                break;
-            case -2:
-                //向后搜索、区分大小写、不全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
-                break;
-            case -1:
-                //向后搜索、区分大小写、全字匹配
-                highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
-                break;
-            }
-            if (!highlight_cursor.isNull())
-            {
-                if(!found)
-                {
-                    found = true;
-                }
-                highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
-                highlight_cursor.mergeCharFormat(color_format);
-            }
+        switch (state) {
+        case 0:
+            //向前搜索、不区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor);
+            break;
+        case 1:
+            //向前搜索、不区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords);
+            break;
+        case 2:
+            //向前搜索、区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
+            break;
+        case 3:
+            //向前搜索、不区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
+            break;
+        case -4:
+            //向后搜索、不区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward);
+            break;
+        case -3:
+            //向后搜索、不区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords);
+            break;
+        case -2:
+            //向后搜索、区分大小写、不全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+            break;
+        case -1:
+            //向后搜索、区分大小写、全字匹配
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
+            break;
         }
+        if (!highlight_cursor.isNull())
+        {
+            if(!found)
+            {
+                found = true;
+            }
+
+            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
+            highlight_cursor.mergeCharFormat(color_format);
+            ui->plainTextEdit->setTextCursor(highlight_cursor);
+        }
+
         cursor.endEditBlock();
 //        document->undo();
 
