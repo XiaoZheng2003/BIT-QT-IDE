@@ -3,24 +3,35 @@
 CodeEditor::CodeEditor(QWidget *parent):
     QPlainTextEdit(parent)
 {
-    m_previousText = this->toPlainText();
+    connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
+
+    // 创建一个定时器，用于延迟压入撤回栈
+    m_timer=new QTimer(this);
+    m_timer->setSingleShot(true);
+    m_timer->setInterval(500); // 0.5秒钟
+    connect(m_timer,&QTimer::timeout,this,&CodeEditor::pushUndoStack);
+
     //判断是否文本发生变化
     connect(this, &CodeEditor::textChanged, this, &CodeEditor::handleTextChanged);
-    //文本改变，自动匹配括号
-    connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::matchBrackets);
     //光标移动，高亮匹配括号
     connect(this,&CodeEditor::cursorPositionChanged,this,&CodeEditor::highlightMatchedBrackets);
 }
 
-//void CodeEditor::keyPressEvent(QKeyEvent *event)
-//{
-//    switch(event->key())
-//    {
-//    case Qt::Key_Enter:
-//        emit lineNumberChange();
-//        break;
-//    }
-//}
+void CodeEditor::keyPressEvent(QKeyEvent *event)
+{
+    //捕获撤销和重做快捷键
+    if(event->matches(QKeySequence::Undo)){
+        undo();
+        event->accept();
+    }
+    else if(event->matches(QKeySequence::Redo)){
+        redo();
+        event->accept();
+    }
+    else{
+        QPlainTextEdit::keyPressEvent(event);
+    }
+}
 
 void CodeEditor::setLineNumberArea(QListWidget *lineNumberArea)
 {
@@ -58,6 +69,32 @@ void CodeEditor::wheelEvent(QWheelEvent *event)
         QPlainTextEdit::wheelEvent(event);
     }
 }
+
+void CodeEditor::undo()
+{
+    if(!m_undoStack.isEmpty()){
+        QString text=m_undoStack.pop();
+        qDebug()<<m_undoStack;
+        if(text==this->toPlainText()&&!m_undoStack.isEmpty())
+            text=m_undoStack.pop();
+//        m_redoStack.push(this->toPlainText());
+//        qDebug()<<m_redoStack;
+        this->setPlainText(text);
+        if(m_undoStack.isEmpty())
+            m_undoStack.push(this->toPlainText());
+    }
+}
+
+//void CodeEditor::redo()
+//{
+//    qDebug()<<"redo:";
+//    qDebug()<<m_redoStack;
+//    if(!m_redoStack.isEmpty()){
+//        QString text=m_redoStack.pop();
+//        m_undoStack.push(this->toPlainText());
+//        this->setPlainText(text);
+//    }
+//}
 
 void CodeEditor::matchBrackets() {
     int current_length = 0;
@@ -242,6 +279,8 @@ void CodeEditor::handleTextChanged()
     if (currentText != m_previousText) {
         // 只有文本内容发生了修改
         emit textRealChanged();
+        // 文本发生改变，重新匹配括号
+        matchBrackets();
         // 更新上一次保存的文本内容
         m_previousText = currentText;
     }
@@ -302,4 +341,23 @@ void CodeEditor::highlightMatchedBrackets()
             highlightCursor.setCharFormat(highlightFormat);
         }
     }
+}
+
+void CodeEditor::pushUndoStack()
+{
+    m_undoStack.push(this->toPlainText());
+//    clearRedoStack(); // 清空重做栈
+}
+
+//void CodeEditor::clearRedoStack()
+//{
+//    while (!m_redoStack.isEmpty())
+//        m_redoStack.pop();
+//}
+
+void CodeEditor::restartTimer()
+{
+    if(m_timer->isActive())
+        m_timer->stop();
+    m_timer->start();
 }
