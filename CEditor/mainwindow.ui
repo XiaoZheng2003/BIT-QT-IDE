@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
-    <height>600</height>
+    <width>1113</width>
+    <height>773</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,6 +21,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="label">
+          <property name="styleSheet">
+           <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
+          </property>
           <property name="text">
            <string>当前打开项目</string>
           </property>
@@ -28,6 +31,9 @@
         </item>
         <item>
          <widget class="QLabel" name="currentProject">
+          <property name="styleSheet">
+           <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
+          </property>
           <property name="text">
            <string>无</string>
           </property>
@@ -39,6 +45,10 @@
        <widget class="QTreeWidget" name="projectTreeWidget">
         <property name="contextMenuPolicy">
          <enum>Qt::CustomContextMenu</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
+border-radius:20px;</string>
         </property>
         <column>
          <property name="text">
@@ -64,6 +74,11 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QTabWidget" name="tabWidget">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+border-radius:20px;
+border:none</string>
+          </property>
           <property name="currentIndex">
            <number>-1</number>
           </property>
@@ -76,6 +91,24 @@
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QPushButton" name="compileInfoButton">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+               background-color:#007BFF;
+               color: white;
+               padding: 5px;
+               border: none;
+               border-radius: 10px;  
+               height:30px;
+               width:75px;
+	           font: 9pt &quot;黑体&quot;;
+
+ }
+
+
+QPushButton:hover {
+              background-color:  #9cd3fa;
+}</string>
+            </property>
             <property name="text">
              <string>编译信息</string>
             </property>
@@ -105,6 +138,10 @@
          <height>220</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+border-radius:20px;</string>
+       </property>
       </widget>
      </widget>
     </item>
@@ -115,8 +152,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>784</width>
-     <height>26</height>
+     <width>1113</width>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
