@@ -3,8 +3,11 @@
 CodeEditor::CodeEditor(QWidget *parent):
     QPlainTextEdit(parent)
 {
+    m_previousText = this->toPlainText();
+    //判断是否文本发生变化
+    connect(this, &CodeEditor::textChanged, this, &CodeEditor::handleTextChanged);
     //文本改变，自动匹配括号
-    connect(this,&CodeEditor::textChanged,this,&CodeEditor::matchBrackets);
+    connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::matchBrackets);
     //光标移动，高亮匹配括号
     connect(this,&CodeEditor::cursorPositionChanged,this,&CodeEditor::highlightMatchedBrackets);
 }
@@ -231,6 +234,19 @@ void CodeEditor::updateLineNumberArea()
     QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
 }
 
+void CodeEditor::handleTextChanged()
+{
+    QString currentText = this->toPlainText();
+
+    // 比较当前文本内容与上一次保存的文本内容
+    if (currentText != m_previousText) {
+        // 只有文本内容发生了修改
+        emit textRealChanged();
+        // 更新上一次保存的文本内容
+        m_previousText = currentText;
+    }
+}
+
 void CodeEditor::sendCurrentScrollBarValue()
 {
     emit scrollBarValue(verticalScrollBar()->value());
@@ -252,14 +268,9 @@ void CodeEditor::highlightMatchedBrackets()
     highlightFormat.setBackground(Qt::green); // 设置背景色为绿色
 
     //取消原高亮
-    for(int i=0;i<4;i++){
-        if(highlightPos[i]!=-1){
-            highlightCursor.setPosition(highlightPos[i]);
-            highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-            highlightCursor.mergeCharFormat(normalFormat);
-        }
-        highlightPos[i]=-1;
-    }
+    highlightCursor.setPosition(0);
+    highlightCursor.movePosition(QTextCursor::End,QTextCursor::KeepAnchor);
+    highlightCursor.setCharFormat(normalFormat);
 
     //判断括号并高亮
     int pos=cursor.position();
@@ -270,29 +281,25 @@ void CodeEditor::highlightMatchedBrackets()
         qDebug()<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         highlightCursor.setPosition(pos-1);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        highlightCursor.mergeCharFormat(highlightFormat);
-        highlightPos[0]=pos-1;
-        //TODO:匹配
+        highlightCursor.setCharFormat(highlightFormat);
+        //匹配
         if(matchingPos != -1){
             highlightCursor.setPosition(matchingPos);
             highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-            highlightCursor.mergeCharFormat(highlightFormat);
+            highlightCursor.setCharFormat(highlightFormat);
         }
-        highlightPos[1]=matchingPos/*这里填匹配光标*/;
     }
     if(after=='{'||after=='('){
         int matchingPos = bramap.value(pos, Brackets(-1, -1, 0)).correspondingPos;
         qDebug()<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         highlightCursor.setPosition(pos);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        highlightCursor.mergeCharFormat(highlightFormat);
-        highlightPos[2]=pos;
-        //TODO:匹配
+        highlightCursor.setCharFormat(highlightFormat);
+        //匹配
         if(matchingPos != -1){
             highlightCursor.setPosition(matchingPos);
             highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-            highlightCursor.mergeCharFormat(highlightFormat);
+            highlightCursor.setCharFormat(highlightFormat);
         }
-        highlightPos[3]=matchingPos/*这里填匹配光标*/;
     }
 }

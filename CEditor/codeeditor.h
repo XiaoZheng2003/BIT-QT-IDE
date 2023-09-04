@@ -36,6 +36,7 @@ public:
 
 public slots:
     void updateLineNumberArea();
+    void handleTextChanged();
 
 protected:
     //void keyPressEvent(QKeyEvent *event);
@@ -45,11 +46,12 @@ protected:
 
 signals:
     void scrollBarValue(int value);
+    void textRealChanged();
 
 private:
     QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
-    int highlightPos[4]={-1,-1,-1,-1};    //当前高亮位置
+    QString m_previousText;
 
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();

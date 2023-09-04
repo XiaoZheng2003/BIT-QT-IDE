@@ -62,7 +62,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     highlighter = new Highlighter(ui->plainTextEdit->document());
     ui->plainTextEdit->setPlainText(text);
 
-    connect(ui->plainTextEdit,&CodeEditor::textChanged,[=](){
+    connect(ui->plainTextEdit,&CodeEditor::textRealChanged,[=](){
         //当文本被修改
         emit textChanged(curIndexId);
     });
