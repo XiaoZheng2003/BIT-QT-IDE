@@ -17,14 +17,16 @@
 class Brackets // 括号匹配类
 {
 public:
-     Brackets(int currentPosition, int correspondingPosition, int bracketType) {
+     Brackets(int currentPosition, int correspondingPosition, int bracketType, int bracketLevel) {
          currentPos = currentPosition;
          correspondingPos = correspondingPosition;
          type = bracketType;
+         level = bracketLevel;
      }
      int currentPos = 0;
      int correspondingPos = 0;
      int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'
+     int level = 0; // 括号的层级
 };
 
 class CodeEditor : public QPlainTextEdit
