@@ -46,6 +46,7 @@ public slots:
     void tabClosed(int indexId);
     void editOperate(int indexId, editType type);
     void receiveStartSearchDataForTab(QString,int,int state,int);
+    void receiveCloseSearchDataForTab();
     void receiveNextSearchDataForTab(QString,int,int state);
     void receiveReplaceDataForTab(QString,QString,int,int state);
 

@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(search,&Search::sendStartSearchDataToMain,this,&MainWindow::receiveStartSearchDataForMain);  //接受搜索信号
     connect(search,&Search::sendNextSearchDataToMain,this,&MainWindow::receiveNextSearchDataForMain);  //接受搜索信号
+    connect(search,&Search::sendCloseSearchDataToMain,this,&MainWindow::receiveCloseSearchDataForMain);  //接受搜索信号
     connect(replace,&replace::sendReplaceDataToMain,this,&MainWindow::receiveReplaceDataForMain);  //接受替换信号
 
     //初始化项目右键菜单
@@ -258,6 +259,7 @@ void MainWindow::initConnection(Tab *tab)
     //查找替换
     connect(this,&MainWindow::sendStartSearchDataToTab,tab,&Tab::receiveStartSearchDataForTab);
     connect(this,&MainWindow::sendNextSearchDataToTab,tab,&Tab::receiveNextSearchDataForTab);
+    connect(this,&MainWindow::sendCloseSearchDataToTab,tab,&Tab::receiveCloseSearchDataForTab);
     connect(this,&MainWindow::sendReplaceDataToTab,tab,&Tab::receiveReplaceDataForTab);
 }
 
@@ -612,6 +614,12 @@ void MainWindow::receiveNextSearchDataForMain(QString data,int state) //从搜�
 {
     int index = ui->tabWidget->currentIndex();
     emit sendNextSearchDataToTab(data,index,state);
+}
+
+void MainWindow::receiveCloseSearchDataForMain() //从搜索对话框接收搜索数据，发送给指定页面
+{
+    qDebug("suc!!!!!");
+    emit sendCloseSearchDataToTab();
 }
 
 void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state) //接受替换数据

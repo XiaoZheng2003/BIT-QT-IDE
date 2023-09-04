@@ -17,7 +17,6 @@ Search::~Search()
     delete ui;
 }
 
-
 void Search::on_pushButton_3_clicked()
 {
     QString to_search_str = ui->lineEdit->text();
@@ -66,4 +65,10 @@ void Search::on_pushButton_clicked()
     else{
         QMessageBox::information(this,tr("注意"),tr("输入内容不能为空"),QMessageBox::Ok);
     }
+}
+
+void Search::closeEvent(QCloseEvent *event)
+{
+    emit sendCloseSearchDataToMain();
+    QDialog::closeEvent(event);
 }

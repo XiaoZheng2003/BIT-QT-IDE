@@ -16,9 +16,13 @@ public:
     explicit Search(QWidget *parent = nullptr);
     ~Search();
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 signals:
     void  sendStartSearchDataToMain(QString,int,int);
     void  sendNextSearchDataToMain(QString,int);
+    void  sendCloseSearchDataToMain();
 
 private slots:
     void on_pushButton_3_clicked();

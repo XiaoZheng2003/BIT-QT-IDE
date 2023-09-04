@@ -377,6 +377,18 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始�
     }
 }
 
+void Tab::receiveCloseSearchDataForTab()
+{
+
+    QTextDocument *document = ui->plainTextEdit->document();
+    QTextCursor cursor(document);
+    QTextCharFormat clear_format;
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.setCharFormat(clear_format);
+    qDebug("suc!");
+}
+
 void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
 {
     if(index != curIndexId)
