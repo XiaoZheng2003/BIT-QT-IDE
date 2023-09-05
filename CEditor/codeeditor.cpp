@@ -15,6 +15,8 @@ CodeEditor::CodeEditor(QWidget *parent):
     connect(this, &CodeEditor::textChanged, this, &CodeEditor::handleTextChanged);
     //光标移动，高亮匹配括号
     connect(this,&CodeEditor::cursorPositionChanged,this,&CodeEditor::highlightMatchedBrackets);
+    //行数变化时自动缩进
+    connect(this,&QPlainTextEdit::blockCountChanged,this,&CodeEditor::autoIndent);
 }
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
@@ -27,6 +29,51 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
     else if(event->matches(QKeySequence::Redo)){
         redo();
         event->accept();
+    }
+    else if(event->key() == Qt::Key_BraceLeft){
+        m_completeBrace = true;
+        QPlainTextEdit::keyPressEvent(event);
+    }
+    else if(event->key() == Qt::Key_BracketLeft){
+        textCursor().insertText("[]");
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::Left);
+        setTextCursor(cursor);
+    }
+    else if(event->key() == Qt::Key_ParenLeft){
+        textCursor().insertText("()");
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::Left);
+        setTextCursor(cursor);
+    }
+    else if(event->key() == Qt::Key_Less){
+        if(textCursor().block().text().startsWith("#include")){
+            textCursor().insertText("<>");
+            QTextCursor cursor = textCursor();
+            cursor.movePosition(QTextCursor::Left);
+            setTextCursor(cursor);
+        }
+        else{
+            QPlainTextEdit::keyPressEvent(event);
+        }
+    }
+    else if(event->key() == Qt::Key_QuoteDbl){
+        textCursor().insertText("\"\"");
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::Left);
+        setTextCursor(cursor);
+    }
+    else if(event->key() == Qt::Key_Apostrophe){
+        textCursor().insertText("''");
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::Left);
+        setTextCursor(cursor);
+    }
+    else if(event->key() == Qt::Key_BraceRight){
+        if(document()->characterAt(textCursor().position() - 1) == '\t'){
+            textCursor().deletePreviousChar();
+        }
+        QPlainTextEdit::keyPressEvent(event);
     }
     else{
         QPlainTextEdit::keyPressEvent(event);
@@ -59,7 +106,7 @@ void CodeEditor::wheelEvent(QWheelEvent *event)
         else
         {
             if(documentFont.pointSize()>2)
-            documentFont.setPointSize(documentFont.pointSize()-1);
+                documentFont.setPointSize(documentFont.pointSize()-1);
         }
         setFont(documentFont);
         updateLineNumberArea();
@@ -77,8 +124,8 @@ void CodeEditor::undo()
         qDebug()<<m_undoStack;
         if(text==this->toPlainText()&&!m_undoStack.isEmpty())
             text=m_undoStack.pop();
-//        m_redoStack.push(this->toPlainText());
-//        qDebug()<<m_redoStack;
+        //        m_redoStack.push(this->toPlainText());
+        //        qDebug()<<m_redoStack;
         this->setPlainText(text);
         if(m_undoStack.isEmpty())
             m_undoStack.push(this->toPlainText());
@@ -116,62 +163,62 @@ void CodeEditor::matchBrackets() {
 
             if (!inComment) {
                 switch (currentChar.unicode()) {
-                    case '{':
-                        stack1.append(Brackets(current_length + j, -1, 1, -1)); // 向栈内加入
-                        break;
-                    case '(':
-                        stack2.append(Brackets(current_length + j, -1, 2, -1)); // 向栈内加入
-                        break;
-                    case '}':
-                        if (!stack1.isEmpty()) {
-                            int end = current_length + j;
-                            int start = stack1.last().currentPos;
-                            bramap.insert(end, Brackets(end, start, 1, stack1.count())); // 加入两个括号匹配
-                            bramap.insert(start, Brackets(start, end, 1, stack1.count()));
-                            stack1.removeLast(); // 移除栈的最后一个
+                case '{':
+                    stack1.append(Brackets(current_length + j, -1, 1)); // 向栈内加入
+                    break;
+                case '(':
+                    stack2.append(Brackets(current_length + j, -1, 2)); // 向栈内加入
+                    break;
+                case '}':
+                    if (!stack1.isEmpty()) {
+                        int end = current_length + j;
+                        int start = stack1.last().currentPos;
+                        bramap.insert(end, Brackets(end, start, -1)); // 加入两个括号匹配
+                        bramap.insert(start, Brackets(start, end, 1));
+                        stack1.removeLast(); // 移除栈的最后一个
+                    }
+                    else{
+                        int end = current_length + j;
+                        bramap.insert(end, Brackets(end, -1, -1)); // 无匹配的情况
+                    }
+                    break;
+                case ')':
+                    if (!stack2.isEmpty()) {
+                        int end = current_length + j;
+                        int start = stack2.last().currentPos;
+                        bramap.insert(end, Brackets(end, start, -2)); // 加入两个括号匹配
+                        bramap.insert(start, Brackets(start, end, 2));
+                        stack2.removeLast();
+                    }
+                    else{
+                        int end = current_length + j;
+                        bramap.insert(end, Brackets(end, -1, -2));
+                    }
+                    break;
+                case '/':
+                    if (j < string.length() - 1) {
+                        QChar nextChar = string[j + 1];
+                        if (nextChar == '/') { //如果是“//”注释的情况
+                            inComment = 1;
+                            j++;  // 跳过单行注释符号
+                        } else if (nextChar == '*') { // 如果是“/*”注释的情况
+                            inComment = 2;
+                            j++;  // 跳过注释的开始符号
                         }
-                        else{
-                            int end = current_length + j;
-                            bramap.insert(end, Brackets(end, -1, 1, -1)); // 无匹配的情况
-                        }
-                        break;
-                    case ')':
-                        if (!stack2.isEmpty()) {
-                            int end = current_length + j;
-                            int start = stack2.last().currentPos;
-                            bramap.insert(end, Brackets(end, start, 2, stack2.count())); // 加入两个括号匹配
-                            bramap.insert(start, Brackets(start, end, 2, stack2.count()));
-                            stack2.removeLast();
-                        }
-                        else{
-                            int end = current_length + j;
-                            bramap.insert(end, Brackets(end, -1, 2, -1));
-                        }
-                        break;
-                    case '/':
-                        if (j < string.length() - 1) {
-                            QChar nextChar = string[j + 1];
-                            if (nextChar == '/') { //如果是“//”注释的情况
-                                inComment = 1;
-                                j++;  // 跳过单行注释符号
-                            } else if (nextChar == '*') { // 如果是“/*”注释的情况
-                                inComment = 2;
-                                j++;  // 跳过注释的开始符号
-                            }
-                        }
-                        break;
-                    case '"':
-                        if (j < string.length() - 1) {
-                            inComment = 3;
-                        }
-                        break;
-                    case '\'':
-                        if (j < string.length() - 1) {
-                            inComment = 4;
-                        }
-                        break;
-                    default:
-                        break;
+                    }
+                    break;
+                case '"':
+                    if (j < string.length() - 1) {
+                        inComment = 3;
+                    }
+                    break;
+                case '\'':
+                    if (j < string.length() - 1) {
+                        inComment = 4;
+                    }
+                    break;
+                default:
+                    break;
                 }
             }
             else{
@@ -205,9 +252,15 @@ void CodeEditor::matchBrackets() {
 
         current_length += string.length() + 1; // 回车符
     }
-    // 栈内剩下的就是没匹配上的{或者(，需要的话可以加上
-    stack1.clear();
-    stack2.clear();
+    // 插入栈内没匹配上的
+    while(!stack1.empty()){
+        bramap.insert(stack1.last().currentPos,stack1.last());
+        stack1.removeLast();
+    }
+    while(!stack2.empty()){
+        bramap.insert(stack2.last().currentPos,stack2.last());
+        stack2.removeLast();
+    }
 }
 
 void CodeEditor::updateLineNumberArea()
@@ -318,8 +371,8 @@ void CodeEditor::highlightMatchedBrackets()
     QChar before=document->characterAt(pos-1);
     QChar after=document->characterAt(pos);
     if(before=='}'||before==')'){
-        int matchingPos = bramap.value(pos-1, Brackets(-1, -1, 0, -1)).correspondingPos;
-        qDebug()<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos<<"level:"<<bramap.value(pos-1, Brackets(-1, -1, 0, -1)).level;
+        int matchingPos = bramap.value(pos-1).correspondingPos;
+        qDebug()<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         highlightCursor.setPosition(pos-1);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         highlightCursor.setCharFormat(highlightFormat);
@@ -331,8 +384,8 @@ void CodeEditor::highlightMatchedBrackets()
         }
     }
     if(after=='{'||after=='('){
-        int matchingPos = bramap.value(pos, Brackets(-1, -1, 0, -1)).correspondingPos;
-        qDebug()<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos<<"level:"<<bramap.value(pos, Brackets(-1, -1, 0, -1)).level;
+        int matchingPos = bramap.value(pos).correspondingPos;
+        qDebug()<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         highlightCursor.setPosition(pos);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         highlightCursor.setCharFormat(highlightFormat);
@@ -348,7 +401,7 @@ void CodeEditor::highlightMatchedBrackets()
 void CodeEditor::pushUndoStack()
 {
     m_undoStack.push(this->toPlainText());
-//    clearRedoStack(); // 清空重做栈
+    //    clearRedoStack(); // 清空重做栈
 }
 
 //void CodeEditor::clearRedoStack()
@@ -362,4 +415,32 @@ void CodeEditor::restartTimer()
     if(m_timer->isActive())
         m_timer->stop();
     m_timer->start();
+}
+
+void CodeEditor::autoIndent()
+{
+    QTextCursor currentCursor = this->textCursor();
+    int pos = currentCursor.position(), level = 0;
+    for(QMap<int,Brackets>::Iterator it = bramap.begin(); it != bramap.end(); it++){
+        if(it.value().currentPos > pos){
+            break;
+        }
+        if(it.value().type == 1){
+            level++;
+        }
+        else if(it.value().type == -1 && level > 0){
+            level--;
+        }
+    }
+    if(currentCursor.atBlockStart()){
+        for(int i = 0; i < level; i++){
+            currentCursor.insertText("\t");
+        }
+    }
+//    if(m_completeBrace){
+//        m_completeBrace = false;
+//        currentCursor.insertText("\n}");
+//        currentCursor.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,2);
+//        setTextCursor(currentCursor);
+//    }
 }
