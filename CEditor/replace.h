@@ -1,8 +1,7 @@
 #ifndef REPLACE_H
 #define REPLACE_H
 
-#include <QDialog>
-#include <QMessageBox>
+#include "headers.h"
 
 namespace Ui {
 class replace;

@@ -1,7 +1,7 @@
 #ifndef FOLDLISTWIDGET_H
 #define FOLDLISTWIDGET_H
 
-#include <QListWidget>
+#include "headers.h"
 
 class FoldListWidget : public QListWidget
 {

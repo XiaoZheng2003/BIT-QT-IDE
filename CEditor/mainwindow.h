@@ -2,27 +2,10 @@
 #define MAINWINDOW_H
 
 #include "tab.h"
-#include "compilationthread.h"
-#include "replace.h"
 #include "search.h"
-
-#include <QDir>
-#include <QMap>
-#include <QList>
-#include <QProcess>
-#include <QDateTime>
-#include <QTextCodec>
-#include <QByteArray>
-#include <QCloseEvent>
-#include <QFileDialog>
-#include <QMainWindow>
-#include <QMessageBox>
-#include <QTreeWidgetItem>
-#include <QDesktopServices>
-#include <QFileIconProvider>
-#include <QRegularExpression>
-#include <QDebug>
-#include <QLabel>
+#include "headers.h"
+#include "replace.h"
+#include "compilationthread.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
