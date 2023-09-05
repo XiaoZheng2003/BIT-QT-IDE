@@ -211,7 +211,10 @@ void MainWindow::on_actionClose_triggered()
 {
     //关闭文件
     int curIndex=ui->tabWidget->currentIndex();
-    closeTab(curIndex);
+    if(~curIndex)
+        closeTab(curIndex);
+    else
+        QMessageBox::warning(this,"提示","当前未打开文件！");
 }
 
 void MainWindow::on_actionCloseAll_triggered()
@@ -531,6 +534,12 @@ void MainWindow::on_actionOpenProject_triggered()
         QMessageBox::information(this,"提示","同名项目已经打开！");
         return;
     }
+    QRegularExpression re("[\\x{4e00}-\\x{9fa5}]+");
+    QRegularExpressionMatch match = re.match(projectName);
+    if(match.hasMatch()){
+        QMessageBox::information(this,"提示","项目名禁止包含中文！");
+        return;
+    }
     projectNameToPath.insert(projectName,projectPath);
     ui->currentProject->setText(projectName);
 
@@ -656,7 +665,6 @@ void MainWindow::on_actionCompileProject_triggered()
     //编译项目
     QString projectName=ui->currentProject->text();
     if(projectName=="无"){
-        //TODO: 如果项目名为"无"可能会出事
         QMessageBox::warning(this,"警告","当前未打开任何项目！");
         return;
     }
@@ -666,7 +674,7 @@ void MainWindow::on_actionCompileProject_triggered()
     ui->compileTextBrowser->setMaximumHeight(220);
 
     QString projectPath=projectNameToPath.find(projectName).value();
-    //TODO:编译项目
+    //编译项目
     QString exe = projectPath + "/" + projectName + ".exe";
     // 设置要执行的命令和参数
     QStringList arguments;
@@ -701,12 +709,11 @@ void MainWindow::on_actionRunProject_triggered()
     //运行项目
     QString projectName=ui->currentProject->text();
     if(projectName=="无"){
-        //TODO: 如果项目名为"无"可能会出事
         QMessageBox::warning(this,"警告","当前未打开任何项目！");
         return;
     }
     QString projectPath=projectNameToPath.find(projectName).value();
-    //TODO:运行项目
+    //运行项目
 
     QString exePath = projectPath + "/" +projectName+".exe";;
     QFile exefile(exePath);
@@ -733,6 +740,11 @@ void MainWindow::handleProjectRunFinished(int exitCode, const QString &outputTex
 
 void MainWindow::on_actionCompileRunProject_triggered()
 {
+    QString projectName=ui->currentProject->text();
+    if(projectName=="无"){
+        QMessageBox::warning(this,"警告","当前未打开任何项目！");
+        return;
+    }
     on_actionCompileProject_triggered();
     on_actionRunProject_triggered();
 }
