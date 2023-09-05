@@ -62,7 +62,7 @@ void MainWindow::returnTextForSaveAs(int indexId, QString str)
         return;
     }
     QFile saveFile(saveFilePath);
-    if(!saveFile.open(QIODevice::ReadWrite|QIODevice::Text)){
+    if(!saveFile.open(QIODevice::WriteOnly|QIODevice::Text)){
         QMessageBox::warning(this,"提示",QString("无法保存文件 %1:\n%2.")
                              .arg(saveFilePath,saveFile.errorString()));
         return;
