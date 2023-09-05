@@ -37,7 +37,7 @@ void MainWindow::returnTextForSave(int indexId, QString str)
     //保存文件
     QString saveFilePath=filePath[indexId];
     QFile saveFile(saveFilePath);
-    if(!saveFile.open(QIODevice::ReadWrite|QIODevice::Text)){
+    if(!saveFile.open(QIODevice::WriteOnly|QIODevice::Text)){ //防止保存bug
         QMessageBox::warning(this,"提示",QString("无法保存文件 %1:\n%2.")
                              .arg(saveFilePath,saveFile.errorString()));
         return;
@@ -91,8 +91,9 @@ void MainWindow::tabTextChanged(int index)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     //窗口关闭前，关闭所有标签页
-    Q_UNUSED(event);
     on_actionCloseAll_triggered();
+    if(~ui->tabWidget->currentIndex())
+        event->ignore();
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -217,7 +218,8 @@ void MainWindow::on_actionCloseAll_triggered()
 {
     //关闭所有文件
     while(~ui->tabWidget->currentIndex())
-        on_actionClose_triggered();
+        if(!closeTab(ui->tabWidget->currentIndex()))
+            break;
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -307,7 +309,7 @@ void MainWindow::saveAllFile()
         emit prepareTextForSave(i);
 }
 
-void MainWindow::closeTab(int index)
+bool MainWindow::closeTab(int index)
 {
     //关闭标签页
     QString filename=filePath[index].split("/").last();
@@ -319,7 +321,7 @@ void MainWindow::closeTab(int index)
                                            QMessageBox::Save);
         switch(ret){
         case QMessageBox::Cancel:
-            return;
+            return false;
         case QMessageBox::Save:
             on_actionSave_triggered();
         }
@@ -327,6 +329,7 @@ void MainWindow::closeTab(int index)
     ui->tabWidget->removeTab(index);
     filePath.removeAt(index);
     emit tabClosed(index);
+    return true;
 }
 
 void MainWindow::closeProject(QTreeWidgetItem *project)
@@ -502,7 +505,9 @@ void MainWindow::on_actionCompileRun_triggered()
         return;
     }
     on_actionCompile_triggered();
-    on_actionRun_triggered();
+    //todo编译完成信号连接
+    QTimer::singleShot(1000,this,&MainWindow::on_actionRun_triggered);
+    //on_actionRun_triggered();
 }
 
 void MainWindow::on_actionOpenProject_triggered()

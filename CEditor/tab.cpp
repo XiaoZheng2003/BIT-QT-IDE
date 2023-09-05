@@ -60,7 +60,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     //应用关键字高亮
     ui->plainTextEdit->setFont(font);
     highlighter = new Highlighter(ui->plainTextEdit->document());
-    ui->plainTextEdit->setPlainText(text);
+    emit ui->plainTextEdit->initText(text);
 
     connect(ui->plainTextEdit,&CodeEditor::textRealChanged,[=](){
         //当文本被修改
@@ -142,7 +142,10 @@ int Tab::getTotalLines()
 void Tab::on_jumpto_clicked()
 {
     int linenum=ui->lineEdit->text().toInt();
-     jumpToLine(linenum);
+    if(linenum>ui->plainTextEdit->blockCount()){
+        QMessageBox::critical(this,"提示","该行不存在"); }
+    else{
+        jumpToLine(linenum);}
 }
 
 void Tab::jumpToLine(int line) {

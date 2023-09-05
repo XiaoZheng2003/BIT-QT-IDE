@@ -18,14 +18,14 @@
 class Brackets // 括号匹配类
 {
 public:
-    Brackets():currentPos(0),correspondingPos(0),type(0){};
+    Brackets():currentPos(0),correspondingPos(-1),type(0){};
     Brackets(int currentPosition, int correspondingPosition, int bracketType) {
         currentPos = currentPosition;
         correspondingPos = correspondingPosition;
         type = bracketType;
     }
     int currentPos = 0;
-    int correspondingPos = 0;
+    int correspondingPos = -1;
     int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'
 };
 
@@ -37,7 +37,7 @@ public:
     void matchBrackets();
     void setLineNumberArea(QListWidget *lineNumberArea);
     void undo();
-    //    void redo();
+    void redo();
 
 public slots:
     void updateLineNumberArea();
@@ -55,22 +55,21 @@ protected:
 signals:
     void scrollBarValue(int value);
     void textRealChanged();
+    void initText(QString text);
 
 private:
     QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
     QString m_previousText;
     QStack<QString> m_undoStack;
-    //    QStack<QString> m_redoStack;
+    QStack<QString> m_redoStack;
     QTimer *m_timer;
     bool m_cursorMoved = true;// 记录成对符号自动补全后光标是否发生移动
 
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();
     void pushUndoStack();
-    //    void clearRedoStack();
     void restartTimer();
-    bool bracketComplete(QKeyEvent *event);
 };
 
 #endif // CODEEDITOR_H
