@@ -14,6 +14,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QStack>
+#include <QChar>
 
 class Brackets // 括号匹配类
 {
@@ -68,9 +69,10 @@ private:
     QStack<QString> m_redoStack;
     QTimer *m_timer;
     QCompleter *completer=nullptr;
-    bool m_completeBrace = false;
-    
+    bool m_cursorMoved = true;// 记录成对符号自动补全后光标是否发生移动
+
     void sendCurrentScrollBarValue();
+    bool bracketComplete(QKeyEvent *event);
     void highlightMatchedBrackets();
     void pushUndoStack();
     void restartTimer();
