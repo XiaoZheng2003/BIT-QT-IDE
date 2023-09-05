@@ -153,7 +153,7 @@ border-radius:20px;</string>
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>21</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -175,6 +175,7 @@ border-radius:20px;</string>
      <string>编辑</string>
     </property>
     <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
     <addaction name="separator"/>
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
@@ -238,6 +239,7 @@ border-radius:20px;</string>
    <addaction name="actionSave"/>
    <addaction name="actionClose"/>
    <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
    <addaction name="actionCut"/>
@@ -347,6 +349,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/redo.png</normaloff>:/pic/redo.png</iconset>
+   </property>
    <property name="text">
     <string>恢复</string>
    </property>
