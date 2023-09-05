@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/new/prefix1">
+    <qresource prefix="/">
         <file>pic/aboutus.png</file>
         <file>pic/c_and_r_project.png</file>
         <file>pic/c_and_run.png</file>
@@ -24,5 +24,6 @@
         <file>pic/saveas.png</file>
         <file>pic/search.png</file>
         <file>pic/withdraw.png</file>
+        <file>wordlist.txt</file>
     </qresource>
 </RCC>

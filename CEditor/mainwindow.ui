@@ -153,7 +153,7 @@ border-radius:20px;</string>
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>30</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -262,7 +262,7 @@ border-radius:20px;</string>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/open.png</normaloff>:/new/prefix1/pic/open.png</iconset>
+     <normaloff>:/pic/open.png</normaloff>:/pic/open.png</iconset>
    </property>
    <property name="text">
     <string>打开文件</string>
@@ -277,7 +277,7 @@ border-radius:20px;</string>
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/save.png</normaloff>:/new/prefix1/pic/save.png</iconset>
+     <normaloff>:/pic/save.png</normaloff>:/pic/save.png</iconset>
    </property>
    <property name="text">
     <string>保存</string>
@@ -289,7 +289,7 @@ border-radius:20px;</string>
   <action name="actionSaveas">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/saveas.png</normaloff>:/new/prefix1/pic/saveas.png</iconset>
+     <normaloff>:/pic/saveas.png</normaloff>:/pic/saveas.png</iconset>
    </property>
    <property name="text">
     <string>另存为</string>
@@ -298,7 +298,7 @@ border-radius:20px;</string>
   <action name="actionClose">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/close.png</normaloff>:/new/prefix1/pic/close.png</iconset>
+     <normaloff>:/pic/close.png</normaloff>:/pic/close.png</iconset>
    </property>
    <property name="text">
     <string>关闭</string>
@@ -310,7 +310,7 @@ border-radius:20px;</string>
   <action name="actionCloseAll">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/closeall.png</normaloff>:/new/prefix1/pic/closeall.png</iconset>
+     <normaloff>:/pic/closeall.png</normaloff>:/pic/closeall.png</iconset>
    </property>
    <property name="text">
     <string>全部关闭</string>
@@ -319,7 +319,7 @@ border-radius:20px;</string>
   <action name="actionNewFile">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/new.png</normaloff>:/new/prefix1/pic/new.png</iconset>
+     <normaloff>:/pic/new.png</normaloff>:/pic/new.png</iconset>
    </property>
    <property name="text">
     <string>新建文件</string>
@@ -334,7 +334,7 @@ border-radius:20px;</string>
   <action name="actionUndo">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/withdraw.png</normaloff>:/new/prefix1/pic/withdraw.png</iconset>
+     <normaloff>:/pic/withdraw.png</normaloff>:/pic/withdraw.png</iconset>
    </property>
    <property name="text">
     <string>撤销</string>
@@ -360,7 +360,7 @@ border-radius:20px;</string>
   <action name="actionCopy">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/copy.png</normaloff>:/new/prefix1/pic/copy.png</iconset>
+     <normaloff>:/pic/copy.png</normaloff>:/pic/copy.png</iconset>
    </property>
    <property name="text">
     <string>复制</string>
@@ -372,7 +372,7 @@ border-radius:20px;</string>
   <action name="actionPaste">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/cut.png</normaloff>:/new/prefix1/pic/cut.png</iconset>
+     <normaloff>:/pic/cut.png</normaloff>:/pic/cut.png</iconset>
    </property>
    <property name="text">
     <string>粘贴</string>
@@ -384,7 +384,7 @@ border-radius:20px;</string>
   <action name="actionCut">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/cutting.png</normaloff>:/new/prefix1/pic/cutting.png</iconset>
+     <normaloff>:/pic/cutting.png</normaloff>:/pic/cutting.png</iconset>
    </property>
    <property name="text">
     <string>剪切</string>
@@ -396,7 +396,7 @@ border-radius:20px;</string>
   <action name="selectall">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/choose_all.png</normaloff>:/new/prefix1/pic/choose_all.png</iconset>
+     <normaloff>:/pic/choose_all.png</normaloff>:/pic/choose_all.png</iconset>
    </property>
    <property name="text">
     <string>全选</string>
@@ -405,7 +405,7 @@ border-radius:20px;</string>
   <action name="exegesis">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/notice.png</normaloff>:/new/prefix1/pic/notice.png</iconset>
+     <normaloff>:/pic/notice.png</normaloff>:/pic/notice.png</iconset>
    </property>
    <property name="text">
     <string>注释</string>
@@ -414,7 +414,7 @@ border-radius:20px;</string>
   <action name="actionSearch">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/search.png</normaloff>:/new/prefix1/pic/search.png</iconset>
+     <normaloff>:/pic/search.png</normaloff>:/pic/search.png</iconset>
    </property>
    <property name="text">
     <string>搜索</string>
@@ -426,7 +426,7 @@ border-radius:20px;</string>
   <action name="actionReplace">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/replace.png</normaloff>:/new/prefix1/pic/replace.png</iconset>
+     <normaloff>:/pic/replace.png</normaloff>:/pic/replace.png</iconset>
    </property>
    <property name="text">
     <string>替换</string>
@@ -435,7 +435,7 @@ border-radius:20px;</string>
   <action name="actionCompile">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/compile.png</normaloff>:/new/prefix1/pic/compile.png</iconset>
+     <normaloff>:/pic/compile.png</normaloff>:/pic/compile.png</iconset>
    </property>
    <property name="text">
     <string>编译</string>
@@ -444,7 +444,7 @@ border-radius:20px;</string>
   <action name="actionRun">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/run.png</normaloff>:/new/prefix1/pic/run.png</iconset>
+     <normaloff>:/pic/run.png</normaloff>:/pic/run.png</iconset>
    </property>
    <property name="text">
     <string>运行</string>
@@ -453,7 +453,7 @@ border-radius:20px;</string>
   <action name="actionCompileRun">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/c_and_run.png</normaloff>:/new/prefix1/pic/c_and_run.png</iconset>
+     <normaloff>:/pic/compile_project.png</normaloff>:/pic/compile_project.png</iconset>
    </property>
    <property name="text">
     <string>编译运行</string>
@@ -462,7 +462,7 @@ border-radius:20px;</string>
   <action name="help">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/help.png</normaloff>:/new/prefix1/pic/help.png</iconset>
+     <normaloff>:/pic/help.png</normaloff>:/pic/help.png</iconset>
    </property>
    <property name="text">
     <string>查看CEditor的帮助</string>
@@ -471,7 +471,7 @@ border-radius:20px;</string>
   <action name="aout">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/aboutus.png</normaloff>:/new/prefix1/pic/aboutus.png</iconset>
+     <normaloff>:/pic/aboutus.png</normaloff>:/pic/aboutus.png</iconset>
    </property>
    <property name="text">
     <string>关于CEditor</string>
@@ -480,7 +480,7 @@ border-radius:20px;</string>
   <action name="actionOpenProject">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/open_project.png</normaloff>:/new/prefix1/pic/open_project.png</iconset>
+     <normaloff>:/pic/open_project.png</normaloff>:/pic/open_project.png</iconset>
    </property>
    <property name="text">
     <string>打开项目</string>
@@ -500,7 +500,7 @@ border-radius:20px;</string>
   <action name="actionCompileProject">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/compile_project.png</normaloff>:/new/prefix1/pic/compile_project.png</iconset>
+     <normaloff>:/pic/compile_project.png</normaloff>:/pic/compile_project.png</iconset>
    </property>
    <property name="text">
     <string>编译项目</string>
@@ -512,7 +512,7 @@ border-radius:20px;</string>
   <action name="actionRunProject">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/run_project.png</normaloff>:/new/prefix1/pic/run_project.png</iconset>
+     <normaloff>:/pic/run_project.png</normaloff>:/pic/run_project.png</iconset>
    </property>
    <property name="text">
     <string>运行项目</string>
@@ -524,7 +524,7 @@ border-radius:20px;</string>
   <action name="actionCompileRunProject">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/new/prefix1/pic/c_and_r_project.png</normaloff>:/new/prefix1/pic/c_and_r_project.png</iconset>
+     <normaloff>:/pic/c_and_r_project.png</normaloff>:/pic/c_and_r_project.png</iconset>
    </property>
    <property name="text">
     <string>编译运行项目</string>
