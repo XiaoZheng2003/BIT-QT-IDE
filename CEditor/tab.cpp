@@ -149,11 +149,18 @@ int Tab::getTotalLines()
 
 void Tab::on_jumpto_clicked()
 {
-    int linenum=ui->lineEdit->text().toInt();
-    if(linenum>ui->plainTextEdit->blockCount()){
-        QMessageBox::critical(this,"提示","该行不存在"); }
-    else{
-        jumpToLine(linenum);}
+    QString linenumStr = ui->lineEdit->text();
+    bool isNum;
+    int linenum = linenumStr.toInt(&isNum);
+    if (!isNum) {
+        QMessageBox::critical(this, "提示", "请输入格式正确的数字");
+    }
+    else if (linenum > ui->plainTextEdit->blockCount() || linenum < 1) {
+        QMessageBox::critical(this, "提示", "该行不存在");
+    }
+    else {
+        jumpToLine(linenum);
+    }
 }
 
 QAbstractItemModel *Tab::modelFromFile(const QString &fileName)
