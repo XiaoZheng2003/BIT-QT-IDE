@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(search,&Search::sendStartSearchDataToMain,this,&MainWindow::receiveStartSearchDataForMain);  //接受搜索信号
     connect(search,&Search::sendNextSearchDataToMain,this,&MainWindow::receiveNextSearchDataForMain);  //接受搜索信号
     connect(search,&Search::sendCloseSearchDataToMain,this,&MainWindow::receiveCloseSearchDataForMain);  //接受搜索信号
-    connect(replace,&replace::sendReplaceDataToMain,this,&MainWindow::receiveReplaceDataForMain);  //接受替换信号
+    connect(replace,&replace::sendAllReplaceDataToMain,this,&MainWindow::receiveAllReplaceDataForMain);  //接受替换信号
+    connect(replace,&replace::sendNextReplaceDataToMain,this,&MainWindow::receiveNextReplaceDataForMain);  //接受替换信号
 
     //初始化项目右键菜单
     initProjectTreeMenu();
@@ -262,7 +263,8 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::sendStartSearchDataToTab,tab,&Tab::receiveStartSearchDataForTab);
     connect(this,&MainWindow::sendNextSearchDataToTab,tab,&Tab::receiveNextSearchDataForTab);
     connect(this,&MainWindow::sendCloseSearchDataToTab,tab,&Tab::receiveCloseSearchDataForTab);
-    connect(this,&MainWindow::sendReplaceDataToTab,tab,&Tab::receiveReplaceDataForTab);
+    connect(this,&MainWindow::sendAllReplaceDataToTab,tab,&Tab::receiveAllReplaceDataForTab);
+    connect(this,&MainWindow::sendNextReplaceDataToTab,tab,&Tab::receiveNextReplaceDataForTab);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -629,14 +631,19 @@ void MainWindow::receiveNextSearchDataForMain(QString data,int state) //从搜�
 
 void MainWindow::receiveCloseSearchDataForMain() //从搜索对话框接收搜索数据，发送给指定页面
 {
-    qDebug("suc!!!!!");
     emit sendCloseSearchDataToTab();
 }
 
-void MainWindow::receiveReplaceDataForMain(QString sear, QString rep,int state) //接受替换数据
+void MainWindow::receiveAllReplaceDataForMain(QString sear, QString rep,int state) //接受替换数据
 {
     int index = ui->tabWidget->currentIndex();
-    emit sendReplaceDataToTab(sear,rep,index,state);
+    emit sendAllReplaceDataToTab(sear,rep,index,state);
+}
+
+void MainWindow::receiveNextReplaceDataForMain(QString sear, QString rep,int state) //接受替换数据
+{
+    int index = ui->tabWidget->currentIndex();
+    emit sendNextReplaceDataToTab(sear,rep,index,state);
 }
 
 void MainWindow::on_actionSearch_triggered() //搜索

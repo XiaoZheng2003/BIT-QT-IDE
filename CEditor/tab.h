@@ -49,7 +49,8 @@ public slots:
     void receiveStartSearchDataForTab(QString,int,int state,int);
     void receiveCloseSearchDataForTab();
     void receiveNextSearchDataForTab(QString,int,int state);
-    void receiveReplaceDataForTab(QString,QString,int,int state);
+    void receiveAllReplaceDataForTab(QString,QString,int,int state);
+    void receiveNextReplaceDataForTab(QString,QString,int,int state);
 
 signals:
     void returnTextForSave(int indexId, QString str);
