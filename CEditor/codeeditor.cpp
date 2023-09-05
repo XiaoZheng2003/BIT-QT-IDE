@@ -574,11 +574,12 @@ void CodeEditor::highlightMatchedBrackets()
     if(before=='}'||before==')'){
         int matchingPos = bramap.value(pos-1).correspondingPos;
         qDebug()<<1<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
-        highlightCursor.setPosition(pos-1);
-        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        highlightCursor.setCharFormat(highlightFormat);
         //匹配
         if(matchingPos != -1){
+            highlightCursor.setPosition(pos-1);
+            highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            highlightCursor.setCharFormat(highlightFormat);
+
             highlightCursor.setPosition(matchingPos);
             highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
             highlightCursor.setCharFormat(highlightFormat);
@@ -587,11 +588,12 @@ void CodeEditor::highlightMatchedBrackets()
     if(after=='{'||after=='('){
         int matchingPos = bramap.value(pos).correspondingPos;
         qDebug()<<2<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
-        highlightCursor.setPosition(pos);
-        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        highlightCursor.setCharFormat(highlightFormat);
         //匹配
         if(matchingPos != -1){
+            highlightCursor.setPosition(pos);
+            highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            highlightCursor.setCharFormat(highlightFormat);
+
             highlightCursor.setPosition(matchingPos);
             highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
             highlightCursor.setCharFormat(highlightFormat);
