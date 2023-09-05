@@ -27,7 +27,19 @@ CodeEditor::CodeEditor(QWidget *parent):
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
-    //捕获撤销和重做快捷键
+    //捕获快捷键
+    if(completer&&completer->popup()->isVisible()){
+        //使快捷键优先作用于widget
+        switch(event->key()){
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            event->ignore();
+            return;
+        }
+    }
     if(event->matches(QKeySequence::Undo)){
         undo();
         event->accept();
@@ -82,7 +94,46 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         QPlainTextEdit::keyPressEvent(event);
     }
     else{
-        QPlainTextEdit::keyPressEvent(event);
+        // 若completer不存在，或按下键非Ctrl+E
+        bool isShortCut=event->modifiers()==Qt::ControlModifier&&event->key()==Qt::Key_E;
+        if(!completer||!isShortCut)
+            QPlainTextEdit::keyPressEvent(event);
+
+        // 判断是否按下了Ctrl键或Shift键
+        bool ctrlOrShift=event->modifiers()==Qt::ControlModifier||event->modifiers()==Qt::ShiftModifier;
+        if(ctrlOrShift&&event->text().isEmpty()) return;
+
+        // 结束词
+        QString endOfWord("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-=");
+
+        // 判断是否按下修饰键（除了Ctrl和Shift键）
+        bool hasModifier=event->modifiers()!=Qt::NoModifier&&!ctrlOrShift;
+
+        // 获取光标下的文本作为自动完成的前缀
+        QString completionPrefix=this->textUnderCursor();
+
+        /* 如果不是快捷键，并且满足以下条件之一，则不显示自动完成窗口：
+        ** 1. 按下修饰键
+        ** 2. 按下的文本为空
+        ** 3. 光标下的文本长度小于2
+        ** 4. 按下的文本的最后一个字符在结束词中
+        */
+        if(!isShortCut&&(hasModifier || event->text().isEmpty()|| completionPrefix.length() < 2
+                            || endOfWord.contains(event->text().right(1)))){
+            completer->popup()->hide();
+            return;
+        }
+        // 如果completionPrefix与当前自动完成的前缀不相等，则更新自动完成的前缀，并将弹出窗口的当前索引设置为第一个选项
+        if(completionPrefix!=completer->completionPrefix()){
+            completer->setCompletionPrefix(completionPrefix);
+            completer->popup()->setCurrentIndex(completer->completionModel()->index(0,0));
+        }
+        // 获取光标位置的矩形区域，并设置弹出窗口的宽度以适应内容和垂直滚动条的宽度
+        QRect rect=this->cursorRect();
+        rect.setWidth(completer->popup()->sizeHintForColumn(0)+
+                      completer->popup()->verticalScrollBar()->sizeHint().width());
+        // 在光标位置弹出自动完成的弹出窗口
+        completer->complete(rect);
     }
 }
 
@@ -123,10 +174,19 @@ void CodeEditor::wheelEvent(QWheelEvent *event)
     }
 }
 
+void CodeEditor::focusInEvent(QFocusEvent *event)
+{
+    //设置窗口焦点
+    if(completer) completer->setWidget(this);
+    QPlainTextEdit::focusInEvent(event);
+}
+
 void CodeEditor::undo()
 {
     //撤销操作
+    //防止撤销带来的更新重新压入撤销栈
     disconnect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
+    //最少保留初始状态
     if(m_undoStack.count()>1){
         QString currentText = this->toPlainText();
         m_redoStack.push(currentText); // 将当前文本压入重做栈
@@ -135,12 +195,14 @@ void CodeEditor::undo()
         this->setPlainText(undoText);
         moveCursorToPostion(findFirstDifference(currentText,undoText));
     }
+    //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
 }
 
 void CodeEditor::redo()
 {
     //恢复操作
+    //防止恢复带来的更新重新压入撤销栈
     disconnect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
     if(!m_redoStack.isEmpty()){
         QString currentText = this->toPlainText();
@@ -149,6 +211,7 @@ void CodeEditor::redo()
         this->setPlainText(redoText);
         moveCursorToPostion(findFirstDifference(currentText,redoText));
     }
+    //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
 }
 
@@ -444,6 +507,45 @@ void CodeEditor::moveCursorToPostion(int pos)
     QTextCursor cursor=this->textCursor();
     cursor.setPosition(pos);
     this->setTextCursor(cursor);
+}
+
+void CodeEditor::setCompleter(QCompleter *c)
+{
+    //设置自动补全
+    if(completer) completer->disconnect(this);
+    completer=c;
+    if(!c) return;
+
+    c->setWidget(this);
+    c->setCompletionMode(QCompleter::PopupCompletion);
+    c->setCaseSensitivity(Qt::CaseSensitive);
+    connect(c,QOverload<const QString &>::of(&QCompleter::activated),this,&CodeEditor::insertCompletion);
+}
+
+QCompleter *CodeEditor::getCompleter()
+{
+    return completer;
+}
+
+void CodeEditor::insertCompletion(const QString &completion)
+{
+    //将选中的选项的文本插入
+    if (completer->widget() != this)
+        return;
+    QTextCursor cursor = textCursor();
+    int extra = completion.length() - completer->completionPrefix().length();
+    cursor.movePosition(QTextCursor::Left);
+    cursor.movePosition(QTextCursor::EndOfWord);
+    cursor.insertText(completion.right(extra));
+    setTextCursor(cursor);
+}
+
+QString CodeEditor::textUnderCursor()
+{
+    //获取当前光标下词语
+    QTextCursor cursor=textCursor();
+    cursor.select(QTextCursor::WordUnderCursor);
+    return cursor.selectedText();
 }
 
 void CodeEditor::autoIndent()

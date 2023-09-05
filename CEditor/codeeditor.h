@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QTextDocument>
 #include <QTextBlock>
+#include <QCompleter>
 #include <QTimer>
 #include <QDebug>
 #include <QStack>
@@ -33,8 +34,10 @@ class CodeEditor : public QPlainTextEdit
     Q_OBJECT
 public:
     explicit CodeEditor(QWidget *parent=nullptr);
+
     void matchBrackets();
     void setLineNumberArea(QListWidget *lineNumberArea);
+    void setCompleter(QCompleter *c);
     void undo();
     void redo();
 
@@ -49,6 +52,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void focusInEvent(QFocusEvent *event) override;
     //void paintEvent(QPaintEvent *event) override;
 
 signals:
@@ -63,6 +67,7 @@ private:
     QStack<QString> m_undoStack;
     QStack<QString> m_redoStack;
     QTimer *m_timer;
+    QCompleter *completer=nullptr;
     bool m_completeBrace = false;
     
     void sendCurrentScrollBarValue();
@@ -71,6 +76,9 @@ private:
     void restartTimer();
     int findFirstDifference(const QString& str1, const QString& str2);
     void moveCursorToPostion(int pos);
+    QCompleter *getCompleter();
+    void insertCompletion(const QString &completion);
+    QString textUnderCursor();
 };
 
 #endif // CODEEDITOR_H
