@@ -99,7 +99,7 @@ private:
     void initConnection(Tab *tab);
     void openFile(QString openFilePath);
     void saveAllFile();
-    void closeTab(int index);
+    bool closeTab(int index);
     void closeProject(QTreeWidgetItem *project);
     void removeItem(QTreeWidgetItem *item);
     QString getCorrentUnicode(const QByteArray &text);
