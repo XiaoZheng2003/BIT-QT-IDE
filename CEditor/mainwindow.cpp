@@ -329,6 +329,9 @@ bool MainWindow::closeTab(int index)
     ui->tabWidget->removeTab(index);
     filePath.removeAt(index);
     emit tabClosed(index);
+    //清空状态栏
+    row_col->setText("");
+    all_row->setText("");
     return true;
 }
 
@@ -350,6 +353,9 @@ void MainWindow::closeProject(QTreeWidgetItem *project)
     if(ui->currentProject->text()==projectName)
         ui->currentProject->setText("无");
     removeItem(project);
+    //清空状态栏
+    row_col->setText("");
+    all_row->setText("");
 }
 
 void MainWindow::removeItem(QTreeWidgetItem *item)
