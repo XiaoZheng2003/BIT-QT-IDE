@@ -497,7 +497,7 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
         QMessageBox::information(this, tr("注意"), tr("没有找到内容"), QMessageBox::Ok);
         qDebug("not found");
     } else {
-        qDebug() << "替换11成功！";
+        qDebug() << "替换成功！";
         QMessageBox::information(NULL, "信息", "替换成功");
     }
 }
