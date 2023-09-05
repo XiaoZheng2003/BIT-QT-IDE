@@ -23,6 +23,8 @@ CodeEditor::CodeEditor(QWidget *parent):
     connect(this,&CodeEditor::cursorPositionChanged,this,&CodeEditor::highlightMatchedBrackets);
     //行数变化时自动缩进
     connect(this,&QPlainTextEdit::blockCountChanged,this,&CodeEditor::autoIndent);
+    // TODO 括号匹配结束向其发送修改ui的信号
+    connect(this,&CodeEditor::matchFinished,this,&CodeEditor::updateFoldListWidget);
 }
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
@@ -89,6 +91,11 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
 void CodeEditor::setLineNumberArea(QListWidget *lineNumberArea)
 {
     m_lineNumberArea=lineNumberArea;
+}
+
+void CodeEditor::setFoldListWidget(FoldListWidget *foldListWidget)
+{
+    m_foldListWidget=foldListWidget;
 }
 
 void CodeEditor::resizeEvent(QResizeEvent *event)
@@ -173,35 +180,36 @@ void CodeEditor::matchBrackets() {
             if (!inComment) {
                 switch (currentChar.unicode()) {
                 case '{':
-                    stack1.append(Brackets(current_length + j, -1, 1)); // 向栈内加入
+                    stack1.append(Brackets(current_length + j, -1, 1, i)); // 向栈内加入
+                    //qDebug()<<"stackrow:"<<i;
                     break;
                 case '(':
-                    stack2.append(Brackets(current_length + j, -1, 2)); // 向栈内加入
+                    stack2.append(Brackets(current_length + j, -1, 2, i)); // 向栈内加入
                     break;
                 case '}':
                     if (!stack1.isEmpty()) {
                         int end = current_length + j;
                         int start = stack1.last().currentPos;
-                        bramap.insert(end, Brackets(end, start, -1)); // 加入两个括号匹配
-                        bramap.insert(start, Brackets(start, end, 1));
+                        bramap.insert(end, Brackets(end, start, -1, stack1.last().row)); // 加入两个括号匹配
+                        bramap.insert(start, Brackets(start, end, 1, i));
                         stack1.removeLast(); // 移除栈的最后一个
                     }
                     else{
                         int end = current_length + j;
-                        bramap.insert(end, Brackets(end, -1, -1)); // 无匹配的情况
+                        bramap.insert(end, Brackets(end, -1, -1, -1)); // 无匹配的情况
                     }
                     break;
                 case ')':
                     if (!stack2.isEmpty()) {
                         int end = current_length + j;
                         int start = stack2.last().currentPos;
-                        bramap.insert(end, Brackets(end, start, -2)); // 加入两个括号匹配
-                        bramap.insert(start, Brackets(start, end, 2));
+                        bramap.insert(end, Brackets(end, start, -2, stack2.last().row)); // 加入两个括号匹配
+                        bramap.insert(start, Brackets(start, end, 2, i));
                         stack2.removeLast();
                     }
                     else{
                         int end = current_length + j;
-                        bramap.insert(end, Brackets(end, -1, -2));
+                        bramap.insert(end, Brackets(end, -1, -2, -1));
                     }
                     break;
                 case '/':
@@ -261,6 +269,8 @@ void CodeEditor::matchBrackets() {
 
         current_length += string.length() + 1; // 回车符
     }
+//    stack1.clear();
+//    stack2.clear();
     // 插入栈内没匹配上的
     while(!stack1.empty()){
         bramap.insert(stack1.last().currentPos,stack1.last());
@@ -270,6 +280,7 @@ void CodeEditor::matchBrackets() {
         bramap.insert(stack2.last().currentPos,stack2.last());
         stack2.removeLast();
     }
+    emit matchFinished();
 }
 
 void CodeEditor::updateLineNumberArea()
@@ -333,6 +344,51 @@ void CodeEditor::updateLineNumberArea()
         }
     }
     QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
+}
+
+void CodeEditor::updateFoldListWidget()
+{
+    int current_length = 0;
+    QTextDocument* document = this->document();
+    int totalRow = document->blockCount();
+    m_foldListWidget->clear();
+    int rowType[totalRow];
+    memset(rowType, 0, sizeof(rowType));
+    for(int i=0;i<totalRow;i++)
+    {
+        QTextBlock line = this->document()->findBlockByNumber(i);
+        QString string = line.text(); // 获取每一行的文本
+        for (int j = 0; j < string.length(); j++) { // 遍历每一个字符
+            QChar currentChar = string.at(j);
+            if(currentChar == '{'){
+                qDebug()<<bramap.value(current_length + j).row;
+                if(bramap.value(current_length + j).row!=i){
+                    rowType[i]=1;
+                    rowType[bramap.value(current_length + j).row]=3;
+                    //TODO设置flag减少循环
+                    for (int k=i+1; k<bramap.value(current_length + j).row; k++){
+                        rowType[k] = 2;
+                    }
+                    break;
+                }
+            }
+        }
+        //qDebug()<<"k:"<<i<<"rowType[k]:"<<rowType[i];
+        current_length += string.length() + 1;
+    }
+    int typeFlag = 0;
+    for (int k=0; k<totalRow; k++){
+        if(typeFlag != 1 && rowType[k] == 3){
+            typeFlag = 1;
+        }
+        if(typeFlag == 1 && rowType[k] == 0){
+            rowType[k-1] = 4;
+            typeFlag = 0;
+        }
+    }
+    for (int k=0; k<totalRow; k++){
+       qDebug()<<"type"<<rowType[k];
+    }
 }
 
 void CodeEditor::handleTextChanged()
