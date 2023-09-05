@@ -456,7 +456,7 @@ void Tab::receiveCloseSearchDataForTab()
     qDebug("suc!");
 }
 
-void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
+void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
 {
     if(index != curIndexId)
         return;
@@ -493,7 +493,48 @@ void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int sta
             qDebug() << "替换成功！";
             QMessageBox::information(NULL, "信息", "替换成功");
     }
-
 }
+
+void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int state)
+{
+    if(index != curIndexId)
+        return;
+
+    QString real_search_str = sear;
+    QTextDocument *document = ui->plainTextEdit->document();
+    QTextCursor cursor(document);
+    bool found = false;
+    QTextCursor highlight_cursor(document);
+    highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
+
+    if (!highlight_cursor.isNull() && !highlight_cursor.atEnd())
+    {
+        switch (state) {
+        case 0:
+            highlight_cursor = document->find(real_search_str, highlight_cursor);
+            break;
+        case 2:
+            highlight_cursor = document->find(real_search_str, highlight_cursor, QTextDocument::FindCaseSensitively);
+            break;
+        }
+
+        if (highlight_cursor.isNull() || highlight_cursor.atEnd()) {
+            found = false;
+        } else {
+            found = true;
+            highlight_cursor.movePosition(QTextCursor::NoMove, QTextCursor::KeepAnchor);
+            highlight_cursor.insertText(rep);
+        }
+    }
+
+    if (!found) {
+        QMessageBox::information(this, tr("注意"), tr("没有找到内容"), QMessageBox::Ok);
+        qDebug("not found");
+    } else {
+        qDebug() << "替换成功！";
+        QMessageBox::information(NULL, "信息", "替换成功");
+    }
+}
+
 
 

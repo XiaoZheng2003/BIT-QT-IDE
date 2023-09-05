@@ -17,11 +17,13 @@ public:
     ~replace();
 
 signals:
-    void sendReplaceDataToMain(QString seastr,QString repstr,int state);
+    void sendAllReplaceDataToMain(QString seastr,QString repstr,int state);
+    void sendNextReplaceDataToMain(QString seastr,QString repstr,int state);
 
 private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+    void on_pushButton_clicked();
 
 private:
     Ui::replace *ui;
