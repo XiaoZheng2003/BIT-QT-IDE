@@ -372,7 +372,7 @@ void CodeEditor::highlightMatchedBrackets()
     QChar after=document->characterAt(pos);
     if(before=='}'||before==')'){
         int matchingPos = bramap.value(pos-1).correspondingPos;
-        qDebug()<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
+        qDebug()<<1<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         highlightCursor.setPosition(pos-1);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         highlightCursor.setCharFormat(highlightFormat);
@@ -385,7 +385,7 @@ void CodeEditor::highlightMatchedBrackets()
     }
     if(after=='{'||after=='('){
         int matchingPos = bramap.value(pos).correspondingPos;
-        qDebug()<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
+        qDebug()<<2<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         highlightCursor.setPosition(pos);
         highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         highlightCursor.setCharFormat(highlightFormat);
@@ -421,8 +421,12 @@ void CodeEditor::autoIndent()
 {
     QTextCursor currentCursor = this->textCursor();
     int pos = currentCursor.position(), level = 0;
+    bool insertEmptyLine = false;
+    if(document()->characterAt(pos - 2) == '{'){
+        insertEmptyLine = true;
+    }
     for(QMap<int,Brackets>::Iterator it = bramap.begin(); it != bramap.end(); it++){
-        if(it.value().currentPos > pos){
+        if(it.value().currentPos >= pos){
             break;
         }
         if(it.value().type == 1){
@@ -437,10 +441,20 @@ void CodeEditor::autoIndent()
             currentCursor.insertText("\t");
         }
     }
-//    if(m_completeBrace){
-//        m_completeBrace = false;
-//        currentCursor.insertText("\n}");
-//        currentCursor.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,2);
-//        setTextCursor(currentCursor);
-//    }
+    if(insertEmptyLine){
+        currentCursor.insertText("\n");
+        m_completeBrace = true;
+    }
+    if(m_completeBrace){
+        m_completeBrace = false;
+        currentCursor.deletePreviousChar();
+        if(document()->characterAt(currentCursor.position())!='}'){
+            currentCursor.insertText("}");
+            currentCursor.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,level+1);
+        }
+        else{
+            currentCursor.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,level);
+        }
+        setTextCursor(currentCursor);
+    }
 }
