@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QStack>
+#include <QChar>
 
 class Brackets // 括号匹配类
 {
@@ -63,14 +64,12 @@ private:
     QStack<QString> m_undoStack;
     QStack<QString> m_redoStack;
     QTimer *m_timer;
-    bool m_completeBrace = false;
-    
+    bool m_cursorMoved = true;// 记录成对符号自动补全后光标是否发生移动
+
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();
     void pushUndoStack();
     void restartTimer();
-    int findFirstDifference(const QString& str1, const QString& str2);
-    void moveCursorToPostion(int pos);
 };
 
 #endif // CODEEDITOR_H
