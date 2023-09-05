@@ -29,7 +29,19 @@ CodeEditor::CodeEditor(QWidget *parent):
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
-    //捕获撤销和重做快捷键
+    //捕获快捷键
+    if(completer&&completer->popup()->isVisible()){
+        //使快捷键优先作用于widget
+        switch(event->key()){
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            event->ignore();
+            return;
+        }
+    }
     if(event->matches(QKeySequence::Undo)){
         undo();
         event->accept();
@@ -38,24 +50,107 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         redo();
         event->accept();
     }
-    else if(event->key() == Qt::Key_BraceLeft){
-        m_completeBrace = true;
-        QPlainTextEdit::keyPressEvent(event);
+    //处理需要括号补全的情况
+    else if(bracketComplete(event));
+    else if(event->key() == Qt::Key_Backspace&&
+             (!m_cursorMoved && abs(document()->characterAt(textCursor().position()).toLatin1() - document()->characterAt(textCursor().position() - 1).toLatin1()) <= 2)){
+        //一对字符整体删除的情况
+        textCursor().deleteChar();
+        textCursor().deletePreviousChar();
     }
-    else if(event->key() == Qt::Key_BracketLeft){
+    else{
+        // 若completer不存在，或按下键非Ctrl+E
+        bool isShortCut = event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_E;
+        if (!completer || !isShortCut)
+            QPlainTextEdit::keyPressEvent(event);
+
+        // 判断是否按下了Ctrl键或Shift键
+        bool ctrlOrShift = event->modifiers() == Qt::ControlModifier || event->modifiers() == Qt::ShiftModifier;
+        if (ctrlOrShift && event->text().isEmpty())
+            return;
+
+        // 结束词
+        QString endOfWord("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-=");
+
+        // 判断是否按下修饰键（除了Ctrl和Shift键）
+        bool hasModifier = event->modifiers() != Qt::NoModifier && !ctrlOrShift;
+
+        // 获取光标下的文本作为自动完成的前缀
+        QString completionPrefix = this->textUnderCursor();
+
+        /* 如果不是快捷键，并且满足以下条件之一，则不显示自动完成窗口：
+        ** 1. 按下修饰键
+        ** 2. 按下的文本为空
+        ** 3. 光标下的文本长度小于2
+        ** 4. 按下的文本的最后一个字符在结束词中
+        */
+        if (!isShortCut && (hasModifier || event->text().isEmpty() || completionPrefix.length() < 2 || endOfWord.contains(event->text().right(1))))
+        {
+            completer->popup()->hide();
+            return;
+        }
+        // 如果completionPrefix与当前自动完成的前缀不相等，则更新自动完成的前缀，并将弹出窗口的当前索引设置为第一个选项
+        if (completionPrefix != completer->completionPrefix())
+        {
+            completer->setCompletionPrefix(completionPrefix);
+            completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
+        }
+        // 获取光标位置的矩形区域，并设置弹出窗口的宽度以适应内容和垂直滚动条的宽度
+        QRect rect = this->cursorRect();
+        rect.setWidth(completer->popup()->sizeHintForColumn(0) +
+                      completer->popup()->verticalScrollBar()->sizeHint().width());
+        // 在光标位置弹出自动完成的弹出窗口
+        completer->complete(rect);
+    }
+    //检测自动补全括号后光标是否移动
+    switch(document()->characterAt(textCursor().position()).toLatin1()){
+    case '}':
+    case ']':
+    case ')':
+    case '>':
+    case '"':
+    case '\'':
+        break;
+    default:
+        //光标发生了移动
+        m_cursorMoved = true;
+    }
+}
+
+bool CodeEditor::bracketComplete(QKeyEvent *event)
+{
+    switch (event->key()) {
+    //补全大括号
+    case Qt::Key_BraceLeft:{
+        m_cursorMoved = false;
+        textCursor().insertText("{}");
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::Left);
+        setTextCursor(cursor);
+        return true;
+    }
+    //补全中括号
+    case Qt::Key_BracketLeft:{
+        m_cursorMoved = false;
         textCursor().insertText("[]");
         QTextCursor cursor = textCursor();
         cursor.movePosition(QTextCursor::Left);
         setTextCursor(cursor);
+        return true;
     }
-    else if(event->key() == Qt::Key_ParenLeft){
+    //补全小括号
+    case Qt::Key_ParenLeft:{
+        m_cursorMoved = false;
         textCursor().insertText("()");
         QTextCursor cursor = textCursor();
         cursor.movePosition(QTextCursor::Left);
         setTextCursor(cursor);
+        return true;
     }
-    else if(event->key() == Qt::Key_Less){
+    //补全尖括号
+    case Qt::Key_Less:{
         if(textCursor().block().text().startsWith("#include")){
+            m_cursorMoved = false;
             textCursor().insertText("<>");
             QTextCursor cursor = textCursor();
             cursor.movePosition(QTextCursor::Left);
@@ -64,27 +159,112 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         else{
             QPlainTextEdit::keyPressEvent(event);
         }
+        return true;
     }
-    else if(event->key() == Qt::Key_QuoteDbl){
+    //补全双引号
+    case Qt::Key_QuoteDbl:{
+        //处理需要略过的情况
+        if(!m_cursorMoved){
+            if(document()->characterAt(textCursor().position()) == '"'){
+                QTextCursor cursor = textCursor();
+                cursor.movePosition(QTextCursor::Right);
+                setTextCursor(cursor);
+                return true;
+            }
+        }
+        m_cursorMoved = false;
         textCursor().insertText("\"\"");
         QTextCursor cursor = textCursor();
         cursor.movePosition(QTextCursor::Left);
         setTextCursor(cursor);
+        return true;
     }
-    else if(event->key() == Qt::Key_Apostrophe){
+    //补全单引号
+    case Qt::Key_Apostrophe:{
+        //处理需要略过的情况
+        if(!m_cursorMoved){
+            if(document()->characterAt(textCursor().position()) == '\''){
+                QTextCursor cursor = textCursor();
+                cursor.movePosition(QTextCursor::Right);
+                setTextCursor(cursor);
+                return true;
+            }
+        }
+        m_cursorMoved = false;
         textCursor().insertText("''");
         QTextCursor cursor = textCursor();
         cursor.movePosition(QTextCursor::Left);
         setTextCursor(cursor);
+        return true;
     }
-    else if(event->key() == Qt::Key_BraceRight){
+    //输入右大括号
+    case Qt::Key_BraceRight:{
+        //处理需要略过的情况
+        if(!m_cursorMoved){
+            if(document()->characterAt(textCursor().position()) == '}'){
+                QTextCursor cursor = textCursor();
+                cursor.movePosition(QTextCursor::Right);
+                setTextCursor(cursor);
+                return true;
+            }
+        }
         if(document()->characterAt(textCursor().position() - 1) == '\t'){
             textCursor().deletePreviousChar();
         }
-        QPlainTextEdit::keyPressEvent(event);
+        return false;
     }
-    else{
-        QPlainTextEdit::keyPressEvent(event);
+    //输入右中括号
+    case Qt::Key_BracketRight:{
+        //处理需要略过的情况
+        if(!m_cursorMoved){
+            if(document()->characterAt(textCursor().position()) == ']'){
+                QTextCursor cursor = textCursor();
+                cursor.movePosition(QTextCursor::Right);
+                setTextCursor(cursor);
+            }
+        }
+        else{
+            QPlainTextEdit::keyPressEvent(event);
+        }
+        return true;
+    }
+    //输入右小括号
+    case Qt::Key_ParenRight:{
+        //处理需要略过的情况
+        if(!m_cursorMoved){
+            if(document()->characterAt(textCursor().position()) == ')'){
+                QTextCursor cursor = textCursor();
+                cursor.movePosition(QTextCursor::Right);
+                setTextCursor(cursor);
+            }
+        }
+        else{
+            QPlainTextEdit::keyPressEvent(event);
+        }
+        return true;
+    }
+    //输入右尖括号
+    case Qt::Key_Greater:{
+        //处理需要略过的情况
+        if(textCursor().block().text().startsWith("#include")){
+            if(!m_cursorMoved){
+                if(document()->characterAt(textCursor().position()) == '>'){
+                    QTextCursor cursor = textCursor();
+                    cursor.movePosition(QTextCursor::Right);
+                    setTextCursor(cursor);
+                }
+            }
+            else{
+                QPlainTextEdit::keyPressEvent(event);
+            }
+        }
+        else{
+            QPlainTextEdit::keyPressEvent(event);
+        }
+        return true;
+    }
+    default:
+        return false;
     }
 }
 
@@ -130,10 +310,19 @@ void CodeEditor::wheelEvent(QWheelEvent *event)
     }
 }
 
+void CodeEditor::focusInEvent(QFocusEvent *event)
+{
+    //设置窗口焦点
+    if(completer) completer->setWidget(this);
+    QPlainTextEdit::focusInEvent(event);
+}
+
 void CodeEditor::undo()
 {
     //撤销操作
+    //防止撤销带来的更新重新压入撤销栈
     disconnect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
+    //最少保留初始状态
     if(m_undoStack.count()>1){
         QString currentText = this->toPlainText();
         m_redoStack.push(currentText); // 将当前文本压入重做栈
@@ -142,12 +331,14 @@ void CodeEditor::undo()
         this->setPlainText(undoText);
         moveCursorToPostion(findFirstDifference(currentText,undoText));
     }
+    //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
 }
 
 void CodeEditor::redo()
 {
     //恢复操作
+    //防止恢复带来的更新重新压入撤销栈
     disconnect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
     if(!m_redoStack.isEmpty()){
         QString currentText = this->toPlainText();
@@ -156,6 +347,7 @@ void CodeEditor::redo()
         this->setPlainText(redoText);
         moveCursorToPostion(findFirstDifference(currentText,redoText));
     }
+    //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
 }
 
@@ -438,11 +630,12 @@ void CodeEditor::highlightMatchedBrackets()
     if(before=='}'||before==')'){
         int matchingPos = bramap.value(pos-1).correspondingPos;
         qDebug()<<1<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
-        highlightCursor.setPosition(pos-1);
-        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        highlightCursor.setCharFormat(highlightFormat);
         //匹配
         if(matchingPos != -1){
+            highlightCursor.setPosition(pos-1);
+            highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            highlightCursor.setCharFormat(highlightFormat);
+
             highlightCursor.setPosition(matchingPos);
             highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
             highlightCursor.setCharFormat(highlightFormat);
@@ -451,11 +644,12 @@ void CodeEditor::highlightMatchedBrackets()
     if(after=='{'||after=='('){
         int matchingPos = bramap.value(pos).correspondingPos;
         qDebug()<<2<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
-        highlightCursor.setPosition(pos);
-        highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        highlightCursor.setCharFormat(highlightFormat);
         //匹配
         if(matchingPos != -1){
+            highlightCursor.setPosition(pos);
+            highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            highlightCursor.setCharFormat(highlightFormat);
+
             highlightCursor.setPosition(matchingPos);
             highlightCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
             highlightCursor.setCharFormat(highlightFormat);
@@ -502,6 +696,45 @@ void CodeEditor::moveCursorToPostion(int pos)
     this->setTextCursor(cursor);
 }
 
+void CodeEditor::setCompleter(QCompleter *c)
+{
+    //设置自动补全
+    if(completer) completer->disconnect(this);
+    completer=c;
+    if(!c) return;
+
+    c->setWidget(this);
+    c->setCompletionMode(QCompleter::PopupCompletion);
+    c->setCaseSensitivity(Qt::CaseSensitive);
+    connect(c,QOverload<const QString &>::of(&QCompleter::activated),this,&CodeEditor::insertCompletion);
+}
+
+QCompleter *CodeEditor::getCompleter()
+{
+    return completer;
+}
+
+void CodeEditor::insertCompletion(const QString &completion)
+{
+    //将选中的选项的文本插入
+    if (completer->widget() != this)
+        return;
+    QTextCursor cursor = textCursor();
+    int extra = completion.length() - completer->completionPrefix().length();
+    cursor.movePosition(QTextCursor::Left);
+    cursor.movePosition(QTextCursor::EndOfWord);
+    cursor.insertText(completion.right(extra));
+    setTextCursor(cursor);
+}
+
+QString CodeEditor::textUnderCursor()
+{
+    //获取当前光标下词语
+    QTextCursor cursor=textCursor();
+    cursor.select(QTextCursor::WordUnderCursor);
+    return cursor.selectedText();
+}
+
 void CodeEditor::autoIndent()
 {
     QTextCursor currentCursor = this->textCursor();
@@ -526,20 +759,17 @@ void CodeEditor::autoIndent()
             currentCursor.insertText("\t");
         }
     }
-    if(insertEmptyLine){
-        currentCursor.insertText("\n");
-        m_completeBrace = true;
-    }
-    if(m_completeBrace){
-        m_completeBrace = false;
-        currentCursor.deletePreviousChar();
-        if(document()->characterAt(currentCursor.position())!='}'){
-            currentCursor.insertText("}");
-            currentCursor.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,level+1);
+    if(document()->characterAt(pos - 2) == '{'){
+        if(document()->characterAt(currentCursor.position()) == '}'){
+            QString text = "\n";
+            for(int i = 0; i < level; i++){
+                text += "\t";
+            }
+            currentCursor.insertText(text);
+            currentCursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 1);
+            currentCursor.deleteChar();
+            currentCursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, level);
+            setTextCursor(currentCursor);
         }
-        else{
-            currentCursor.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,level);
-        }
-        setTextCursor(currentCursor);
     }
 }

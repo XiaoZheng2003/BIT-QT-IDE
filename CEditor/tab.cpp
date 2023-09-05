@@ -96,6 +96,14 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     highlighter = new Highlighter(ui->plainTextEdit->document());
     emit ui->plainTextEdit->initText(text);
 
+    //自动补全设置
+    completer=new QCompleter(this);
+    completer->setModel(modelFromFile(":/wordlist.txt"));
+    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setWrapAround(false);
+    ui->plainTextEdit->setCompleter(completer);
+
     connect(ui->plainTextEdit,&CodeEditor::textRealChanged,[=](){
         //当文本被修改
         emit textChanged(curIndexId);
@@ -175,8 +183,33 @@ int Tab::getTotalLines()
 
 void Tab::on_jumpto_clicked()
 {
-    int linenum=ui->lineEdit->text().toInt();
-     jumpToLine(linenum);
+    QString linenumStr = ui->lineEdit->text();
+    bool isNum;
+    int linenum = linenumStr.toInt(&isNum);
+    if (!isNum) {
+        QMessageBox::critical(this, "提示", "请输入格式正确的数字");
+    }
+    else if (linenum > ui->plainTextEdit->blockCount() || linenum < 1) {
+        QMessageBox::critical(this, "提示", "该行不存在");
+    }
+    else {
+        jumpToLine(linenum);
+    }
+}
+
+QAbstractItemModel *Tab::modelFromFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly))
+        return new QStringListModel(completer);
+    QStringList words;
+
+    while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        if (!line.isEmpty())
+            words << QString::fromUtf8(line.trimmed());
+    }
+    return new QStringListModel(words, completer);
 }
 
 void Tab::jumpToLine(int line) {
@@ -427,31 +460,40 @@ void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int sta
 {
     if(index != curIndexId)
         return;
-    QStringList qslist;
-    QTextDocument* doc=ui->plainTextEdit->document(); //文本对象
-    int row_num=doc->blockCount () ;//回车符是一个 block
-    if(state >= 0){
-        for (int i=0; i<row_num;i++)
+    QString real_search_str = sear;
+
+    QTextDocument *document = ui->plainTextEdit->document();
+    QTextCursor cursor(document);
+    bool found = false;
+    QTextCursor highlight_cursor(document);
+    highlight_cursor.setPosition(0);
+
+    while(!highlight_cursor.isNull() && !highlight_cursor.atEnd())
+    {
+        switch (state) {
+        case 0:
+            highlight_cursor = document->find(real_search_str,highlight_cursor);
+            break;
+        case 2:
+            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
+            break;
+        }
+        if(!found)
         {
-            QTextBlock textLine=doc->findBlockByNumber (i) ; // 文本中的一段
-            QString str=textLine.text();//将该段转换为QString
-            if(state == 2)//区分大小写且不全字匹配
-                str.replace(sear,rep);
-            else if(state == 0){//不区分大小写且不全字匹配
-                str.replace(sear,rep,Qt::CaseInsensitive);
-            }
-            qslist.append(str);
+            found = true;
         }
-        QStringList::Iterator it;
-        for(it = qslist.begin();it != qslist.end();it++){
-            if(it == qslist.begin()){
-                ui->plainTextEdit->setPlainText(*it);
-            }
-            else{
-                ui->plainTextEdit->appendPlainText(*it);
-            }
-        }
+        highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
+        highlight_cursor.insertText(rep);
     }
-    qDebug("suc!");
-    QMessageBox::information(NULL,"information","ok");
+    if(found == false){
+            QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
+            qDebug("not found");
+    }
+    else{
+            qDebug() << "替换成功！";
+            QMessageBox::information(NULL, "信息", "替换成功");
+    }
+
 }
+
+

@@ -223,6 +223,34 @@ border-radius:20px;</string>
    <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNewFile"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionClose"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionCopy"/>
+   <addaction name="actionPaste"/>
+   <addaction name="actionCut"/>
+   <addaction name="selectall"/>
+   <addaction name="actionSearch"/>
+   <addaction name="actionReplace"/>
+   <addaction name="actionCompile"/>
+   <addaction name="actionRun"/>
+   <addaction name="actionCompileRun"/>
+   <addaction name="actionOpenProject"/>
+   <addaction name="actionCompileRunProject"/>
+   <addaction name="help"/>
+  </widget>
   <action name="actionNewProject">
    <property name="text">
     <string>新建项目</string>
@@ -232,6 +260,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/open.png</normaloff>:/pic/open.png</iconset>
+   </property>
    <property name="text">
     <string>打开文件</string>
    </property>
@@ -243,6 +275,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/save.png</normaloff>:/pic/save.png</iconset>
+   </property>
    <property name="text">
     <string>保存</string>
    </property>
@@ -251,11 +287,19 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionSaveas">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/saveas.png</normaloff>:/pic/saveas.png</iconset>
+   </property>
    <property name="text">
     <string>另存为</string>
    </property>
   </action>
   <action name="actionClose">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/close.png</normaloff>:/pic/close.png</iconset>
+   </property>
    <property name="text">
     <string>关闭</string>
    </property>
@@ -264,11 +308,19 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionCloseAll">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/closeall.png</normaloff>:/pic/closeall.png</iconset>
+   </property>
    <property name="text">
     <string>全部关闭</string>
    </property>
   </action>
   <action name="actionNewFile">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/new.png</normaloff>:/pic/new.png</iconset>
+   </property>
    <property name="text">
     <string>新建文件</string>
    </property>
@@ -280,6 +332,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/withdraw.png</normaloff>:/pic/withdraw.png</iconset>
+   </property>
    <property name="text">
     <string>撤销</string>
    </property>
@@ -302,6 +358,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/copy.png</normaloff>:/pic/copy.png</iconset>
+   </property>
    <property name="text">
     <string>复制</string>
    </property>
@@ -310,6 +370,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/cut.png</normaloff>:/pic/cut.png</iconset>
+   </property>
    <property name="text">
     <string>粘贴</string>
    </property>
@@ -318,6 +382,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionCut">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/cutting.png</normaloff>:/pic/cutting.png</iconset>
+   </property>
    <property name="text">
     <string>剪切</string>
    </property>
@@ -326,16 +394,28 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="selectall">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/choose_all.png</normaloff>:/pic/choose_all.png</iconset>
+   </property>
    <property name="text">
     <string>全选</string>
    </property>
   </action>
   <action name="exegesis">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/notice.png</normaloff>:/pic/notice.png</iconset>
+   </property>
    <property name="text">
     <string>注释</string>
    </property>
   </action>
   <action name="actionSearch">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/search.png</normaloff>:/pic/search.png</iconset>
+   </property>
    <property name="text">
     <string>搜索</string>
    </property>
@@ -344,36 +424,64 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionReplace">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/replace.png</normaloff>:/pic/replace.png</iconset>
+   </property>
    <property name="text">
     <string>替换</string>
    </property>
   </action>
   <action name="actionCompile">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/compile.png</normaloff>:/pic/compile.png</iconset>
+   </property>
    <property name="text">
     <string>编译</string>
    </property>
   </action>
   <action name="actionRun">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/run.png</normaloff>:/pic/run.png</iconset>
+   </property>
    <property name="text">
     <string>运行</string>
    </property>
   </action>
   <action name="actionCompileRun">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/compile_project.png</normaloff>:/pic/compile_project.png</iconset>
+   </property>
    <property name="text">
     <string>编译运行</string>
    </property>
   </action>
   <action name="help">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/help.png</normaloff>:/pic/help.png</iconset>
+   </property>
    <property name="text">
     <string>查看CEditor的帮助</string>
    </property>
   </action>
   <action name="aout">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/aboutus.png</normaloff>:/pic/aboutus.png</iconset>
+   </property>
    <property name="text">
     <string>关于CEditor</string>
    </property>
   </action>
   <action name="actionOpenProject">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/open_project.png</normaloff>:/pic/open_project.png</iconset>
+   </property>
    <property name="text">
     <string>打开项目</string>
    </property>
@@ -390,6 +498,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionCompileProject">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/compile_project.png</normaloff>:/pic/compile_project.png</iconset>
+   </property>
    <property name="text">
     <string>编译项目</string>
    </property>
@@ -398,6 +510,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionRunProject">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/run_project.png</normaloff>:/pic/run_project.png</iconset>
+   </property>
    <property name="text">
     <string>运行项目</string>
    </property>
@@ -406,6 +522,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionCompileRunProject">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/c_and_r_project.png</normaloff>:/pic/c_and_r_project.png</iconset>
+   </property>
    <property name="text">
     <string>编译运行项目</string>
    </property>
@@ -414,6 +534,8 @@ border-radius:20px;</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

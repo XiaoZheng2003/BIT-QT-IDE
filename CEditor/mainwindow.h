@@ -20,6 +20,7 @@
 #include <QTreeWidgetItem>
 #include <QDesktopServices>
 #include <QFileIconProvider>
+#include <QRegularExpression>
 #include <QDebug>
 #include <QLabel>
 
