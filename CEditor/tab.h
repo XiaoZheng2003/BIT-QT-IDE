@@ -1,6 +1,7 @@
 ﻿#ifndef TAB_H
 #define TAB_H
 
+#include <QFile>
 #include <QDialog>
 #include <QWidget>
 #include <QString>
