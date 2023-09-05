@@ -16,6 +16,7 @@
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "highlighttype.h"
+#include "foldlistwidgetitem.h"
 
 enum editType{
     Redo,
