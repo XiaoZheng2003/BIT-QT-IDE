@@ -37,7 +37,7 @@ void MainWindow::returnTextForSave(int indexId, QString str)
     //保存文件
     QString saveFilePath=filePath[indexId];
     QFile saveFile(saveFilePath);
-    if(!saveFile.open(QIODevice::ReadWrite|QIODevice::Text)){
+    if(!saveFile.open(QIODevice::WriteOnly|QIODevice::Text)){ //防止保存bug
         QMessageBox::warning(this,"提示",QString("无法保存文件 %1:\n%2.")
                              .arg(saveFilePath,saveFile.errorString()));
         return;
@@ -502,7 +502,9 @@ void MainWindow::on_actionCompileRun_triggered()
         return;
     }
     on_actionCompile_triggered();
-    on_actionRun_triggered();
+    //todo编译完成信号连接
+    QTimer::singleShot(1000,this,&MainWindow::on_actionRun_triggered);
+    //on_actionRun_triggered();
 }
 
 void MainWindow::on_actionOpenProject_triggered()

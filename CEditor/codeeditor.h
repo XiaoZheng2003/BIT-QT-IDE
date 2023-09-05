@@ -17,14 +17,14 @@
 class Brackets // 括号匹配类
 {
 public:
-    Brackets():currentPos(0),correspondingPos(0),type(0){};
+    Brackets():currentPos(0),correspondingPos(-1),type(0){};
     Brackets(int currentPosition, int correspondingPosition, int bracketType) {
         currentPos = currentPosition;
         correspondingPos = correspondingPosition;
         type = bracketType;
     }
     int currentPos = 0;
-    int correspondingPos = 0;
+    int correspondingPos = -1;
     int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'
 };
 
@@ -63,7 +63,7 @@ private:
     //    QStack<QString> m_redoStack;
     QTimer *m_timer;
     bool m_completeBrace = false;
-
+    
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();
     void pushUndoStack();
