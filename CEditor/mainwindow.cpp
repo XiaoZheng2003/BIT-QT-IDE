@@ -62,7 +62,7 @@ void MainWindow::returnTextForSaveAs(int indexId, QString str)
         return;
     }
     QFile saveFile(saveFilePath);
-    if(!saveFile.open(QIODevice::ReadWrite|QIODevice::Text)){
+    if(!saveFile.open(QIODevice::WriteOnly|QIODevice::Text)){
         QMessageBox::warning(this,"提示",QString("无法保存文件 %1:\n%2.")
                              .arg(saveFilePath,saveFile.errorString()));
         return;
@@ -329,6 +329,9 @@ bool MainWindow::closeTab(int index)
     ui->tabWidget->removeTab(index);
     filePath.removeAt(index);
     emit tabClosed(index);
+    //清空状态栏
+    row_col->setText("");
+    all_row->setText("");
     return true;
 }
 
@@ -350,6 +353,9 @@ void MainWindow::closeProject(QTreeWidgetItem *project)
     if(ui->currentProject->text()==projectName)
         ui->currentProject->setText("无");
     removeItem(project);
+    //清空状态栏
+    row_col->setText("");
+    all_row->setText("");
 }
 
 void MainWindow::removeItem(QTreeWidgetItem *item)

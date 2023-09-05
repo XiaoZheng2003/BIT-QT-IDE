@@ -62,6 +62,14 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     highlighter = new Highlighter(ui->plainTextEdit->document());
     emit ui->plainTextEdit->initText(text);
 
+    //自动补全设置
+    completer=new QCompleter(this);
+    completer->setModel(modelFromFile(":/wordlist.txt"));
+    completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setWrapAround(false);
+    ui->plainTextEdit->setCompleter(completer);
+
     connect(ui->plainTextEdit,&CodeEditor::textRealChanged,[=](){
         //当文本被修改
         emit textChanged(curIndexId);
@@ -141,11 +149,33 @@ int Tab::getTotalLines()
 
 void Tab::on_jumpto_clicked()
 {
-    int linenum=ui->lineEdit->text().toInt();
-    if(linenum>ui->plainTextEdit->blockCount()){
-        QMessageBox::critical(this,"提示","该行不存在"); }
-    else{
-        jumpToLine(linenum);}
+    QString linenumStr = ui->lineEdit->text();
+    bool isNum;
+    int linenum = linenumStr.toInt(&isNum);
+    if (!isNum) {
+        QMessageBox::critical(this, "提示", "请输入格式正确的数字");
+    }
+    else if (linenum > ui->plainTextEdit->blockCount() || linenum < 1) {
+        QMessageBox::critical(this, "提示", "该行不存在");
+    }
+    else {
+        jumpToLine(linenum);
+    }
+}
+
+QAbstractItemModel *Tab::modelFromFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly))
+        return new QStringListModel(completer);
+    QStringList words;
+
+    while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        if (!line.isEmpty())
+            words << QString::fromUtf8(line.trimmed());
+    }
+    return new QStringListModel(words, completer);
 }
 
 void Tab::jumpToLine(int line) {

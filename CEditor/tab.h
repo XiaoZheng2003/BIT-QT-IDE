@@ -11,6 +11,7 @@
 #include <QDialog>
 #include <QFont>
 #include <QMessageBox>
+#include <QStringListModel>
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "highlighttype.h"
@@ -69,8 +70,10 @@ private:
     std::map<QString,HighLightType> codeTable;
     std::map<HighLightType,QColor>* codeColor;
     std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
-
     Highlighter* highlighter;
+    QCompleter* completer;
+
+    QAbstractItemModel* modelFromFile(const QString &fileName);
 };
 
 #endif // TAB_H
