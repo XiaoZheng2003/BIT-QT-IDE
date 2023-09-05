@@ -24,6 +24,29 @@ Highlighter::Highlighter(QTextDocument *parent)
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
+    //多行注释
+    multiLineCommentFormat.setForeground(Qt::darkGreen);
+
+
+//    quotationFormat.setForeground(Qt::green);
+//    rule.pattern = QRegularExpression("\".*\"");
+//    rule.format = quotationFormat;
+//    highlightingRules.append(rule);
+
+
+
+    //定义多行注释的标志
+   // commentStartExpression = QRegularExpression("/\\*");
+     commentStartExpression = QRegularExpression ("^\\s*/\\*");
+    commentEndExpression = QRegularExpression("\\*/");
+
+    //单行注释
+    singleLineCommentFormat.setForeground(Qt::darkGreen);
+    rule.pattern = QRegularExpression("//[^\n]*");
+    rule.format = singleLineCommentFormat;
+    highlightingRules.append(rule);
+
+
     //类名
     classFormat.setFontWeight(QFont::Bold);
     classFormat.setForeground(Qt::darkMagenta);
@@ -38,11 +61,6 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
-    //单行注释
-    singleLineCommentFormat.setForeground(Qt::darkGreen);
-    rule.pattern = QRegularExpression("//[^\n]*");
-    rule.format = singleLineCommentFormat;
-    highlightingRules.append(rule);
 
     //头文件
     singleLineCommentFormat.setForeground(Qt::darkGreen);
@@ -55,20 +73,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-    //多行注释
-    multiLineCommentFormat.setForeground(Qt::darkGreen);
 
-
-//    quotationFormat.setForeground(Qt::green);
-//    rule.pattern = QRegularExpression("\".*\"");
-//    rule.format = quotationFormat;
-//    highlightingRules.append(rule);
-
-
-
-    //定义多行注释的标志
-    commentStartExpression = QRegularExpression("/\\*");
-    commentEndExpression = QRegularExpression("\\*/");
 }
 
 void Highlighter::highlightBlock(const QString &text)
