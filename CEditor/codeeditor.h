@@ -70,6 +70,9 @@ private:
     void highlightMatchedBrackets();
     void pushUndoStack();
     void restartTimer();
+    bool bracketComplete(QKeyEvent *event);
+    int findFirstDifference(const QString &str1, const QString &str2);
+    void moveCursorToPostion(int pos);
 };
 
 #endif // CODEEDITOR_H
