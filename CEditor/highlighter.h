@@ -1,9 +1,7 @@
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
-#include <QSyntaxHighlighter>
-#include <QTextCharFormat>
-#include <QRegularExpression>
+#include "headers.h"
 
 class QTextDocument;
 

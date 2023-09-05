@@ -33,6 +33,7 @@ HEADERS += \
     compilationthread.h \
     foldlistwidget.h \
     foldlistwidgetitem.h \
+    headers.h \
     highlighter.h \
     highlighttype.h \
     mainwindow.h \

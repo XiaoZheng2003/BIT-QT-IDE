@@ -1,5 +1,4 @@
 #include "foldlistwidget.h"
-#include <QPainter>
 
 FoldListWidget::FoldListWidget(QWidget* parent)
     : QListWidget(parent)
