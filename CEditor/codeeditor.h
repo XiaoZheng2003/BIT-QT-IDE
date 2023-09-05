@@ -36,7 +36,7 @@ public:
     void matchBrackets();
     void setLineNumberArea(QListWidget *lineNumberArea);
     void undo();
-    //    void redo();
+    void redo();
 
 public slots:
     void updateLineNumberArea();
@@ -54,21 +54,23 @@ protected:
 signals:
     void scrollBarValue(int value);
     void textRealChanged();
+    void initText(QString text);
 
 private:
     QMap<int, Brackets> bramap; // 使用 QMap 存储括号匹配情况
     QListWidget *m_lineNumberArea;
     QString m_previousText;
     QStack<QString> m_undoStack;
-    //    QStack<QString> m_redoStack;
+    QStack<QString> m_redoStack;
     QTimer *m_timer;
     bool m_completeBrace = false;
     
     void sendCurrentScrollBarValue();
     void highlightMatchedBrackets();
     void pushUndoStack();
-    //    void clearRedoStack();
     void restartTimer();
+    int findFirstDifference(const QString& str1, const QString& str2);
+    void moveCursorToPostion(int pos);
 };
 
 #endif // CODEEDITOR_H

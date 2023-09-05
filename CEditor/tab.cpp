@@ -60,7 +60,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     //应用关键字高亮
     ui->plainTextEdit->setFont(font);
     highlighter = new Highlighter(ui->plainTextEdit->document());
-    ui->plainTextEdit->setPlainText(text);
+    emit ui->plainTextEdit->initText(text);
 
     connect(ui->plainTextEdit,&CodeEditor::textRealChanged,[=](){
         //当文本被修改

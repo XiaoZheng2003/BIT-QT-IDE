@@ -11,6 +11,12 @@ CodeEditor::CodeEditor(QWidget *parent):
     m_timer->setInterval(500); // 0.5秒钟
     connect(m_timer,&QTimer::timeout,this,&CodeEditor::pushUndoStack);
 
+    // 初始化栈
+    connect(this,&CodeEditor::initText,[=](QString text){
+        m_undoStack.push(text);
+        this->setPlainText(text);
+    });
+
     //判断是否文本发生变化
     connect(this, &CodeEditor::textChanged, this, &CodeEditor::handleTextChanged);
     //光标移动，高亮匹配括号
@@ -119,29 +125,32 @@ void CodeEditor::wheelEvent(QWheelEvent *event)
 
 void CodeEditor::undo()
 {
-    if(!m_undoStack.isEmpty()){
-        QString text=m_undoStack.pop();
-        qDebug()<<m_undoStack;
-        if(text==this->toPlainText()&&!m_undoStack.isEmpty())
-            text=m_undoStack.pop();
-        //        m_redoStack.push(this->toPlainText());
-        //        qDebug()<<m_redoStack;
-        this->setPlainText(text);
-        if(m_undoStack.isEmpty())
-            m_undoStack.push(this->toPlainText());
+    //撤销操作
+    disconnect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
+    if(m_undoStack.count()>1){
+        QString currentText = this->toPlainText();
+        m_redoStack.push(currentText); // 将当前文本压入重做栈
+        m_undoStack.pop();
+        QString undoText=m_undoStack.top();
+        this->setPlainText(undoText);
+        moveCursorToPostion(findFirstDifference(currentText,undoText));
     }
+    connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
 }
 
-//void CodeEditor::redo()
-//{
-//    qDebug()<<"redo:";
-//    qDebug()<<m_redoStack;
-//    if(!m_redoStack.isEmpty()){
-//        QString text=m_redoStack.pop();
-//        m_undoStack.push(this->toPlainText());
-//        this->setPlainText(text);
-//    }
-//}
+void CodeEditor::redo()
+{
+    //恢复操作
+    disconnect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
+    if(!m_redoStack.isEmpty()){
+        QString currentText = this->toPlainText();
+        QString redoText = m_redoStack.pop();
+        m_undoStack.push(redoText);
+        this->setPlainText(redoText);
+        moveCursorToPostion(findFirstDifference(currentText,redoText));
+    }
+    connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
+}
 
 void CodeEditor::matchBrackets() {
     int current_length = 0;
@@ -400,21 +409,41 @@ void CodeEditor::highlightMatchedBrackets()
 
 void CodeEditor::pushUndoStack()
 {
-    m_undoStack.push(this->toPlainText());
-    //    clearRedoStack(); // 清空重做栈
-}
+    QString currentText = this->toPlainText();
+    if (!m_undoStack.isEmpty() && currentText == m_undoStack.top()) {
+        return; // 重复文本不入栈
+    }
 
-//void CodeEditor::clearRedoStack()
-//{
-//    while (!m_redoStack.isEmpty())
-//        m_redoStack.pop();
-//}
+    m_undoStack.push(currentText);
+    m_redoStack.clear(); // 清空重做栈
+}
 
 void CodeEditor::restartTimer()
 {
+    //重启计时器
     if(m_timer->isActive())
         m_timer->stop();
     m_timer->start();
+}
+
+int CodeEditor::findFirstDifference(const QString &str1, const QString &str2)
+{
+    //比较两个QString第一处不同的位置
+    int minLength = qMin(str1.length(), str2.length());
+    for (int i = 0; i < minLength; i++) {
+        if (str1[i] != str2[i]) {
+            return i;
+        }
+    }
+    return minLength; // 如果前面的字符都相同，则返回较短字符串的长度
+}
+
+void CodeEditor::moveCursorToPostion(int pos)
+{
+    //移动光标到指定位置
+    QTextCursor cursor=this->textCursor();
+    cursor.setPosition(pos);
+    this->setTextCursor(cursor);
 }
 
 void CodeEditor::autoIndent()
