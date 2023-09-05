@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>pic/aboutus.png</file>
+        <file>pic/c_and_r_project.png</file>
+        <file>pic/c_and_run.png</file>
+        <file>pic/choose_all.png</file>
+        <file>pic/close.png</file>
+        <file>pic/closeall.png</file>
+        <file>pic/compile.png</file>
+        <file>pic/compile_project.png</file>
+        <file>pic/copy.png</file>
+        <file>pic/cut.png</file>
+        <file>pic/cutting.png</file>
+        <file>pic/help.png</file>
+        <file>pic/new.png</file>
+        <file>pic/notice.png</file>
+        <file>pic/open.png</file>
+        <file>pic/open_project.png</file>
+        <file>pic/paste.png</file>
+        <file>pic/replace.png</file>
+        <file>pic/run.png</file>
+        <file>pic/run_project.png</file>
+        <file>pic/save.png</file>
+        <file>pic/saveas.png</file>
+        <file>pic/search.png</file>
+        <file>pic/withdraw.png</file>
+    </qresource>
+</RCC>

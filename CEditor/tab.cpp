@@ -142,7 +142,10 @@ int Tab::getTotalLines()
 void Tab::on_jumpto_clicked()
 {
     int linenum=ui->lineEdit->text().toInt();
-     jumpToLine(linenum);
+    if(linenum>ui->plainTextEdit->blockCount()){
+        QMessageBox::critical(this,"提示","该行不存在"); }
+    else{
+        jumpToLine(linenum);}
 }
 
 void Tab::jumpToLine(int line) {
