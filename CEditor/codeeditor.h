@@ -1,21 +1,7 @@
 ﻿#ifndef CODEEDITOR_H
 #define CODEEDITOR_H
 
-#include <QPlainTextEdit>
-#include <QObject>
-#include <QWidget>
-#include <QListWidget>
-#include <QScrollBar>
-#include <QTextBlock>
-#include <QPainter>
-#include <QTextDocument>
-#include <QTextBlock>
-#include <QCompleter>
-#include <QTimer>
-#include <QDebug>
-#include <QStack>
-#include <QChar>
-
+#include "headers.h"
 #include "foldlistwidget.h"
 
 class Brackets // 括号匹配类

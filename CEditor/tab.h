@@ -1,18 +1,7 @@
 ﻿#ifndef TAB_H
 #define TAB_H
 
-#include <QFile>
-#include <QDialog>
-#include <QWidget>
-#include <QString>
-#include <QPlainTextEdit>
-#include <QTextDocument>
-#include <QTextBlock>
-#include <QTimer>
-#include <QDialog>
-#include <QFont>
-#include <QMessageBox>
-#include <QStringListModel>
+#include "headers.h"
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "highlighttype.h"

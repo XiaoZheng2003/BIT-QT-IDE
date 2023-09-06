@@ -2,10 +2,7 @@
 #ifndef FOLDLISTWIDGETITEM_H
 #define FOLDLISTWIDGETITEM_H
 
-#include <QApplication>
-#include <QListWidget>
-#include <QPainter>
-#include <QStyleOption>
+#include "headers.h"
 
 class FoldListWidgetItem : public QListWidgetItem
 {

@@ -1,8 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include <QDialog>
-#include <QMessageBox>
+#include "headers.h"
 
 namespace Ui {
 class Search;
