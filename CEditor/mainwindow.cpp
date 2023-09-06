@@ -521,10 +521,54 @@ void MainWindow::on_actionCompileRun_triggered()
         QMessageBox::warning(this, "警告", "未打开任何文件");
         return;
     }
-    on_actionCompile_triggered();
-    //todo编译完成信号连接
-    QTimer::singleShot(1000,this,&MainWindow::on_actionRun_triggered);
-    //on_actionRun_triggered();
+    // 保存当前文件
+    on_actionSave_triggered();
+    // 打开编译信息框
+    ui->compileTextBrowser->setMaximumHeight(220);
+    // 获得当前编译文件对应序号
+    int index = ui->tabWidget->currentIndex();
+    // 获得文件对应路径
+    QString currentFilePath = filePath.at(index);
+
+    // 创建编译线程并连接信号槽
+    CompilationThread *compileThread1 = new CompilationThread(0, currentFilePath, QStringList(), this);
+    connect(compileThread1, &CompilationThread::compilationFinished, this, [=](int exitCode, const QString &outputText) {
+        if (exitCode == 0) {
+            // 编译成功，处理编译结果
+            ui->compileTextBrowser->setPlainText(outputText);
+            if (ui->tabWidget->count() == 0) {
+                QMessageBox::warning(this, "警告", "未打开任何文件");
+                return;
+            }
+            int index = ui->tabWidget->currentIndex();
+            QString currentFilePath = filePath.at(index);
+            QString exePath = currentFilePath;
+            exePath.replace(".cpp", ".exe");
+            QFile exefile(exePath);
+            if (!exefile.exists()) {
+                QMessageBox::warning(this, "提示", "还没有进行编译");
+                return;
+            }
+            // 创建编译线程并连接信号槽
+            CompilationThread *compileThread2 = new CompilationThread(1, exePath, QStringList(), this);
+            connect(compileThread2, &CompilationThread::compilationFinished, this, [=](int exitCode, const QString &outputText){
+                if (exitCode == 0) {
+                    ui->compileTextBrowser->setPlainText("运行成功");
+                } else {
+                    QMessageBox::critical(this, "运行失败", "运行过程中出现错误");
+                    ui->compileTextBrowser->setPlainText("运行失败");
+                }
+            });
+            // 启动编译线程
+            compileThread2->start();
+        } else {
+            // 编译失败，显示错误信息
+            QMessageBox::critical(this, "编译失败", "编译过程中出现错误");
+            ui->compileTextBrowser->setPlainText(outputText);
+        }
+    });
+    // 启动编译线程
+    compileThread1->start();
 }
 
 void MainWindow::on_actionOpenProject_triggered()
@@ -753,13 +797,70 @@ void MainWindow::handleProjectRunFinished(int exitCode, const QString &outputTex
 
 void MainWindow::on_actionCompileRunProject_triggered()
 {
+    //编译项目
     QString projectName=ui->currentProject->text();
     if(projectName=="无"){
         QMessageBox::warning(this,"警告","当前未打开任何项目！");
         return;
     }
-    on_actionCompileProject_triggered();
-    on_actionRunProject_triggered();
+    //保存所有文件
+    saveAllFile();
+    //打开编译信息框
+    ui->compileTextBrowser->setMaximumHeight(220);
+
+    QString projectPath=projectNameToPath.find(projectName).value();
+    //编译项目
+    QString exe = projectPath + "/" + projectName + ".exe";
+    // 设置要执行的命令和参数
+    QStringList arguments;
+    arguments << "-o" << exe << "-g"; // 添加命令行参数
+    QStringList list = projectToChildren.value(projectName);
+    for (int i = 0; i < list.size(); i++) {
+        arguments << list[i];
+    }
+
+    // 创建编译线程并连接信号槽
+    CompilationThread *compileThread1 = new CompilationThread(2, exe, arguments, this);
+    connect(compileThread1, &CompilationThread::compilationFinished, this, [=](int exitCode, const QString &outputText) {
+        if (exitCode == 0) {
+            // 编译成功，处理编译结果
+            ui->compileTextBrowser->setPlainText(outputText);
+            //运行项目
+            QString projectName=ui->currentProject->text();
+            if(projectName=="无"){
+                QMessageBox::warning(this,"警告","当前未打开任何项目！");
+                return;
+            }
+            QString projectPath=projectNameToPath.find(projectName).value();
+            //运行项目
+
+            QString exePath = projectPath + "/" +projectName+".exe";;
+            QFile exefile(exePath);
+            if (!exefile.exists()) {
+                QMessageBox::warning(this, "提示", "还没有进行编译");
+                return;
+            }
+            // 创建编译线程并连接信号槽
+            CompilationThread *compileThread2 = new CompilationThread(1, exePath, QStringList(), this);
+            connect(compileThread2, &CompilationThread::compilationFinished, this, [=](int exitCode, const QString &outputText) {
+                if (exitCode == 0) {
+                    ui->compileTextBrowser->setPlainText("运行成功");
+                } else {
+                    QMessageBox::critical(this, "运行失败", "运行过程中出现错误");
+                    ui->compileTextBrowser->setPlainText("运行失败");
+                }
+            });
+            // 启动编译线程
+            compileThread2->start();
+        } else {
+            // 编译失败，显示错误信息
+            QMessageBox::critical(this, "编译失败", "编译过程中出现错误");
+            ui->compileTextBrowser->setPlainText(outputText);
+        }
+    });
+
+    // 启动编译线程
+    compileThread1->start();
 }
 void MainWindow::on_actionAutoComplete_triggered()
 {
