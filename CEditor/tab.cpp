@@ -277,6 +277,8 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
 {
     if(index != curIndexId)
         return;
+    this->activateWindow();
+    ui->plainTextEdit->setFocus();
     QString real_search_str = data;
     int n = data.length();
 
@@ -373,6 +375,8 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始�
 {
     if(index != curIndexId)
         return;
+    this->activateWindow();
+    ui->plainTextEdit->setFocus();
     QString real_search_str = data;
     int n = data.length();
 
@@ -463,7 +467,8 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始�
 
 void Tab::receiveCloseSearchDataForTab()
 {
-
+    this->activateWindow();
+    ui->plainTextEdit->setFocus();
     QTextDocument *document = ui->plainTextEdit->document();
     QTextCursor cursor(document);
     QTextCharFormat clear_format;
@@ -477,6 +482,8 @@ void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int 
 {
     if(index != curIndexId)
         return;
+    this->activateWindow();
+    ui->plainTextEdit->setFocus();
     QString real_search_str = sear;
 
     QTextDocument *document = ui->plainTextEdit->document();
@@ -516,7 +523,8 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
 {
     if(index != curIndexId)
         return;
-
+    this->activateWindow();
+    ui->plainTextEdit->setFocus();
     QString real_search_str = sear;
     QTextDocument *document = ui->plainTextEdit->document();
     QTextCursor cursor(document);
