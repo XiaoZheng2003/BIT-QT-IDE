@@ -183,6 +183,8 @@ border-radius:20px;</string>
     <addaction name="separator"/>
     <addaction name="actionComment"/>
     <addaction name="actionAutoComplete"/>
+    <addaction name="separator"/>
+    <addaction name="actionJumpLine"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -557,6 +559,17 @@ border-radius:20px;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionJumpLine">
+   <property name="text">
+    <string>跳转行</string>
+   </property>
+   <property name="toolTip">
+    <string>跳转行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>
