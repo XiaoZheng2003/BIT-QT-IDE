@@ -35,6 +35,7 @@ public slots:
     void receiveAllReplaceDataForTab(QString,QString,int,int state);
     void receiveNextReplaceDataForTab(QString,QString,int,int state);
     void autoComplete(int indexId);
+    void commentSelectedLines(int indexId);
 
 signals:
     void returnTextForSave(int indexId, QString str);

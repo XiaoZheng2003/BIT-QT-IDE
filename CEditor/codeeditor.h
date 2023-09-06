@@ -31,6 +31,7 @@ public:
     void setFoldListWidget(FoldListWidget *foldListWidget);
     void setCompleter(QCompleter *c);
     void autoComplete();
+    void commentSelectedLines();
     void undo();
     void redo();
 

@@ -744,6 +744,33 @@ QString CodeEditor::textUnderCursor()
     return cursor.selectedText();
 }
 
+void CodeEditor::commentSelectedLines()
+{
+    QTextCursor cursor = this->textCursor();
+    int selectionStart = cursor.selectionStart();
+    int selectionEnd = cursor.selectionEnd();
+
+    // 获取选中行的行号
+    int startLine = this->document()->findBlock(selectionStart).blockNumber();
+    int endLine = this->document()->findBlock(selectionEnd).blockNumber();
+
+    // 切换选中的行的注释状态
+    for (int line = startLine; line <= endLine; line++) {
+        QTextBlock block = this->document()->findBlockByNumber(line);
+        QTextCursor blockCursor(block);
+        blockCursor.select(QTextCursor::LineUnderCursor);
+
+        QString lineText = blockCursor.selectedText();
+
+        // 切换注释状态
+        QString commentedLine = lineText.trimmed().startsWith("//") ? lineText.mid(2) : "//" + lineText;
+        blockCursor.setPosition(block.position());
+        blockCursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+        blockCursor.removeSelectedText();
+        blockCursor.insertText(commentedLine);
+    }
+}
+
 void CodeEditor::autoIndent()
 {
     QTextCursor currentCursor = this->textCursor();

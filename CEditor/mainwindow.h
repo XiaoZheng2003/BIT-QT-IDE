@@ -63,6 +63,7 @@ private slots:
     void on_actionCompileRunProject_triggered();
     void on_actionAutoComplete_triggered();
     void on_actionSelectAll_triggered();
+    void on_actionComment_triggered();
 
 signals:
     void prepareTextForSave(int indexId);
@@ -75,6 +76,7 @@ signals:
     void sendAllReplaceDataToTab(QString,QString,int,int state);  //把从替换框接受的信息转发给指定页面
     void sendNextReplaceDataToTab(QString,QString,int,int state);  //把从替换框接受的信息转发给指定页面
     void autoComplete(int indexId);
+    void commentSelectedLines(int indexId);
 
 private:
     Ui::MainWindow *ui;
