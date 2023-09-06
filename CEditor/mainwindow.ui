@@ -151,7 +151,7 @@ border-radius:20px;</string>
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>21</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -245,6 +245,8 @@ border-radius:20px;</string>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
    <addaction name="actionCut"/>
+   <addaction name="actionJumpLine"/>
+   <addaction name="actionAutoComplete"/>
    <addaction name="actionSelectAll"/>
    <addaction name="actionSearch"/>
    <addaction name="actionReplace"/>
@@ -551,6 +553,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionAutoComplete">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/audo.png</normaloff>:/pic/audo.png</iconset>
+   </property>
    <property name="text">
     <string>自动补全</string>
    </property>
@@ -562,6 +568,10 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionJumpLine">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/pic/jump.png</normaloff>:/pic/jump.png</iconset>
+   </property>
    <property name="text">
     <string>跳转行</string>
    </property>

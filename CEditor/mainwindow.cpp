@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(row_col);
     ui->statusBar->addWidget(all_row);
 
+    this->setWindowTitle("CEditor");
+    this->setWindowIcon(QIcon(":/pic/icon.png"));
+
+
     //初始状态隐藏编译信息栏
     ui->compileTextBrowser->setMaximumHeight(0);
 
