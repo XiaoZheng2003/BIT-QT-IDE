@@ -7,14 +7,6 @@
 #include "highlighttype.h"
 #include "foldlistwidgetitem.h"
 
-enum editType{
-    Redo,
-    Undo,
-    Cut,
-    Copy,
-    Paste
-};
-
 class CodePlainTextEdit;
 
 namespace Ui {
@@ -42,6 +34,9 @@ public slots:
     void receiveNextSearchDataForTab(QString,int,int state);
     void receiveAllReplaceDataForTab(QString,QString,int,int state);
     void receiveNextReplaceDataForTab(QString,QString,int,int state);
+    void handleFoldStateChanged(QListWidgetItem* item);
+    void autoComplete(int indexId);
+    void commentSelectedLines(int indexId);
 
 signals:
     void returnTextForSave(int indexId, QString str);
@@ -55,6 +50,7 @@ private slots:
     void updateCursorPosition();
     void updateTotalLineCount();
     void on_jumpto_clicked();
+    void setBlockVisible(bool flag, int start, int end);
 
 private:
     Ui::Tab *ui;
@@ -66,6 +62,7 @@ private:
     QCompleter* completer;
 
     QAbstractItemModel* modelFromFile(const QString &fileName);
+    void initrowVisibility();
 };
 
 #endif // TAB_H
