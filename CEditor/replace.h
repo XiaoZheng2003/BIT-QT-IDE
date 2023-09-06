@@ -1,8 +1,7 @@
 #ifndef REPLACE_H
 #define REPLACE_H
 
-#include <QDialog>
-#include <QMessageBox>
+#include "headers.h"
 
 namespace Ui {
 class replace;
@@ -17,11 +16,13 @@ public:
     ~replace();
 
 signals:
-    void sendReplaceDataToMain(QString seastr,QString repstr,int state);
+    void sendAllReplaceDataToMain(QString seastr,QString repstr,int state);
+    void sendNextReplaceDataToMain(QString seastr,QString repstr,int state);
 
 private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+    void on_pushButton_clicked();
 
 private:
     Ui::replace *ui;
