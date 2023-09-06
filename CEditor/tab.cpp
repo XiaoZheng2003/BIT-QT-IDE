@@ -544,3 +544,9 @@ void Tab::autoComplete(int indexId)
     if(indexId!=curIndexId) return;
     ui->plainTextEdit->autoComplete();
 }
+
+void Tab::commentSelectedLines(int indexId)
+{
+    if(indexId!=curIndexId) return;
+    ui->plainTextEdit->commentSelectedLines();
+}
