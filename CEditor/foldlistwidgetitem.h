@@ -7,16 +7,24 @@
 class FoldListWidgetItem : public QListWidgetItem
 {
 public:
-    explicit FoldListWidgetItem(QListWidget *parent = nullptr);
+    explicit FoldListWidgetItem(int itemType, QListWidget *parent = nullptr);
+    int getType();
+    bool isCollapsed();
+    void setCollapsed(bool collapsed);
+    int start = -1;
+    int end = -1;
 
-    void setFolded(bool folded);
 
 protected:
 //    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index);
 //    QSize sizeHint();
 
+signals:
+    void stateChanged(bool collapsed);
+
 private:
-    bool isFolded = false;
+    bool collapsed = false;
+    int type = 0;
 };
 
 #endif // FOLDLISTWIDGETITEM_H

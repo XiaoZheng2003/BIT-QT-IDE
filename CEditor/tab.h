@@ -42,6 +42,7 @@ public slots:
     void receiveNextSearchDataForTab(QString,int,int state);
     void receiveAllReplaceDataForTab(QString,QString,int,int state);
     void receiveNextReplaceDataForTab(QString,QString,int,int state);
+    void handleFoldStateChanged(QListWidgetItem* item);
 
 signals:
     void returnTextForSave(int indexId, QString str);
@@ -55,6 +56,7 @@ private slots:
     void updateCursorPosition();
     void updateTotalLineCount();
     void on_jumpto_clicked();
+    void setBlockVisible(bool flag, int start, int end);
 
 private:
     Ui::Tab *ui;
@@ -66,6 +68,7 @@ private:
     QCompleter* completer;
 
     QAbstractItemModel* modelFromFile(const QString &fileName);
+    void initrowVisibility();
 };
 
 #endif // TAB_H

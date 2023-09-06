@@ -79,7 +79,7 @@ padding-top:4px;</string>
         <widget class="FoldListWidget" name="foldListWidget">
          <property name="maximumSize">
           <size>
-           <width>25</width>
+           <width>24</width>
            <height>16777215</height>
           </size>
          </property>
