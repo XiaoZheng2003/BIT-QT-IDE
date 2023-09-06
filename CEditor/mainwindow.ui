@@ -47,8 +47,7 @@
          <enum>Qt::CustomContextMenu</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);
-border-radius:20px;</string>
+         <string notr="true">background-color: rgb(255, 255, 255);</string>
         </property>
         <column>
          <property name="text">
@@ -76,7 +75,6 @@ border-radius:20px;</string>
          <widget class="QTabWidget" name="tabWidget">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 255, 255);
-border-radius:20px;
 border:none</string>
           </property>
           <property name="currentIndex">
@@ -153,7 +151,7 @@ border-radius:20px;</string>
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>30</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -181,8 +179,10 @@ border-radius:20px;</string>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
-    <addaction name="selectall"/>
-    <addaction name="exegesis"/>
+    <addaction name="actionSelectAll"/>
+    <addaction name="separator"/>
+    <addaction name="actionComment"/>
+    <addaction name="actionAutoComplete"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -243,7 +243,7 @@ border-radius:20px;</string>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
    <addaction name="actionCut"/>
-   <addaction name="selectall"/>
+   <addaction name="actionSelectAll"/>
    <addaction name="actionSearch"/>
    <addaction name="actionReplace"/>
    <addaction name="actionCompile"/>
@@ -295,6 +295,9 @@ border-radius:20px;</string>
    </property>
    <property name="text">
     <string>另存为</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionClose">
@@ -399,7 +402,7 @@ border-radius:20px;</string>
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="selectall">
+  <action name="actionSelectAll">
    <property name="icon">
     <iconset resource="resource.qrc">
      <normaloff>:/pic/choose_all.png</normaloff>:/pic/choose_all.png</iconset>
@@ -407,14 +410,20 @@ border-radius:20px;</string>
    <property name="text">
     <string>全选</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
   </action>
-  <action name="exegesis">
+  <action name="actionComment">
    <property name="icon">
     <iconset resource="resource.qrc">
      <normaloff>:/pic/notice.png</normaloff>:/pic/notice.png</iconset>
    </property>
    <property name="text">
     <string>注释</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+/</string>
    </property>
   </action>
   <action name="actionSearch">
@@ -537,6 +546,17 @@ border-radius:20px;</string>
    </property>
    <property name="toolTip">
     <string>编译运行项目</string>
+   </property>
+  </action>
+  <action name="actionAutoComplete">
+   <property name="text">
+    <string>自动补全</string>
+   </property>
+   <property name="toolTip">
+    <string>自动补全</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>

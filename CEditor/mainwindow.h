@@ -61,6 +61,8 @@ private slots:
     void on_actionCompileProject_triggered();
     void on_actionRunProject_triggered();
     void on_actionCompileRunProject_triggered();
+    void on_actionAutoComplete_triggered();
+    void on_actionSelectAll_triggered();
 
 signals:
     void prepareTextForSave(int indexId);
@@ -72,7 +74,7 @@ signals:
     void sendCloseSearchDataToTab();  //把从搜索框接受的信息转发给指定页面
     void sendAllReplaceDataToTab(QString,QString,int,int state);  //把从替换框接受的信息转发给指定页面
     void sendNextReplaceDataToTab(QString,QString,int,int state);  //把从替换框接受的信息转发给指定页面
-
+    void autoComplete(int indexId);
 
 private:
     Ui::MainWindow *ui;
@@ -80,6 +82,10 @@ private:
     QMap<QString, QString> projectNameToPath;
     QMap<QString, QString> fileNameToPath;
     QMap<QString, QStringList> projectToChildren;
+    Search *search;//搜索对话框
+    replace *replace;//替换对话框
+    QLabel *row_col;
+    QLabel *all_row;
 
     void refreshFilename(int index);
     void initConnection(Tab *tab);
@@ -94,12 +100,6 @@ private:
     void handleRunFinished(int exitCode, const QString &outputText);
     void handleProjectCompilationFinished(int exitCode, const QString &outputText);
     void handleProjectRunFinished(int exitCode, const QString &outputText);
-
-
-    Search *search;//搜索对话框
-    replace *replace;//替换对话框
-    QLabel *row_col;
-    QLabel *all_row;
     void initProjectTreeMenu();
     int getItemLevel(QTreeWidgetItem *item);
 };

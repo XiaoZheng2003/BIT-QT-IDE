@@ -155,6 +155,9 @@ void Tab::editOperate(int indexId, editType type)
     case Paste:
         ui->plainTextEdit->paste();
         break;
+    case SelectAll:
+        ui->plainTextEdit->selectAll();
+        break;
     }
 }
 
@@ -536,5 +539,8 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
     }
 }
 
-
-
+void Tab::autoComplete(int indexId)
+{
+    if(indexId!=curIndexId) return;
+    ui->plainTextEdit->autoComplete();
+}

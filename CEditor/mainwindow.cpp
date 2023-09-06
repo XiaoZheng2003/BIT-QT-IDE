@@ -268,6 +268,7 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::sendCloseSearchDataToTab,tab,&Tab::receiveCloseSearchDataForTab);
     connect(this,&MainWindow::sendAllReplaceDataToTab,tab,&Tab::receiveAllReplaceDataForTab);
     connect(this,&MainWindow::sendNextReplaceDataToTab,tab,&Tab::receiveNextReplaceDataForTab);
+    connect(this,&MainWindow::autoComplete,tab,&Tab::autoComplete);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -754,5 +755,14 @@ void MainWindow::on_actionCompileRunProject_triggered()
     }
     on_actionCompileProject_triggered();
     on_actionRunProject_triggered();
+}
+void MainWindow::on_actionAutoComplete_triggered()
+{
+    emit autoComplete(ui->tabWidget->currentIndex());
+}
+
+void MainWindow::on_actionSelectAll_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),SelectAll);
 }
 
