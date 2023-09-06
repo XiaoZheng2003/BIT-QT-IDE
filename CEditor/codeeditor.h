@@ -5,6 +5,15 @@
 #include "foldlistwidget.h"
 #include "foldlistwidgetitem.h"
 
+struct LineToDraw {
+    int lineNumber;
+    bool draw;
+
+    LineToDraw() : lineNumber(0), draw(false) {} // 默认构造函数
+
+    LineToDraw(int line, bool d) : lineNumber(line), draw(d) {}
+};
+
 class Brackets // 括号匹配类
 {
 public:
@@ -36,11 +45,13 @@ public:
     void undo();
     void redo();
     void clearLineHighlight();
+    void setLine(int lineNumber, bool draw);
 
 public slots:
     void updateLineNumberArea();
     void updateFoldListWidget();
     void handleTextChanged();
+    void clearAllLines();
 
 private slots:
     void autoIndent();
@@ -82,6 +93,7 @@ private:
     QString textUnderCursor();
     int getLineHeight(int lineNumber);
     int lineHeight = 0;
+    QVector<LineToDraw> linesToDraw;
     
 };
 

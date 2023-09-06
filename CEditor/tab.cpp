@@ -545,6 +545,7 @@ void Tab::setBlockVisible(bool flag, int start, int end)
     {
         QTextBlock qtb = ui->plainTextEdit->document()->findBlockByNumber(i);
         qtb.setVisible(flag);
+        //ui->plainTextEdit->setLine(start-1, !flag);
         //ui->foldListWidget->setRowVisible(i, flag);
         //ui->lineNumberArea->setRowHidden(i, flag);
     }
