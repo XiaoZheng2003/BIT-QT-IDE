@@ -557,6 +557,7 @@ void CodeEditor::updateLineNumberArea()
         int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
         if(itemSize>maxItemSize)
             maxItemSize=itemSize;
+        //qDebug()<<"row"<<row<<qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height());
         item->setSizeHint(QSize(this->width(),qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height())));
         item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
         if(row==blockCount()-1)
@@ -601,7 +602,7 @@ void CodeEditor::updateFoldListWidget()
     int current_length = 0;
     QTextDocument* document = this->document();
     int totalRow = document->blockCount();
-    //qDebug()<<"totalRow"<<totalRow;
+    qDebug()<<"totalRow"<<totalRow;
     m_foldListWidget->clear();
     int rowType[totalRow+1][2]; //0:type;1:end
     memset(rowType, 0, sizeof(rowType));
@@ -653,18 +654,42 @@ void CodeEditor::updateFoldListWidget()
 
     for(int row=0;row<totalRow;row++)
     {
-        FoldListWidgetItem *item=new FoldListWidgetItem(rowType[row][0]);
-        if(rowType[row][0]==1){
-            item->start = row;
-            item->end = rowType[row][1];
-            QTextBlock qtb = this->document()->findBlockByNumber(row+1);
-            item->setCollapsed(!qtb.isVisible());
+        if(this->document()->findBlockByNumber(row).isVisible()){
+
+            //qDebug()<<"row"<<row<<"test"<<rowType[row][0];
+
+            FoldListWidgetItem *item=new FoldListWidgetItem(rowType[row][0]);
+            if(rowType[row][0]==1){
+                item->start = row + 1;
+                item->end = rowType[row][1];
+                QTextBlock qtb = this->document()->findBlockByNumber(row+1);
+                item->setCollapsed(!qtb.isVisible());
+            }
+            qDebug()<<"row"<<row<<metrics.averageCharWidth()<<getLineHeight(row);
+            item->setSizeHint(QSize(metrics.averageCharWidth(),getLineHeight(row)));
+            m_foldListWidget->addItem(item);
         }
-        item->setSizeHint(QSize(metrics.averageCharWidth(),qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height())));
-        m_foldListWidget->addItem(item);
+
     }
     m_foldListWidget->setMaximumWidth(metrics.maxWidth());
     QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
+}
+
+int CodeEditor::getLineHeight(int lineNumber)
+{
+    int newLineHeight;
+    QTextCursor cursor(this->document());
+    QTextBlock block = cursor.document()->findBlockByLineNumber(lineNumber);
+    if (block.isValid())
+    {
+        QFontMetrics fontMetrics(this->font());
+        newLineHeight = fontMetrics.height();
+        lineHeight=newLineHeight;
+    }
+    else {
+        newLineHeight = lineHeight;
+    }
+    return newLineHeight;
 }
 
 void CodeEditor::handleTextChanged()
