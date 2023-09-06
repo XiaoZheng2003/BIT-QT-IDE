@@ -21,7 +21,7 @@ public:
     explicit Tab(int index, QString text, QWidget *parent = nullptr);
     ~Tab();
 
-    void jumpToLine(int);
+    void jumpToLine(int indexId, int line);
     int getTotalLines();
 
 public slots:
@@ -49,7 +49,6 @@ signals:
 private slots:
     void updateCursorPosition();
     void updateTotalLineCount();
-    void on_jumpto_clicked();
     void setBlockVisible(bool flag, int start, int end);
 
 private:

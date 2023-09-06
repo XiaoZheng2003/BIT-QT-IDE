@@ -209,23 +209,6 @@ int Tab::getTotalLines()
     return(ui->plainTextEdit->blockCount());
 }
 
-
-void Tab::on_jumpto_clicked()
-{
-    QString linenumStr = ui->lineEdit->text();
-    bool isNum;
-    int linenum = linenumStr.toInt(&isNum);
-    if (!isNum) {
-        QMessageBox::critical(this, "提示", "请输入格式正确的数字");
-    }
-    else if (linenum > ui->plainTextEdit->blockCount() || linenum < 1) {
-        QMessageBox::critical(this, "提示", "该行不存在");
-    }
-    else {
-        jumpToLine(linenum);
-    }
-}
-
 QAbstractItemModel *Tab::modelFromFile(const QString &fileName)
 {
     QFile file(fileName);
@@ -241,7 +224,12 @@ QAbstractItemModel *Tab::modelFromFile(const QString &fileName)
     return new QStringListModel(words, completer);
 }
 
-void Tab::jumpToLine(int line) {
+void Tab::jumpToLine(int indexId, int line) {
+    if(indexId!=curIndexId) return;
+    if (line > ui->plainTextEdit->blockCount() || line < 1) {
+        QMessageBox::critical(this, "提示", "该行不存在");
+        return;
+    }
     QTextCursor cursor(ui->plainTextEdit->document());
     int lineNumber=0;
     while (!cursor.atEnd()) {
@@ -582,6 +570,7 @@ void Tab::setBlockVisible(bool flag, int start, int end)
     {
         QTextBlock qtb = ui->plainTextEdit->document()->findBlockByNumber(i);
         qtb.setVisible(flag);
+        //ui->plainTextEdit->setLine(start-1, !flag);
         //ui->foldListWidget->setRowVisible(i, flag);
         //ui->lineNumberArea->setRowHidden(i, flag);
     }

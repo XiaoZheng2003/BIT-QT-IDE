@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(row_col);
     ui->statusBar->addWidget(all_row);
 
+    this->setWindowTitle("CEditor");
+    this->setWindowIcon(QIcon(":/pic/icon.png"));
+
+
     //初始状态隐藏编译信息栏
     ui->compileTextBrowser->setMaximumHeight(0);
 
@@ -272,6 +276,8 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::autoComplete,tab,&Tab::autoComplete);
     //注释选中行
     connect(this,&MainWindow::commentSelectedLines,tab,&Tab::commentSelectedLines);
+    //跳转行
+    connect(this,&MainWindow::jumpToLine,tab,&Tab::jumpToLine);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -773,3 +779,11 @@ void MainWindow::on_actionComment_triggered()
 {
     emit commentSelectedLines(ui->tabWidget->currentIndex());
 }
+
+void MainWindow::on_actionJumpLine_triggered()
+{
+    bool ok=false;
+    int line=QInputDialog::getInt(this,"跳转行","跳转行",1,0,2147483647,1,&ok);
+    if(ok) emit jumpToLine(ui->tabWidget->currentIndex(),line);
+}
+

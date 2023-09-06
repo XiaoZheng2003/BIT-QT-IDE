@@ -13,6 +13,7 @@ public:
     void setCollapsed(bool collapsed);
     int start = -1;
     int end = -1;
+    int level = 0;
 
 
 protected:
