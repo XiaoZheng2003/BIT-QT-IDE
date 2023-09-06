@@ -560,7 +560,7 @@ void CodeEditor::updateFoldListWidget()
     int current_length = 0;
     QTextDocument* document = this->document();
     int totalRow = document->blockCount();
-    //qDebug()<<"totalRow"<<totalRow;
+    qDebug()<<"totalRow"<<totalRow;
     m_foldListWidget->clear();
     int rowType[totalRow+1][2]; //0:type;1:end
     memset(rowType, 0, sizeof(rowType));
