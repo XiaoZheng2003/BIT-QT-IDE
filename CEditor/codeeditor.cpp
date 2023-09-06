@@ -29,7 +29,9 @@ CodeEditor::CodeEditor(QWidget *parent):
         m_lineNumberArea->clearSelection();
         clearLineHighlight();
         QList<QListWidgetItem *> items = m_lineNumberArea->findItems(QString::number(textCursor().blockNumber()+1),Qt::MatchExactly);
-        items[0]->setSelected(true);
+        if(!items.empty()){
+            items[0]->setSelected(true);
+        }
         m_highlightLine.append(textCursor().blockNumber());
     });
     //同时选中多行
@@ -39,9 +41,10 @@ CodeEditor::CodeEditor(QWidget *parent):
         int startRow = document()->findBlock(startPos).blockNumber();
         int endRow = document()->findBlock(endPos).blockNumber();
         for(int i = startRow; i <= endRow; i++){
-            m_highlightLine.append(i);
-            QList<QListWidgetItem *> items = m_lineNumberArea->findItems(QString::number(textCursor().blockNumber()+1),Qt::MatchExactly);
-            items[0]->setSelected(true);
+            QList<QListWidgetItem *> items = m_lineNumberArea->findItems(QString::number(i+1),Qt::MatchExactly);
+            if(!items.empty()){
+                items[0]->setSelected(true);
+            }
         }
     });
 }
