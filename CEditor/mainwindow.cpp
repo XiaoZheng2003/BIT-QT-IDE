@@ -272,6 +272,8 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::autoComplete,tab,&Tab::autoComplete);
     //注释选中行
     connect(this,&MainWindow::commentSelectedLines,tab,&Tab::commentSelectedLines);
+    //跳转行
+    connect(this,&MainWindow::jumpToLine,tab,&Tab::jumpToLine);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -773,3 +775,11 @@ void MainWindow::on_actionComment_triggered()
 {
     emit commentSelectedLines(ui->tabWidget->currentIndex());
 }
+
+void MainWindow::on_actionJumpLine_triggered()
+{
+    bool ok=false;
+    int line=QInputDialog::getInt(this,"跳转行","跳转行",1,0,2147483647,1,&ok);
+    if(ok) emit jumpToLine(ui->tabWidget->currentIndex(),line);
+}
+

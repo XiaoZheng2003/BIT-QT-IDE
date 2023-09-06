@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
-    <height>355</height>
+    <width>301</width>
+    <height>216</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>替换</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);</string>
