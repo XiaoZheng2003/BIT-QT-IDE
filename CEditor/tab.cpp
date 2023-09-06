@@ -541,6 +541,7 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
 }
 
 void Tab::handleFoldStateChanged(QListWidgetItem* item){
+    ui->plainTextEdit->clearLineHighlight();
     FoldListWidgetItem* foldListWidgetItem = dynamic_cast<FoldListWidgetItem*>(item);
     bool flag = foldListWidgetItem->isCollapsed();
     //qDebug()<<"flag"<<flag;
