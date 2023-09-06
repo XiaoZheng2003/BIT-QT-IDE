@@ -628,6 +628,21 @@ void CodeEditor::updateFoldListWidget()
                     rowType[i][0]=1;
                     rowType[i][1]=bramap.value(current_length + j).row;
                     rowType[bramap.value(current_length + j).row][0]=3;
+                    int pos = bramap.value(current_length + j).correspondingPos, level = 0;
+                    for(QMap<int,Brackets>::Iterator it = bramap.begin(); it != bramap.end(); it++){
+                        if(it.value().currentPos >= pos){
+                            break;
+                        }
+                        if(it.value().type == 1){
+                            level++;
+                        }
+                        else if(it.value().type == -1 && level > 0){
+                            level--;
+                        }
+                    }
+                    if(level==1){
+                        rowType[bramap.value(current_length + j).row][0]=4;
+                    }
                     //TODO设置flag减少循环
                     for (int k=i+1; k<bramap.value(current_length + j).row; k++){
                         rowType[k][0] = 2;
@@ -688,16 +703,12 @@ void CodeEditor::updateFoldListWidget()
 int CodeEditor::getLineHeight(int lineNumber)
 {
     int newLineHeight;
-    QTextCursor cursor(this->document());
-    QTextBlock block = cursor.document()->findBlockByLineNumber(lineNumber);
-    if (block.isValid())
-    {
-        QFontMetrics fontMetrics(this->font());
-        newLineHeight = fontMetrics.height();
-        lineHeight=newLineHeight;
+    newLineHeight = qRound(blockBoundingGeometry(this->document()->findBlockByLineNumber(lineNumber)).height());
+    if(newLineHeight==0){
+       newLineHeight = lineHeight;
     }
-    else {
-        newLineHeight = lineHeight;
+    else{
+       lineHeight = newLineHeight;
     }
     return newLineHeight;
 }
