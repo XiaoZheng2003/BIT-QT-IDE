@@ -76,6 +76,31 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     });
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,ui->plainTextEdit,&CodeEditor::updateLineNumberArea);
+    //左侧选中单行
+    connect(ui->lineNumberArea,&QListWidget::itemClicked,this,[=](QListWidgetItem *item){
+        int row = item->text().toInt() - 1;
+        QTextCursor cursor(ui->plainTextEdit->document()->findBlockByNumber(row));
+        cursor.select(QTextCursor::LineUnderCursor);
+        ui->plainTextEdit->setTextCursor(cursor);
+        ui->plainTextEdit->setFocus();
+    });
+    //左侧选中多行
+    connect(ui->lineNumberArea,&QListWidget::itemSelectionChanged,this,[=](){
+        QList<QListWidgetItem *> selectedItems = ui->lineNumberArea->selectedItems();
+        //选中数量<=1，证明为单选，不处理
+        if(selectedItems.count() <= 1){
+            return;
+        }
+        int startRow = selectedItems[0]->text().toInt() - 1;
+        int endRow = selectedItems[selectedItems.count() - 1]->text().toInt() - 1;
+        int startPos = ui->plainTextEdit->document()->findBlockByNumber(startRow).position();
+        int endPos = ui->plainTextEdit->document()->findBlockByNumber(endRow).position() + ui->plainTextEdit->document()->findBlockByNumber(endRow).text().length();
+        QTextCursor cursor(ui->plainTextEdit->document());
+        cursor.setPosition(startPos);
+        cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endPos - startPos);
+        ui->plainTextEdit->setTextCursor(cursor);
+        ui->plainTextEdit->setFocus();
+    });
     //光标位置更新
     connect(ui->plainTextEdit, &QPlainTextEdit::cursorPositionChanged, this, &Tab::updateCursorPosition);
     //总行数更新
