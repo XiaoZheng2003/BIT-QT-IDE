@@ -551,26 +551,29 @@ void CodeEditor::updateLineNumberArea()
     m_lineNumberArea->clear();
     for(int row=0;row<=blockCount();row++)
     {
-        QListWidgetItem *item=new QListWidgetItem(QString::number(row+1),m_lineNumberArea);
-        item->setFont(documentFont);
-        item->setText(QString::number(row+1));
-        int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
-        if(itemSize>maxItemSize)
-            maxItemSize=itemSize;
-        //qDebug()<<"row"<<row<<qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height());
-        item->setSizeHint(QSize(this->width(),qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height())));
-        item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        if(row==blockCount()-1)
-        {
-            item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
+        if(this->document()->findBlockByNumber(row).isVisible()){
+            //qDebug()<<row;
+            QListWidgetItem *item=new QListWidgetItem(QString::number(row+1),m_lineNumberArea);
+            item->setFont(documentFont);
+            item->setText(QString::number(row+1));
+            int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
+            if(itemSize>maxItemSize)
+                maxItemSize=itemSize;
+            //qDebug()<<"row"<<row<<qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height());
+            item->setSizeHint(QSize(this->width(),getLineHeight(row)));
+            item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            if(row==blockCount()-1)
+            {
+                item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
+            }
+            if(row==blockCount())
+            {
+                item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
+                item->setFlags(item->flags() & ~Qt::ItemIsEnabled & ~Qt::ItemIsSelectable);
+                item->setText("");
+            }
+            m_lineNumberArea->addItem(item);
         }
-        if(row==blockCount())
-        {
-            item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
-            item->setFlags(item->flags() & ~Qt::ItemIsEnabled & ~Qt::ItemIsSelectable);
-            item->setText("");
-        }
-        m_lineNumberArea->addItem(item);
     }
     //qDebug()<<maxItemSize;
     //对字体过小的情况特殊处理
@@ -665,7 +668,7 @@ void CodeEditor::updateFoldListWidget()
                 QTextBlock qtb = this->document()->findBlockByNumber(row+1);
                 item->setCollapsed(!qtb.isVisible());
             }
-            qDebug()<<"row"<<row<<metrics.averageCharWidth()<<getLineHeight(row);
+            //qDebug()<<"row"<<row<<metrics.averageCharWidth()<<getLineHeight(row);
             item->setSizeHint(QSize(metrics.averageCharWidth(),getLineHeight(row)));
             m_foldListWidget->addItem(item);
         }
