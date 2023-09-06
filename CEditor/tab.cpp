@@ -155,6 +155,9 @@ void Tab::editOperate(int indexId, editType type)
     case Paste:
         ui->plainTextEdit->paste();
         break;
+    case SelectAll:
+        ui->plainTextEdit->selectAll();
+        break;
     }
 }
 
@@ -570,3 +573,14 @@ void Tab::initrowVisibility(){
     }
 }
 
+void Tab::autoComplete(int indexId)
+{
+    if(indexId!=curIndexId) return;
+    ui->plainTextEdit->autoComplete();
+}
+
+void Tab::commentSelectedLines(int indexId)
+{
+    if(indexId!=curIndexId) return;
+    ui->plainTextEdit->commentSelectedLines();
+}

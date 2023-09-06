@@ -268,6 +268,10 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::sendCloseSearchDataToTab,tab,&Tab::receiveCloseSearchDataForTab);
     connect(this,&MainWindow::sendAllReplaceDataToTab,tab,&Tab::receiveAllReplaceDataForTab);
     connect(this,&MainWindow::sendNextReplaceDataToTab,tab,&Tab::receiveNextReplaceDataForTab);
+    //自动补全
+    connect(this,&MainWindow::autoComplete,tab,&Tab::autoComplete);
+    //注释选中行
+    connect(this,&MainWindow::commentSelectedLines,tab,&Tab::commentSelectedLines);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -755,4 +759,17 @@ void MainWindow::on_actionCompileRunProject_triggered()
     on_actionCompileProject_triggered();
     on_actionRunProject_triggered();
 }
+void MainWindow::on_actionAutoComplete_triggered()
+{
+    emit autoComplete(ui->tabWidget->currentIndex());
+}
 
+void MainWindow::on_actionSelectAll_triggered()
+{
+    emit editOperate(ui->tabWidget->currentIndex(),SelectAll);
+}
+
+void MainWindow::on_actionComment_triggered()
+{
+    emit commentSelectedLines(ui->tabWidget->currentIndex());
+}

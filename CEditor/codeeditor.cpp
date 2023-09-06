@@ -69,14 +69,8 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         if (ctrlOrShift && event->text().isEmpty())
             return;
 
-        // 结束词
-        QString endOfWord("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-=");
-
         // 判断是否按下修饰键（除了Ctrl和Shift键）
         bool hasModifier = event->modifiers() != Qt::NoModifier && !ctrlOrShift;
-
-        // 获取光标下的文本作为自动完成的前缀
-        QString completionPrefix = this->textUnderCursor();
 
         /* 如果不是快捷键，并且满足以下条件之一，则不显示自动完成窗口：
         ** 1. 按下修饰键
@@ -84,23 +78,16 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         ** 3. 光标下的文本长度小于2
         ** 4. 按下的文本的最后一个字符在结束词中
         */
-        if (!isShortCut && (hasModifier || event->text().isEmpty() || completionPrefix.length() < 2 || endOfWord.contains(event->text().right(1))))
-        {
+        // 结束词
+        QString endOfWord("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-=");
+
+        if (!isShortCut && (hasModifier || event->text().isEmpty() ||
+                            textUnderCursor().length() < 2 || endOfWord.contains(event->text().right(1)))){
             completer->popup()->hide();
             return;
         }
-        // 如果completionPrefix与当前自动完成的前缀不相等，则更新自动完成的前缀，并将弹出窗口的当前索引设置为第一个选项
-        if (completionPrefix != completer->completionPrefix())
-        {
-            completer->setCompletionPrefix(completionPrefix);
-            completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
-        }
-        // 获取光标位置的矩形区域，并设置弹出窗口的宽度以适应内容和垂直滚动条的宽度
-        QRect rect = this->cursorRect();
-        rect.setWidth(completer->popup()->sizeHintForColumn(0) +
-                      completer->popup()->verticalScrollBar()->sizeHint().width());
-        // 在光标位置弹出自动完成的弹出窗口
-        completer->complete(rect);
+
+        autoComplete();
     }
     //检测自动补全括号后光标是否移动
     switch(document()->characterAt(textCursor().position()).toLatin1()){
@@ -115,6 +102,28 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         //光标发生了移动
         m_cursorMoved = true;
     }
+}
+
+void CodeEditor::autoComplete()
+{
+    // 自动补全
+    // 获取光标下的文本作为自动完成的前缀
+    QString completionPrefix = this->textUnderCursor();
+
+    // 如果completionPrefix与当前自动完成的前缀不相等，则更新自动完成的前缀，并将弹出窗口的当前索引设置为第一个选项
+    if (completionPrefix != completer->completionPrefix())
+    {
+        completer->setCompletionPrefix(completionPrefix);
+        completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
+    }
+
+    // 获取光标位置的矩形区域，并设置弹出窗口的宽度以适应内容和垂直滚动条的宽度
+    QRect rect = this->cursorRect();
+    rect.setWidth(completer->popup()->sizeHintForColumn(0) +
+                  completer->popup()->verticalScrollBar()->sizeHint().width());
+
+    // 在光标位置弹出自动完成的弹出窗口
+    completer->complete(rect);
 }
 
 bool CodeEditor::bracketComplete(QKeyEvent *event)
@@ -763,6 +772,33 @@ QString CodeEditor::textUnderCursor()
     QTextCursor cursor=textCursor();
     cursor.select(QTextCursor::WordUnderCursor);
     return cursor.selectedText();
+}
+
+void CodeEditor::commentSelectedLines()
+{
+    QTextCursor cursor = this->textCursor();
+    int selectionStart = cursor.selectionStart();
+    int selectionEnd = cursor.selectionEnd();
+
+    // 获取选中行的行号
+    int startLine = this->document()->findBlock(selectionStart).blockNumber();
+    int endLine = this->document()->findBlock(selectionEnd).blockNumber();
+
+    // 切换选中的行的注释状态
+    for (int line = startLine; line <= endLine; line++) {
+        QTextBlock block = this->document()->findBlockByNumber(line);
+        QTextCursor blockCursor(block);
+        blockCursor.select(QTextCursor::LineUnderCursor);
+
+        QString lineText = blockCursor.selectedText();
+
+        // 切换注释状态
+        QString commentedLine = lineText.trimmed().startsWith("//") ? lineText.mid(2) : "//" + lineText;
+        blockCursor.setPosition(block.position());
+        blockCursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+        blockCursor.removeSelectedText();
+        blockCursor.insertText(commentedLine);
+    }
 }
 
 void CodeEditor::autoIndent()

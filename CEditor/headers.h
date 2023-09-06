@@ -41,4 +41,13 @@
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
 
+enum editType{
+    Redo,
+    Undo,
+    Cut,
+    Copy,
+    Paste,
+    SelectAll
+};
+
 #endif // HEADERS_H

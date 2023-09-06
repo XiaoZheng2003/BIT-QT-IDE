@@ -31,6 +31,8 @@ public:
     void setLineNumberArea(QListWidget *lineNumberArea);
     void setFoldListWidget(FoldListWidget *foldListWidget);
     void setCompleter(QCompleter *c);
+    void autoComplete();
+    void commentSelectedLines();
     void undo();
     void redo();
 
@@ -76,7 +78,7 @@ private:
     QCompleter *getCompleter();
     void insertCompletion(const QString &completion);
     QString textUnderCursor();
-
+    
 };
 
 #endif // CODEEDITOR_H
