@@ -87,8 +87,8 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     //左侧选中多行
     connect(ui->lineNumberArea,&QListWidget::itemSelectionChanged,this,[=](){
         QList<QListWidgetItem *> selectedItems = ui->lineNumberArea->selectedItems();
-        //选中数量<=1，证明为单选，不处理
-        if(selectedItems.count() <= 1){
+        //选中数量<=1，证明为单选，或者鼠标在QPlainTextEdit范围内，不处理
+        if(selectedItems.count() <= 1 || ui->plainTextEdit->underMouse()){
             return;
         }
         int startRow = selectedItems[0]->text().toInt() - 1;
