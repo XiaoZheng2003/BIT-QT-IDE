@@ -78,6 +78,8 @@ private:
     QCompleter *getCompleter();
     void insertCompletion(const QString &completion);
     QString textUnderCursor();
+    int getLineHeight(int lineNumber);
+    int lineHeight = 0;
     
 };
 
