@@ -49,7 +49,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void focusInEvent(QFocusEvent *event) override;
-    //void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 signals:
     void scrollBarValue(int value);
@@ -67,6 +67,7 @@ private:
     QTimer *m_timer;
     QCompleter *completer=nullptr;
     bool m_cursorMoved = true;// 记录成对符号自动补全后光标是否发生移动
+    QList<int> m_highlightLine;// 储存需要高亮的行
 
     void sendCurrentScrollBarValue();
     bool bracketComplete(QKeyEvent *event);

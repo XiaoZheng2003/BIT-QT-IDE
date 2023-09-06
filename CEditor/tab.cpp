@@ -12,6 +12,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->lineNumberArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->verticalScrollBar()->setDisabled(true);
+    ui->lineNumberArea->setSelectionMode(QAbstractItemView::ContiguousSelection);
     ui->plainTextEdit->setLineNumberArea(ui->lineNumberArea);
     ui->foldListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->foldListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -22,10 +23,10 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
         ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
         if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+            ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetOther);
         }
         else{
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+            ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetTop);
         }
         ui->foldListWidget->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
         if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
@@ -38,10 +39,10 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     connect(ui->plainTextEdit,&CodeEditor::scrollBarValue,[=](int value){
         ui->lineNumberArea->verticalScrollBar()->setValue(value);
         if(value!=0){
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+            ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetOther);
         }
         else{
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+            ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetTop);
         }
         ui->foldListWidget->verticalScrollBar()->setValue(value);
         if(value!=0){
@@ -54,10 +55,10 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,this,[=](int value){
         ui->lineNumberArea->verticalScrollBar()->setValue(value);
         if(value!=0){
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+            ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetOther);
         }
         else{
-            ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+            ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetTop);
         }
         ui->foldListWidget->verticalScrollBar()->setValue(value);
         if(value!=0){

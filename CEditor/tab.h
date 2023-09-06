@@ -60,6 +60,8 @@ private:
     std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
     Highlighter* highlighter;
     QCompleter* completer;
+    QString m_lineNumberAreaStyleSheetOther = "QListWidget{background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;color: rgb(170,170,170);font-weight:normal;}QListWidget::item:selected{background-color: transparent; color: rgb(80,80,80);font-weight:bold;}QListView::item:hover{background-color:transparent;}";
+    QString m_lineNumberAreaStyleSheetTop = "QListWidget{background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;color: rgb(170,170,170);font-weight:normal;}QListWidget::item:selected{background-color: transparent; color: rgb(80,80,80);font-weight:bold;}QListView::item:hover{background-color:transparent;}";
 
     QAbstractItemModel* modelFromFile(const QString &fileName);
     void initrowVisibility();
