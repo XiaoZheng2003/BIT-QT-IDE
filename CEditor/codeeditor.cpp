@@ -962,7 +962,7 @@ void CodeEditor::paintEvent(QPaintEvent *event)
 
             painter.setPen(QPen(Qt::black, 2)); // 设置线的颜色和宽度
             int y = blockBoundingGeometry(block).bottom(); // 获取指定行底部的Y坐标
-            painter.drawLine(0, y, viewport()->width(), y); // 绘制横线
+            painter.drawLine(0, y+1.5, viewport()->width(), y+1.5); // 绘制横线
         }
     }
 }
