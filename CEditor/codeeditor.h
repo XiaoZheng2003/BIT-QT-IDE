@@ -35,6 +35,7 @@ public:
     void commentSelectedLines();
     void undo();
     void redo();
+    void clearLineHighlight();
 
 public slots:
     void updateLineNumberArea();

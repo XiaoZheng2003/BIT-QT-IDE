@@ -27,15 +27,9 @@ CodeEditor::CodeEditor(QWidget *parent):
     // 高亮当前行
     connect(this,&QPlainTextEdit::cursorPositionChanged,this,[=](){
         m_lineNumberArea->clearSelection();
-        //取消之前高亮的行
-        QTextBlockFormat format = QTextBlockFormat();
-        format.setBackground(QBrush(Qt::white));
-        for(int i = 0; i < m_highlightLine.count(); i++){
-            QTextCursor cursor = QTextCursor(document()->findBlockByLineNumber(m_highlightLine[i]));
-            cursor.setBlockFormat(format);
-        }
-        m_highlightLine.clear();
-        m_lineNumberArea->item(textCursor().blockNumber())->setSelected(true);
+        clearLineHighlight();
+        QList<QListWidgetItem *> items = m_lineNumberArea->findItems(QString::number(textCursor().blockNumber()+1),Qt::MatchExactly);
+        items[0]->setSelected(true);
         m_highlightLine.append(textCursor().blockNumber());
     });
     //同时选中多行
@@ -46,7 +40,8 @@ CodeEditor::CodeEditor(QWidget *parent):
         int endRow = document()->findBlock(endPos).blockNumber();
         for(int i = startRow; i <= endRow; i++){
             m_highlightLine.append(i);
-            m_lineNumberArea->item(i)->setSelected(true);
+            QList<QListWidgetItem *> items = m_lineNumberArea->findItems(QString::number(textCursor().blockNumber()+1),Qt::MatchExactly);
+            items[0]->setSelected(true);
         }
     });
 }
@@ -56,10 +51,22 @@ void CodeEditor::paintEvent(QPaintEvent *event)
     QTextBlockFormat format = QTextBlockFormat();
     format.setBackground(QBrush(QColor(Qt::cyan).lighter(180)));
     for(int i = 0; i < m_highlightLine.count(); i++){
-        QTextCursor cursor = QTextCursor(document()->findBlockByLineNumber(m_highlightLine[i]));
+        QTextCursor cursor = QTextCursor(document()->findBlockByNumber(m_highlightLine[i]));
         cursor.setBlockFormat(format);
     }
     QPlainTextEdit::paintEvent(event);
+}
+
+void CodeEditor::clearLineHighlight()
+{
+    //取消之前高亮的行
+    QTextBlockFormat format = QTextBlockFormat();
+    format.setBackground(QBrush(Qt::white));
+    for(int i = 0; i < m_highlightLine.count(); i++){
+        QTextCursor cursor = QTextCursor(document()->findBlockByNumber(m_highlightLine[i]));
+        cursor.setBlockFormat(format);
+    }
+    m_highlightLine.clear();
 }
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
