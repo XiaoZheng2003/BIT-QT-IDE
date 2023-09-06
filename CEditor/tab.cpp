@@ -18,11 +18,6 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->foldListWidget->verticalScrollBar()->setDisabled(true);
     ui->plainTextEdit->setFoldListWidget(ui->foldListWidget);
 
-    //FoldListWidgetItem *item1 = new FoldListWidgetItem("");
-
-
-    //ui->foldListWidget->addItem(item1);
-
     //设置行数显示条与文本编辑块一起滚动
     connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
         ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
@@ -48,7 +43,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         else{
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
         }
-        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        ui->foldListWidget->verticalScrollBar()->setValue(value);
         if(value!=0){
             ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
         }
@@ -64,7 +59,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         else{
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
         }
-        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        ui->foldListWidget->verticalScrollBar()->setValue(value);
         if(value!=0){
             ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
         }
@@ -108,6 +103,11 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         //当文本被修改
         emit textChanged(curIndexId);
     });
+
+
+    connect(ui->foldListWidget, &FoldListWidget::itemClicked, this, &Tab::handleFoldStateChanged);
+    //初始化可见性
+    connect(ui->plainTextEdit,&CodeEditor::matchFinished,this,&Tab::initrowVisibility);
 }
 
 Tab::~Tab()
@@ -536,6 +536,40 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
     } else {
         qDebug() << "替换成功！";
         QMessageBox::information(NULL, "信息", "替换成功");
+    }
+}
+
+void Tab::handleFoldStateChanged(QListWidgetItem* item){
+    FoldListWidgetItem* foldListWidgetItem = dynamic_cast<FoldListWidgetItem*>(item);
+    bool flag = foldListWidgetItem->isCollapsed();
+    //qDebug()<<"flag"<<flag;
+    setBlockVisible(!flag, foldListWidgetItem->start, foldListWidgetItem->end);
+    ui->plainTextEdit->updateLineNumberArea();
+    ui->plainTextEdit->updateFoldListWidget();
+}
+
+void Tab::setBlockVisible(bool flag, int start, int end)
+{
+    //qDebug()<<flag<<start<<end;
+    for(int i=start;i<=end;++i)
+    {
+        QTextBlock qtb = ui->plainTextEdit->document()->findBlockByNumber(i);
+        qtb.setVisible(flag);
+        //ui->foldListWidget->setRowVisible(i, flag);
+        //ui->lineNumberArea->setRowHidden(i, flag);
+    }
+    ui->plainTextEdit->viewport()->update(); //重绘
+    ui->plainTextEdit->document()->adjustSize(); //重新适应大小
+    //
+    /*
+    */
+}
+
+void Tab::initrowVisibility(){
+    // 初始化rowVisibility列表，默认所有行都可见
+    int rowCount = ui->plainTextEdit->document()->blockCount();
+    for (int i = 0; i < rowCount; ++i) {
+        ui->foldListWidget->rowVisibility.append(true);
     }
 }
 

@@ -3,6 +3,7 @@
 
 #include "headers.h"
 #include "foldlistwidget.h"
+#include "foldlistwidgetitem.h"
 
 class Brackets // 括号匹配类
 {
