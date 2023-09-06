@@ -44,22 +44,35 @@ void FoldListWidget::paintEvent(QPaintEvent* event)
         case 1:
         {
             // 绘制正方形和加号/减号
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(QColor(200, 200, 200)); // 正方形的颜色
-            painter.drawRect(rect.left(), rect.top(), rect.width(), rect.height());
+            float height_margin = rect.height()*0.2;
+            float width_margin = rect.width()*0.2;
+
+            painter.drawLine(rect.left() + width_margin, rect.top() + height_margin, rect.left() + width_margin, rect.bottom() - height_margin);
+            painter.drawLine(rect.left() + width_margin, rect.top() + height_margin, rect.right() - width_margin, rect.top() + height_margin);
+            painter.drawLine(rect.left() + width_margin, rect.bottom() - height_margin, rect.right() - width_margin, rect.bottom() - height_margin);
+            painter.drawLine(rect.right() - width_margin, rect.top() + height_margin, rect.right() - width_margin, rect.bottom() - height_margin);
             // 判断列表项的状态，如果是折叠的，则绘制减号；否则，绘制加号
             if (!item->isCollapsed())
             {
                 // 绘制减号
+                if(item->level != 1){
+                    painter.drawLine(rect.center().x(), rect.top(), rect.center().x(), rect.top() + height_margin);
+                }
+                painter.drawLine(rect.center().x(), rect.bottom(), rect.center().x(), rect.bottom() - height_margin);
                 painter.setPen(QColor(0, 0, 0)); // 减号的颜色
-                painter.drawLine(rect.left(), rect.center().y(), rect.right(), rect.center().y()); // 横线
+                painter.drawLine(rect.left() + width_margin, rect.center().y(), rect.right() - width_margin, rect.center().y()); // 横线
             }
             else
             {
                 // 绘制加号
+                if(item->level != 1){
+                    painter.drawLine(rect.center().x(), rect.top(), rect.center().x(), rect.top() + height_margin);
+                    painter.drawLine(rect.center().x(), rect.bottom(), rect.center().x(), rect.bottom() - height_margin);
+                }
+
                 painter.setPen(QColor(0, 0, 0)); // 加号的颜色
-                painter.drawLine(rect.left(), rect.center().y(), rect.right(), rect.center().y()); // 横线
-                painter.drawLine(rect.center().x(), rect.top(), rect.center().x(), rect.bottom()); // 竖线
+                painter.drawLine(rect.left() + width_margin, rect.center().y(), rect.right() - width_margin, rect.center().y()); // 横线
+                painter.drawLine(rect.center().x(), rect.top() + height_margin, rect.center().x(), rect.bottom() - height_margin); // 竖线
             }
             break;
         }

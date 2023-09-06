@@ -46,17 +46,6 @@ CodeEditor::CodeEditor(QWidget *parent):
     });
 }
 
-void CodeEditor::paintEvent(QPaintEvent *event)
-{
-    QTextBlockFormat format = QTextBlockFormat();
-    format.setBackground(QBrush(QColor(Qt::cyan).lighter(180)));
-    for(int i = 0; i < m_highlightLine.count(); i++){
-        QTextCursor cursor = QTextCursor(document()->findBlockByNumber(m_highlightLine[i]));
-        cursor.setBlockFormat(format);
-    }
-    QPlainTextEdit::paintEvent(event);
-}
-
 void CodeEditor::clearLineHighlight()
 {
     //取消之前高亮的行
@@ -612,9 +601,10 @@ void CodeEditor::updateFoldListWidget()
     int current_length = 0;
     QTextDocument* document = this->document();
     int totalRow = document->blockCount();
-    qDebug()<<"totalRow"<<totalRow;
+    //qDebug()<<"totalRow"<<totalRow;
     m_foldListWidget->clear();
-    int rowType[totalRow+1][2]; //0:type;1:end
+    clearAllLines();
+    int rowType[totalRow+1][3]; //0:type;1:end;3:level
     memset(rowType, 0, sizeof(rowType));
     for(int i=0;i<totalRow;i++)
     {
@@ -640,8 +630,9 @@ void CodeEditor::updateFoldListWidget()
                             level--;
                         }
                     }
-                    if(level==1){
+                    if(level == 1){
                         rowType[bramap.value(current_length + j).row][0]=4;
+                        rowType[i][2]=1;
                     }
                     //TODO设置flag减少循环
                     for (int k=i+1; k<bramap.value(current_length + j).row; k++){
@@ -685,10 +676,16 @@ void CodeEditor::updateFoldListWidget()
 
             FoldListWidgetItem *item=new FoldListWidgetItem(rowType[row][0]);
             if(rowType[row][0]==1){
+                if(rowType[row][2]==1){
+                    item->level=1;
+                }
                 item->start = row + 1;
                 item->end = rowType[row][1];
                 QTextBlock qtb = this->document()->findBlockByNumber(row+1);
                 item->setCollapsed(!qtb.isVisible());
+                if(!qtb.isVisible()){
+                  setLine(row, !qtb.isVisible());
+                }
             }
             //qDebug()<<"row"<<row<<metrics.averageCharWidth()<<getLineHeight(row);
             item->setSizeHint(QSize(metrics.averageCharWidth(),getLineHeight(row)));
@@ -703,7 +700,8 @@ void CodeEditor::updateFoldListWidget()
 int CodeEditor::getLineHeight(int lineNumber)
 {
     int newLineHeight;
-    newLineHeight = qRound(blockBoundingGeometry(this->document()->findBlockByLineNumber(lineNumber)).height());
+    newLineHeight = qRound(blockBoundingGeometry(this->document()->findBlockByNumber(lineNumber)).height());
+    //qDebug()<<lineNumber<<"newLineHeight"<<newLineHeight;
     if(newLineHeight==0){
        newLineHeight = lineHeight;
     }
@@ -925,4 +923,49 @@ void CodeEditor::autoIndent()
             setTextCursor(currentCursor);
         }
     }
+}
+
+void CodeEditor::setLine(int lineNumber, bool draw)
+{
+    // 先检查是否已经存在该行的记录，如果存在则更新状态，否则添加新记录
+    for (int i = 0; i < linesToDraw.size(); ++i)
+    {
+        if (linesToDraw[i].lineNumber == lineNumber)
+        {
+            linesToDraw[i].draw = draw;
+            update();
+            return;
+        }
+    }
+
+    LineToDraw lineToDraw(lineNumber, draw);
+    linesToDraw.append(lineToDraw);
+    update();
+}
+
+void CodeEditor::paintEvent(QPaintEvent *event)
+{
+    QPlainTextEdit::paintEvent(event);
+
+    QPainter painter(viewport());
+
+    for (const LineToDraw &lineToDraw : linesToDraw)
+    {
+        if (lineToDraw.draw)
+        {
+            QTextBlock block = document()->findBlockByNumber(lineToDraw.lineNumber);
+            if (!block.isValid())
+                continue;
+
+            painter.setPen(QPen(Qt::black, 2)); // 设置线的颜色和宽度
+            int y = blockBoundingGeometry(block).bottom(); // 获取指定行底部的Y坐标
+            painter.drawLine(0, y, viewport()->width(), y); // 绘制横线
+        }
+    }
+}
+
+void CodeEditor::clearAllLines()
+{
+    linesToDraw.clear();
+    update();
 }
