@@ -26,5 +26,8 @@
         <file>pic/withdraw.png</file>
         <file>wordlist.txt</file>
         <file>pic/redo.png</file>
+        <file>pic/audo.png</file>
+        <file>pic/jump.png</file>
+        <file>pic/icon.png</file>
     </qresource>
 </RCC>
