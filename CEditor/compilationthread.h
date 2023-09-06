@@ -1,9 +1,7 @@
 #ifndef COMPILATIONTHREAD_H
 #define COMPILATIONTHREAD_H
 
-#include <QThread>
-#include <QProcess>
-#include <mainwindow.h>
+#include "headers.h"
 
 class CompilationThread : public QThread
 {

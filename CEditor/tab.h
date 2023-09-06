@@ -1,21 +1,11 @@
 ﻿#ifndef TAB_H
 #define TAB_H
 
-#include <QFile>
-#include <QDialog>
-#include <QWidget>
-#include <QString>
-#include <QPlainTextEdit>
-#include <QTextDocument>
-#include <QTextBlock>
-#include <QTimer>
-#include <QDialog>
-#include <QFont>
-#include <QMessageBox>
-#include <QStringListModel>
+#include "headers.h"
 #include "codeeditor.h"
 #include "highlighter.h"
 #include "highlighttype.h"
+#include "foldlistwidgetitem.h"
 
 enum editType{
     Redo,
@@ -50,7 +40,8 @@ public slots:
     void receiveStartSearchDataForTab(QString,int,int state,int);
     void receiveCloseSearchDataForTab();
     void receiveNextSearchDataForTab(QString,int,int state);
-    void receiveReplaceDataForTab(QString,QString,int,int state);
+    void receiveAllReplaceDataForTab(QString,QString,int,int state);
+    void receiveNextReplaceDataForTab(QString,QString,int,int state);
 
 signals:
     void returnTextForSave(int indexId, QString str);

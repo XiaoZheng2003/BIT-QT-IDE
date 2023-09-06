@@ -13,6 +13,16 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     ui->lineNumberArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->lineNumberArea->verticalScrollBar()->setDisabled(true);
     ui->plainTextEdit->setLineNumberArea(ui->lineNumberArea);
+    ui->foldListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->foldListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->foldListWidget->verticalScrollBar()->setDisabled(true);
+    ui->plainTextEdit->setFoldListWidget(ui->foldListWidget);
+
+    //FoldListWidgetItem *item1 = new FoldListWidgetItem("");
+
+
+    //ui->foldListWidget->addItem(item1);
+
     //设置行数显示条与文本编辑块一起滚动
     connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
         ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
@@ -21,6 +31,13 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         }
         else{
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
+        ui->foldListWidget->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
+        if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
+            ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
         }
     });
     connect(ui->plainTextEdit,&CodeEditor::scrollBarValue,[=](int value){
@@ -31,6 +48,13 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         else{
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
         }
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
     });
     connect(ui->plainTextEdit->verticalScrollBar(),&QScrollBar::valueChanged,this,[=](int value){
         ui->lineNumberArea->verticalScrollBar()->setValue(value);
@@ -40,9 +64,19 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         else{
             ui->lineNumberArea->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
         }
+        ui->lineNumberArea->verticalScrollBar()->setValue(value);
+        if(value!=0){
+            ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;");
+        }
+        else{
+            ui->foldListWidget->setStyleSheet("background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:4px;");
+        }
     });
     connect(ui->lineNumberArea,&QListWidget::currentItemChanged,this,[=](){
         ui->plainTextEdit->verticalScrollBar()->setValue(ui->lineNumberArea->verticalScrollBar()->value());
+    });
+    connect(ui->foldListWidget,&QListWidget::currentItemChanged,this,[=](){
+        ui->plainTextEdit->verticalScrollBar()->setValue(ui->foldListWidget->verticalScrollBar()->value());
     });
     //当文本编辑块行数改变时更新行数显示条
     connect(ui->plainTextEdit,&QPlainTextEdit::blockCountChanged,ui->plainTextEdit,&CodeEditor::updateLineNumberArea);
@@ -422,7 +456,7 @@ void Tab::receiveCloseSearchDataForTab()
     qDebug("suc!");
 }
 
-void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
+void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
 {
     if(index != curIndexId)
         return;
@@ -459,7 +493,48 @@ void Tab::receiveReplaceDataForTab(QString sear, QString rep, int index, int sta
             qDebug() << "替换成功！";
             QMessageBox::information(NULL, "信息", "替换成功");
     }
-
 }
+
+void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int state)
+{
+    if(index != curIndexId)
+        return;
+
+    QString real_search_str = sear;
+    QTextDocument *document = ui->plainTextEdit->document();
+    QTextCursor cursor(document);
+    bool found = false;
+    QTextCursor highlight_cursor(document);
+    highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
+
+    if (!highlight_cursor.isNull() && !highlight_cursor.atEnd())
+    {
+        switch (state) {
+        case 0:
+            highlight_cursor = document->find(real_search_str, highlight_cursor);
+            break;
+        case 2:
+            highlight_cursor = document->find(real_search_str, highlight_cursor, QTextDocument::FindCaseSensitively);
+            break;
+        }
+
+        if (highlight_cursor.isNull() || highlight_cursor.atEnd()) {
+            found = false;
+        } else {
+            found = true;
+            highlight_cursor.movePosition(QTextCursor::NoMove, QTextCursor::KeepAnchor);
+            highlight_cursor.insertText(rep);
+        }
+    }
+
+    if (!found) {
+        QMessageBox::information(this, tr("注意"), tr("没有找到内容"), QMessageBox::Ok);
+        qDebug("not found");
+    } else {
+        qDebug() << "替换成功！";
+        QMessageBox::information(NULL, "信息", "替换成功");
+    }
+}
+
 
 

@@ -76,6 +76,22 @@ padding-top:4px;</string>
         </widget>
        </item>
        <item>
+        <widget class="FoldListWidget" name="foldListWidget">
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(246, 245, 244);
+border:1px solid rgb(192, 191, 188);
+border-right:none;
+padding-top:4px;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="CodeEditor" name="plainTextEdit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -181,6 +197,11 @@ QLineEdit:hover {
    <class>CodeEditor</class>
    <extends>QPlainTextEdit</extends>
    <header location="global">codeeditor.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FoldListWidget</class>
+   <extends>QListWidget</extends>
+   <header location="global">foldlistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
