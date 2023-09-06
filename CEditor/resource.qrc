@@ -28,6 +28,6 @@
         <file>pic/redo.png</file>
         <file>pic/audo.png</file>
         <file>pic/jump.png</file>
-        <file>pic/icon.png</file>
+        <file>pic/icon_n.png</file>
     </qresource>
 </RCC>

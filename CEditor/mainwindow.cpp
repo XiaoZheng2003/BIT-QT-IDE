@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(all_row);
 
     this->setWindowTitle("CEditor");
-    this->setWindowIcon(QIcon(":/pic/icon.png"));
+    this->setWindowIcon(QIcon(":/pic/icon_n.png"));
 
 
     //初始状态隐藏编译信息栏
