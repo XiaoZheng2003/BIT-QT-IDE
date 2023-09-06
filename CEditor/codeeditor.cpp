@@ -16,15 +16,50 @@ CodeEditor::CodeEditor(QWidget *parent):
         m_undoStack.push(text);
         this->setPlainText(text);
     });
-
-    //判断是否文本发生变化
+    // 判断是否文本发生变化
     connect(this, &CodeEditor::textChanged, this, &CodeEditor::handleTextChanged);
-    //光标移动，高亮匹配括号
+    // 光标移动，高亮匹配括号
     connect(this,&CodeEditor::cursorPositionChanged,this,&CodeEditor::highlightMatchedBrackets);
-    //行数变化时自动缩进
+    // 行数变化时自动缩进
     connect(this,&QPlainTextEdit::blockCountChanged,this,&CodeEditor::autoIndent);
     // TODO 括号匹配结束向其发送修改ui的信号
     connect(this,&CodeEditor::matchFinished,this,&CodeEditor::updateFoldListWidget);
+    // 高亮当前行
+    connect(this,&QPlainTextEdit::cursorPositionChanged,this,[=](){
+        m_lineNumberArea->clearSelection();
+        //取消之前高亮的行
+        QTextBlockFormat format = QTextBlockFormat();
+        format.setBackground(QBrush(Qt::white));
+        for(int i = 0; i < m_highlightLine.count(); i++){
+            QTextCursor cursor = QTextCursor(document()->findBlockByLineNumber(m_highlightLine[i]));
+            cursor.setBlockFormat(format);
+        }
+        m_highlightLine.clear();
+        m_lineNumberArea->item(textCursor().blockNumber())->setSelected(true);
+        m_highlightLine.append(textCursor().blockNumber());
+    });
+    //同时选中多行
+    connect(this,&QPlainTextEdit::selectionChanged,this,[=](){
+        int startPos = textCursor().selectionStart();
+        int endPos = textCursor().selectionEnd();
+        int startRow = document()->findBlock(startPos).blockNumber();
+        int endRow = document()->findBlock(endPos).blockNumber();
+        for(int i = startRow; i <= endRow; i++){
+            m_highlightLine.append(i);
+            m_lineNumberArea->item(i)->setSelected(true);
+        }
+    });
+}
+
+void CodeEditor::paintEvent(QPaintEvent *event)
+{
+    QTextBlockFormat format = QTextBlockFormat();
+    format.setBackground(QBrush(QColor(Qt::cyan).lighter(180)));
+    for(int i = 0; i < m_highlightLine.count(); i++){
+        QTextCursor cursor = QTextCursor(document()->findBlockByLineNumber(m_highlightLine[i]));
+        cursor.setBlockFormat(format);
+    }
+    QPlainTextEdit::paintEvent(event);
 }
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
@@ -57,6 +92,16 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         //一对字符整体删除的情况
         textCursor().deleteChar();
         textCursor().deletePreviousChar();
+    }
+    else if(event->key() == Qt::Key_Colon){
+        if(textCursor().block().text().contains("case")){
+            QTextCursor cursor=textCursor();
+            cursor.movePosition(QTextCursor::StartOfBlock);
+            if(document()->characterAt(cursor.position())=='\t'){
+                cursor.deleteChar();
+            }
+        }
+        QPlainTextEdit::keyPressEvent(event);
     }
     else{
         // 若completer不存在，或按下键非Ctrl+E
@@ -805,10 +850,6 @@ void CodeEditor::autoIndent()
 {
     QTextCursor currentCursor = this->textCursor();
     int pos = currentCursor.position(), level = 0;
-    bool insertEmptyLine = false;
-    if(document()->characterAt(pos - 2) == '{'){
-        insertEmptyLine = true;
-    }
     for(QMap<int,Brackets>::Iterator it = bramap.begin(); it != bramap.end(); it++){
         if(it.value().currentPos >= pos){
             break;

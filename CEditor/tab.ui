@@ -42,10 +42,24 @@
           <bool>false</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(246, 245, 244);
-border:1px solid rgb(192, 191, 188);
-border-right:none;
-padding-top:4px;</string>
+          <string notr="true">QListWidget
+{
+	background-color: rgb(246, 245, 244);
+	border:1px solid rgb(192, 191, 188);
+	border-right:none;
+	padding-top:4px;
+	color: rgb(170,170,170);
+	font-weight:normal}
+QListWidget::selected
+{
+	background-color: transparent;
+	color: rgb(170,170,170);
+	font-weight:bold;
+}
+QListWidget::item:hover
+{
+	background-color:transparent;
+}</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
