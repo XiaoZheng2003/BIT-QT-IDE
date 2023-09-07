@@ -870,6 +870,7 @@ void MainWindow::on_actionCompileRunProject_triggered()
     // 启动编译线程
     compileThread1->start();
 }
+
 void MainWindow::on_actionAutoComplete_triggered()
 {
     //自动补全
@@ -896,12 +897,10 @@ void MainWindow::on_actionJumpLine_triggered()
     if(ok) emit jumpToLine(ui->tabWidget->currentIndex(),line);
 }
 
-
 void MainWindow::on_actionAstyle_triggered()
 {
     emit startAStyle(ui->tabWidget->currentIndex());
 }
-
 
 void MainWindow::on_actionAstyleOption_triggered()
 {
