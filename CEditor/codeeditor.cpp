@@ -975,6 +975,13 @@ void CodeEditor::setLine(int lineNumber, bool draw)
 
 void CodeEditor::paintEvent(QPaintEvent *event)
 {
+    QTextBlockFormat format = QTextBlockFormat();
+    format.setBackground(QBrush(QColor(Qt::cyan).lighter(180)));
+    for(int i = 0; i < m_highlightLine.count(); i++){
+        QTextCursor cursor = QTextCursor(document()->findBlockByNumber(m_highlightLine[i]));
+        cursor.setBlockFormat(format);
+    }
+
     QPlainTextEdit::paintEvent(event);
 
     QPainter painter(viewport());
