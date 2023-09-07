@@ -862,11 +862,6 @@ void CodeEditor::setCompleter(QCompleter *c)
     connect(c,QOverload<const QString &>::of(&QCompleter::activated),this,&CodeEditor::insertCompletion);
 }
 
-QCompleter *CodeEditor::getCompleter()
-{
-    return completer;
-}
-
 void CodeEditor::insertCompletion(const QString &completion)
 {
     //将选中的选项的文本插入

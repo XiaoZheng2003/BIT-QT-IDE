@@ -908,18 +908,6 @@ void MainWindow::on_actionAstyleOption_triggered()
     m_astyle->exec();
 }
 
-
-void MainWindow::on_actionAstyle_triggered()
-{
-    emit startAStyle(ui->tabWidget->currentIndex());
-}
-
-
-void MainWindow::on_actionAstyleOption_triggered()
-{
-    m_astyle->exec();
-}
-
 void MainWindow::on_actionHelp_triggered()
 {
     //打开帮助文档
