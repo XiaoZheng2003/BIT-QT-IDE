@@ -68,6 +68,7 @@ private slots:
     void on_actionHelp_triggered();
     void on_actionAbout_triggered();
     void on_actionAboutQt_triggered();
+    void on_functionTreeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 signals:
     void prepareTextForSave(int indexId);
@@ -93,6 +94,7 @@ private:
     replace *replace;//替换对话框
     QLabel *row_col;
     QLabel *all_row;
+    QMap<QString,int> findFunction; // 通过函数名找函数行号
 
     void refreshFilename(int index);
     void initConnection(Tab *tab);
@@ -109,5 +111,6 @@ private:
     void handleProjectRunFinished(int exitCode, const QString &outputText);
     void initProjectTreeMenu();
     int getItemLevel(QTreeWidgetItem *item);
+    void createFunctionTree(int index);
 };
 #endif // MAINWINDOW_H

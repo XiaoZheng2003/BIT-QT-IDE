@@ -63,6 +63,15 @@
         </column>
        </widget>
       </item>
+      <item>
+       <widget class="QTreeWidget" name="functionTreeWidget">
+        <column>
+         <property name="text">
+          <string>函数（单击跳转）</string>
+         </property>
+        </column>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -158,7 +167,7 @@ border-radius:20px;</string>
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
@@ -613,7 +622,7 @@ border-radius:20px;</string>
    </property>
    <property name="text">
     <string>关于Qt</string>
-    </property>
+   </property>
   </action>
   <action name="actionAstyle">
    <property name="text">
