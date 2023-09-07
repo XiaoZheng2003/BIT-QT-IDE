@@ -294,7 +294,6 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
 
         bool found = false;
         QTextCursor highlight_cursor(document);
-
         if(begin == 1) {
             highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
         }
@@ -303,8 +302,8 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
         }
 
 //        cursor.beginEditBlock();
-        QTextCharFormat color_format(highlight_cursor.charFormat());
-        color_format.setBackground(Qt::yellow);
+//        QTextCharFormat color_format(highlight_cursor.charFormat());
+//        color_format.setBackground(Qt::yellow);
 
         switch (state) {
         case 0:
@@ -342,28 +341,35 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
         }
         if (!highlight_cursor.isNull() && state < 0)//向前查找光标置于查找单词前
         {
-            if(!found)
-            {
-                found = true;
-            }
-            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
-            highlight_cursor.mergeCharFormat(color_format);
-            highlight_cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor,n);
-            ui->plainTextEdit->setTextCursor(highlight_cursor);
+            found = true;
+//            highlight_cursor.mergeCharFormat(color_format);
+            int pos = highlight_cursor.position();
+                // 获取当前的光标对象
+                QTextCursor cs =ui->plainTextEdit->textCursor();
+                // 开始
+                cs.movePosition(QTextCursor::Start);
+                // 偏移位置
+                cs.movePosition(QTextCursor::NextCharacter,QTextCursor::MoveAnchor,pos-n);
+                // 设置新的光标对象
+                 ui->plainTextEdit->setTextCursor(cs);
         }
         else if (!highlight_cursor.isNull()){
-            if(!found)
-            {
-                found = true;
-            }
-            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
-            highlight_cursor.mergeCharFormat(color_format);
-            ui->plainTextEdit->setTextCursor(highlight_cursor);
+            found = true;
+//            highlight_cursor.mergeCharFormat(color_format);
+            int pos = highlight_cursor.position();
+                // 获取当前的光标对象
+                QTextCursor cs =ui->plainTextEdit->textCursor();
+                // 开始
+                cs.movePosition(QTextCursor::Start);
+                // 偏移位置
+                cs.movePosition(QTextCursor::NextCharacter,QTextCursor::MoveAnchor,pos);
+                // 设置新的光标对象
+                 ui->plainTextEdit->setTextCursor(cs);
         }
 
 //        cursor.endEditBlock();
 //        document->undo();
-
+//        qDebug("position=%d",ui->plainTextEdit->textCursor().position());
         if(found == false){
             QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
             qDebug("not found");
@@ -371,7 +377,8 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
     }
 }
 
-void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始搜索指定字符串
+
+void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//继续搜索指定字符串
 {
     if(index != curIndexId)
         return;
@@ -392,13 +399,12 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始�
 
         bool found = false;
         QTextCursor highlight_cursor(document);
-
-
         highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
 
+
 //        cursor.beginEditBlock();
-        QTextCharFormat color_format(highlight_cursor.charFormat());
-        color_format.setBackground(Qt::yellow);
+//        QTextCharFormat color_format(highlight_cursor.charFormat());
+//        color_format.setBackground(Qt::yellow);
 
         switch (state) {
         case 0:
@@ -436,28 +442,35 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//开始�
         }
         if (!highlight_cursor.isNull() && state < 0)//向前查找光标置于查找单词前
         {
-            if(!found)
-            {
-                found = true;
-            }
-            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
-            highlight_cursor.mergeCharFormat(color_format);
-            highlight_cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor,n);
-            ui->plainTextEdit->setTextCursor(highlight_cursor);
+            found = true;
+//            highlight_cursor.mergeCharFormat(color_format);
+            int pos = highlight_cursor.position();
+                // 获取当前的光标对象
+                QTextCursor cs =ui->plainTextEdit->textCursor();
+                // 开始
+                cs.movePosition(QTextCursor::Start);
+                // 偏移位置
+                cs.movePosition(QTextCursor::NextCharacter,QTextCursor::MoveAnchor,pos-n);
+                // 设置新的光标对象
+                 ui->plainTextEdit->setTextCursor(cs);
         }
         else if (!highlight_cursor.isNull()){
-            if(!found)
-            {
-                found = true;
-            }
-            highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
-            highlight_cursor.mergeCharFormat(color_format);
-            ui->plainTextEdit->setTextCursor(highlight_cursor);
+            found = true;
+//            highlight_cursor.mergeCharFormat(color_format);
+            int pos = highlight_cursor.position();
+                // 获取当前的光标对象
+                QTextCursor cs =ui->plainTextEdit->textCursor();
+                // 开始
+                cs.movePosition(QTextCursor::Start);
+                // 偏移位置
+                cs.movePosition(QTextCursor::NextCharacter,QTextCursor::MoveAnchor,pos);
+                // 设置新的光标对象
+                 ui->plainTextEdit->setTextCursor(cs);
         }
 
 //        cursor.endEditBlock();
 //        document->undo();
-
+//        qDebug("position=%d",ui->plainTextEdit->textCursor().position());
         if(found == false){
             QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
             qDebug("not found");
@@ -502,11 +515,7 @@ void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int 
             highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
             break;
         }
-        if(!found)
-        {
-            found = true;
-        }
-        highlight_cursor.movePosition(QTextCursor::NoMove,QTextCursor::KeepAnchor);
+        found = true;
         highlight_cursor.insertText(rep);
     }
     if(found == false){

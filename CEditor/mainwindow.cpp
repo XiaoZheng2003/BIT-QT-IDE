@@ -711,6 +711,7 @@ void MainWindow::on_actionSearch_triggered() //搜索
 {
     search->setModal(false);  //设置为非模态对话框,在其没有关闭前，用户可以与其它窗口交互
     search->show();
+
 }
 
 void MainWindow::on_actionReplace_triggered() //替换
