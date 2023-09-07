@@ -203,8 +203,6 @@ border-radius:20px;</string>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
-    <addaction name="actionSelectAll"/>
-    <addaction name="separator"/>
     <addaction name="actionComment"/>
     <addaction name="actionAutoComplete"/>
     <addaction name="separator"/>
@@ -279,7 +277,6 @@ border-radius:20px;</string>
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>
    <addaction name="actionPaste"/>
-   <addaction name="actionSelectAll"/>
    <addaction name="actionAutoComplete"/>
    <addaction name="actionJumpLine"/>
    <addaction name="separator"/>
