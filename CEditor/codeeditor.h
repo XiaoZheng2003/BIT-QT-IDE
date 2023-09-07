@@ -26,7 +26,7 @@ public:
     }
     int currentPos = 0;
     int correspondingPos = -1;
-    int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'
+    int type = 0; // 1: '{' / -1: '}'  2: '(' / -2: ')'  3: '[' / -3: ']'
     int row = -1;
 };
 
