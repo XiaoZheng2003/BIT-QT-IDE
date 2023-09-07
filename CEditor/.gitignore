@@ -71,3 +71,5 @@ Thumbs.db
 *.dll
 *.exe
 
+# Code Formatting File
+!clang-format.exe
