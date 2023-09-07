@@ -384,6 +384,7 @@ void CodeEditor::undo()
         QString undoText=m_undoStack.top();
         this->setPlainText(undoText);
         moveCursorToPostion(findFirstDifference(currentText,undoText));
+        this->centerCursor();
     }
     //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
@@ -400,6 +401,7 @@ void CodeEditor::redo()
         m_undoStack.push(redoText);
         this->setPlainText(redoText);
         moveCursorToPostion(findFirstDifference(currentText,redoText));
+        this->centerCursor();
     }
     //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
@@ -885,7 +887,12 @@ void CodeEditor::commentSelectedLines()
         QString lineText = blockCursor.selectedText();
 
         // 切换注释状态
-        QString commentedLine = lineText.trimmed().startsWith("//") ? lineText.mid(2) : "//" + lineText;
+        QString commentedLine="//"+lineText;
+        if(lineText.trimmed().startsWith("//")){
+            int index=lineText.indexOf("//");
+            if(~index)
+                commentedLine=lineText.replace(index,2,"");
+        }
         blockCursor.setPosition(block.position());
         blockCursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
         blockCursor.removeSelectedText();
