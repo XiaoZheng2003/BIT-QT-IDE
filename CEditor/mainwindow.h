@@ -70,9 +70,7 @@ private slots:
     void on_actionAbout_triggered();
     void on_actionAboutQt_triggered();
     void on_functionTreeWidget_itemClicked(QTreeWidgetItem *item, int column);
-
     void on_actionAstyle_triggered();
-
     void on_actionAstyleOption_triggered();
 
 signals:

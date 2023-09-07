@@ -172,7 +172,11 @@ void Tab::receiveAStyledText(QString str)
 void Tab::tabClosed(int indexId)
 {
     //关闭标签
-    if(indexId==curIndexId) curIndexId=-1; //当前标签被关闭
+    if(indexId==curIndexId){
+        //当前标签被关闭
+        curIndexId=-1;
+        this->deleteLater();
+    }
     if(indexId<curIndexId) curIndexId--;   //当前标签前面的标签被关闭
 }
 

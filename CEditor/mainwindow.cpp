@@ -942,7 +942,7 @@ void MainWindow::createFunctionTree(int index)
     findFunction.clear();
     QStringList rows = str.split("\n");
     QList<QTreeWidgetItem*> functionTree;
-    QRegularExpression pattern("(\\b(int|void|float|double)\\s+(\\w+|\\w+::\\w+)\\s*(\\(.*?\\))(?=\\s*))");
+    QRegularExpression pattern("(\\b(const)?\\s*(unsigned)?\\s*(int|short|long|long long|void|float|double|char|bool)\\s+(\\w+|\\w+::\\w+)\\s*(\\(.*?\\))(?=\\s*))");
 
     for (int i = 0; i < rows.size(); ++i)
     {
