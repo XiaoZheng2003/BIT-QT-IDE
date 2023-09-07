@@ -89,6 +89,7 @@ signals:
     void commentSelectedLines(int indexId);
     void jumpToLine(int indexId, int line);
     void startAStyle(int indexId);
+    void openAStyleOption();
 
 private:
     Ui::MainWindow *ui;
