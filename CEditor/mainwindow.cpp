@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     search = new Search(this);
     replace = new class replace(this);
+    m_astyle = AStyle::getInstance(this);
 
     row_col = new QLabel;
     all_row = new QLabel;
@@ -274,6 +275,7 @@ void MainWindow::initConnection(Tab *tab)
     connect(this,&MainWindow::commentSelectedLines,tab,&Tab::commentSelectedLines);
     //跳转行
     connect(this,&MainWindow::jumpToLine,tab,&Tab::jumpToLine);
+    connect(this,&MainWindow::startAStyle,tab,&Tab::prepareTextForAStyle);
 }
 
 void MainWindow::openFile(QString openFilePath)
@@ -405,6 +407,7 @@ void MainWindow::on_actionCompile_triggered()
 
 void MainWindow::handleCompilationFinished(int exitCode, const QString &outputText)
 {
+    Q_UNUSED(outputText);
     if (exitCode == 0) {
         // 编译成功，处理编译结果
         ui->compileTextBrowser->setPlainText(outputText);
@@ -891,6 +894,30 @@ void MainWindow::on_actionJumpLine_triggered()
     bool ok=false;
     int line=QInputDialog::getInt(this,"跳转行","跳转行",1,0,2147483647,1,&ok);
     if(ok) emit jumpToLine(ui->tabWidget->currentIndex(),line);
+}
+
+
+void MainWindow::on_actionAstyle_triggered()
+{
+    emit startAStyle(ui->tabWidget->currentIndex());
+}
+
+
+void MainWindow::on_actionAstyleOption_triggered()
+{
+    m_astyle->exec();
+}
+
+
+void MainWindow::on_actionAstyle_triggered()
+{
+    emit startAStyle(ui->tabWidget->currentIndex());
+}
+
+
+void MainWindow::on_actionAstyleOption_triggered()
+{
+    m_astyle->exec();
 }
 
 void MainWindow::on_actionHelp_triggered()

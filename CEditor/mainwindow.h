@@ -1,10 +1,11 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include "tab.h"
 #include "search.h"
 #include "headers.h"
 #include "replace.h"
+#include "astyle.h"
 #include "compilationthread.h"
 
 QT_BEGIN_NAMESPACE
@@ -69,6 +70,10 @@ private slots:
     void on_actionAbout_triggered();
     void on_actionAboutQt_triggered();
 
+    void on_actionAstyle_triggered();
+
+    void on_actionAstyleOption_triggered();
+
 signals:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
@@ -82,6 +87,7 @@ signals:
     void autoComplete(int indexId);
     void commentSelectedLines(int indexId);
     void jumpToLine(int indexId, int line);
+    void startAStyle(int indexId);
 
 private:
     Ui::MainWindow *ui;
@@ -91,6 +97,7 @@ private:
     QMap<QString, QStringList> projectToChildren;
     Search *search;//搜索对话框
     replace *replace;//替换对话框
+    AStyle *m_astyle;//格式化对话框
     QLabel *row_col;
     QLabel *all_row;
 

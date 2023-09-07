@@ -1,4 +1,5 @@
 ﻿#include "tab.h"
+#include "astyle.h"
 #include "ui_tab.h"
 
 Tab::Tab(int index, QString text, QWidget *parent) :
@@ -153,6 +154,19 @@ void Tab::prepareTextForSaveAs(int indexId)
     //返回文件另存为文本
     if(indexId!=curIndexId) return;
     emit returnTextForSaveAs(indexId,ui->plainTextEdit->toPlainText());
+}
+
+void Tab::prepareTextForAStyle(int indexId)
+{
+    //调用AStyle对当前文本进行格式化
+    if(indexId!=curIndexId) return;
+    AStyle::aStyleFile(curIndexId,this, ui->plainTextEdit->toPlainText());
+
+}
+
+void Tab::receiveAStyledText(QString str)
+{
+    ui->plainTextEdit->setPlainText(str);
 }
 
 void Tab::tabClosed(int indexId)
