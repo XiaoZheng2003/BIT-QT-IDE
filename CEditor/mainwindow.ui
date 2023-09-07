@@ -226,11 +226,19 @@ border-radius:20px;</string>
     <addaction name="actionRunProject"/>
     <addaction name="actionCompileRunProject"/>
    </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>AStyle</string>
+    </property>
+    <addaction name="actionAstyle"/>
+    <addaction name="actionAstyleOption"/>
+   </widget>
    <addaction name="menu1"/>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
    <addaction name="menu_5"/>
+   <addaction name="menu_6"/>
    <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -605,6 +613,19 @@ border-radius:20px;</string>
    </property>
    <property name="text">
     <string>关于Qt</string>
+    </property>
+  </action>
+  <action name="actionAstyle">
+   <property name="text">
+    <string>格式化当前文件</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="actionAstyleOption">
+   <property name="text">
+    <string>格式化选项</string>
    </property>
   </action>
  </widget>
