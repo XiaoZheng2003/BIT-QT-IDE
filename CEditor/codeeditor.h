@@ -88,7 +88,6 @@ private:
     void restartTimer();
     int findFirstDifference(const QString& str1, const QString& str2);
     void moveCursorToPostion(int pos);
-    QCompleter *getCompleter();
     void insertCompletion(const QString &completion);
     QString textUnderCursor();
     int getLineHeight(int lineNumber);

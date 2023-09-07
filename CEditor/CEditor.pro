@@ -58,8 +58,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resource.qrc
 
-SrcIncludeFile = $$PWD/cppreference.chm
-SrcIncludeFile = $$replace(SrcIncludeFile, /, \\)
+helpFile = $$PWD/cppreference.chm
+helpFile = $$replace(helpFile, /, \\)
+formatFile = $$PWD/clang-format.exe
+formatFile = $$replace(formatFile, /, \\)
 OutputDir = $$OUT_PWD
 OutputDir = $$replace(OutputDir, /, \\)
-QMAKE_POST_LINK = $$QMAKE_COPY_FILE $$SrcIncludeFile $$OutputDir
+QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$helpFile $$OutputDir \
+                && $$QMAKE_COPY_FILE $$formatFile $$OutputDir

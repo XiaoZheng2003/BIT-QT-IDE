@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(search,&Search::sendCloseSearchDataToMain,this,&MainWindow::receiveCloseSearchDataForMain);  //接受搜索信号
     connect(replace,&replace::sendAllReplaceDataToMain,this,&MainWindow::receiveAllReplaceDataForMain);  //接受替换信号
     connect(replace,&replace::sendNextReplaceDataToMain,this,&MainWindow::receiveNextReplaceDataForMain);  //接受替换信号
-
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this,&MainWindow::createFunctionTree); //函数树
     //初始化项目右键菜单
     initProjectTreeMenu();
 
@@ -88,6 +88,7 @@ void MainWindow::tabTextChanged(int index)
     //文件被改变，加上*
     QString filename=filePath[index].split("/").last();
     ui->tabWidget->setTabText(index,"* "+filename);
+    createFunctionTree(index);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -870,6 +871,7 @@ void MainWindow::on_actionCompileRunProject_triggered()
     // 启动编译线程
     compileThread1->start();
 }
+
 void MainWindow::on_actionAutoComplete_triggered()
 {
     //自动补全
@@ -896,7 +898,6 @@ void MainWindow::on_actionJumpLine_triggered()
     if(ok) emit jumpToLine(ui->tabWidget->currentIndex(),line);
 }
 
-
 void MainWindow::on_actionAstyle_triggered()
 {
     if (ui->tabWidget->count() == 0) {
@@ -906,12 +907,10 @@ void MainWindow::on_actionAstyle_triggered()
     emit startAStyle(ui->tabWidget->currentIndex());
 }
 
-
 void MainWindow::on_actionAstyleOption_triggered()
 {
     m_astyle->exec();
 }
-
 
 void MainWindow::on_actionHelp_triggered()
 {
@@ -934,4 +933,43 @@ void MainWindow::on_actionAboutQt_triggered()
 {
     //关于Qt
     QMessageBox::aboutQt(this);
+}
+
+void MainWindow::createFunctionTree(int index)
+{
+    QWidget *tabWidget = ui->tabWidget->widget(index);
+    if(tabWidget == nullptr){
+        return;
+    }
+    QString str = tabWidget->findChild<CodeEditor*>("plainTextEdit")->toPlainText();
+    ui->functionTreeWidget->clear();
+    findFunction.clear();
+    QStringList rows = str.split("\n");
+    QList<QTreeWidgetItem*> functionTree;
+    QRegularExpression pattern("(\\b(int|void|float|double)\\s+(\\w+|\\w+::\\w+)\\s*(\\(.*?\\))(?=\\s*))");
+
+    for (int i = 0; i < rows.size(); ++i)
+    {
+        QString rowStr = rows.at(i);
+        // 使用正则表达式创建匹配迭代器
+        QRegularExpressionMatchIterator matchIterator = pattern.globalMatch(rowStr);
+        // 迭代匹配项
+        while (matchIterator.hasNext()) {
+            QRegularExpressionMatch match = matchIterator.next();
+            QString matchedText = match.captured();
+            findFunction.insert(matchedText,i+1);
+            QTreeWidgetItem* item = new QTreeWidgetItem(QStringList()<<matchedText);
+            item->setIcon(0, QIcon(":/pic/function.png"));
+            functionTree.append(item);
+        }
+    }
+    ui->functionTreeWidget->addTopLevelItems(functionTree);
+}
+
+void MainWindow::on_functionTreeWidget_itemClicked(QTreeWidgetItem *item, int column)
+{
+    QString functionName = item->text(column);
+    int line = findFunction.find(functionName).value();
+    int index = ui->tabWidget->currentIndex();
+    emit jumpToLine(index,line);
 }

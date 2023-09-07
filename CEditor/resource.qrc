@@ -29,5 +29,6 @@
         <file>pic/audo.png</file>
         <file>pic/jump.png</file>
         <file>pic/icon_n.png</file>
+        <file>pic/function.png</file>
     </qresource>
 </RCC>
