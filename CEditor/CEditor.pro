@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    astyle.cpp \
     codeeditor.cpp \
     compilationthread.cpp \
     foldlistwidget.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     replace.cpp
 
 HEADERS += \
+    astyle.h \
     codeeditor.h \
     compilationthread.h \
     foldlistwidget.h \
@@ -42,6 +44,7 @@ HEADERS += \
     replace.h
 
 FORMS += \
+    astyle.ui \
     mainwindow.ui \
     search.ui \
     tab.ui\
@@ -54,3 +57,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resource.qrc
+
+SrcIncludeFile = $$PWD/cppreference.chm
+SrcIncludeFile = $$replace(SrcIncludeFile, /, \\)
+OutputDir = $$OUT_PWD
+OutputDir = $$replace(OutputDir, /, \\)
+QMAKE_POST_LINK = $$QMAKE_COPY_FILE $$SrcIncludeFile $$OutputDir
