@@ -598,6 +598,9 @@ border-radius:20px;</string>
    </property>
   </action>
   <action name="actionAstyle">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>格式化当前文件</string>
    </property>

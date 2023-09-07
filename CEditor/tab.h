@@ -37,6 +37,8 @@ public slots:
     void handleFoldStateChanged(QListWidgetItem* item);
     void autoComplete(int indexId);
     void commentSelectedLines(int indexId);
+    void prepareTextForAStyle(int indexId);
+    void receiveAStyledText(QString str);
 
 signals:
     void returnTextForSave(int indexId, QString str);
@@ -45,6 +47,7 @@ signals:
     void updateCursorSignal(int row,int ccl);
     void updateTotalLineSignal(int count);
     void scrollBarValueChanged(int value);
+    void sendTextForAStyle(QString filePath, QString str);
 
 private slots:
     void updateCursorPosition();
