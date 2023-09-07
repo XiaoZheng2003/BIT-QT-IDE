@@ -934,11 +934,11 @@ void MainWindow::on_actionAboutQt_triggered()
 void MainWindow::createFunctionTree(int index)
 {
     QWidget *tabWidget = ui->tabWidget->widget(index);
+    ui->functionTreeWidget->clear();
     if(tabWidget == nullptr){
         return;
     }
     QString str = tabWidget->findChild<CodeEditor*>("plainTextEdit")->toPlainText();
-    ui->functionTreeWidget->clear();
     findFunction.clear();
     QStringList rows = str.split("\n");
     QList<QTreeWidgetItem*> functionTree;

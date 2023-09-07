@@ -21,49 +21,59 @@
     <normaloff>:/pic/icon_n.png</normaloff>:/pic/icon_n.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="styleSheet">
-           <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
-          </property>
-          <property name="text">
-           <string>当前打开项目</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="currentProject">
-          <property name="styleSheet">
-           <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
-          </property>
-          <property name="text">
-           <string>无</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QTreeWidget" name="projectTreeWidget">
-        <property name="contextMenuPolicy">
-         <enum>Qt::CustomContextMenu</enum>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <column>
-         <property name="text">
-          <string notr="true">项目</string>
-         </property>
-        </column>
+     <widget class="QSplitter" name="splitter_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QSplitter" name="splitter_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="styleSheet">
+              <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
+             </property>
+             <property name="text">
+              <string>当前打开项目</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="currentProject">
+             <property name="styleSheet">
+              <string notr="true">font: 10pt &quot;微软雅黑&quot;;</string>
+             </property>
+             <property name="text">
+              <string>无</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTreeWidget" name="projectTreeWidget">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 255, 255);</string>
+           </property>
+           <column>
+            <property name="text">
+             <string notr="true">项目</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
        </widget>
-      </item>
-      <item>
        <widget class="QTreeWidget" name="functionTreeWidget">
         <column>
          <property name="text">
@@ -71,42 +81,39 @@
          </property>
         </column>
        </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QSplitter" name="splitter">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>4</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QTabWidget" name="tabWidget">
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(255, 255, 255);
+      </widget>
+      <widget class="QSplitter" name="splitter">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>4</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QTabWidget" name="tabWidget">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 255, 255);
 border:none</string>
-          </property>
-          <property name="currentIndex">
-           <number>-1</number>
-          </property>
-          <property name="tabsClosable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QPushButton" name="compileInfoButton">
-            <property name="styleSheet">
-             <string notr="true">QPushButton {
+           </property>
+           <property name="currentIndex">
+            <number>-1</number>
+           </property>
+           <property name="tabsClosable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QPushButton" name="compileInfoButton">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
                background-color:#007BFF;
                color: white;
                padding: 5px;
@@ -122,40 +129,41 @@ border:none</string>
 QPushButton:hover {
               background-color:  #9cd3fa;
 }</string>
-            </property>
-            <property name="text">
-             <string>编译信息</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QTextBrowser" name="compileTextBrowser">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>220</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
+             </property>
+             <property name="text">
+              <string>编译信息</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTextBrowser" name="compileTextBrowser">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>220</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
 border-radius:20px;</string>
-       </property>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -167,7 +175,7 @@ border-radius:20px;</string>
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu1">
