@@ -441,6 +441,7 @@ void MainWindow::on_actionRun_triggered()
 
 void MainWindow::handleRunFinished(int exitCode, const QString &outputText)
 {
+    Q_UNUSED(outputText);
     if (exitCode == 0) {
         ui->compileTextBrowser->setPlainText("运行成功");
     } else {
@@ -552,6 +553,7 @@ void MainWindow::on_actionCompileRun_triggered()
             // 创建编译线程并连接信号槽
             CompilationThread *compileThread2 = new CompilationThread(1, exePath, QStringList(), this);
             connect(compileThread2, &CompilationThread::compilationFinished, this, [=](int exitCode, const QString &outputText){
+                Q_UNUSED(outputText);
                 if (exitCode == 0) {
                     ui->compileTextBrowser->setPlainText("运行成功");
                 } else {
@@ -787,6 +789,7 @@ void MainWindow::on_actionRunProject_triggered()
 
 void MainWindow::handleProjectRunFinished(int exitCode, const QString &outputText)
 {
+    Q_UNUSED(outputText);
     if (exitCode == 0) {
         ui->compileTextBrowser->setPlainText("运行成功");
     } else {
@@ -843,6 +846,7 @@ void MainWindow::on_actionCompileRunProject_triggered()
             // 创建编译线程并连接信号槽
             CompilationThread *compileThread2 = new CompilationThread(1, exePath, QStringList(), this);
             connect(compileThread2, &CompilationThread::compilationFinished, this, [=](int exitCode, const QString &outputText) {
+                Q_UNUSED(outputText);
                 if (exitCode == 0) {
                     ui->compileTextBrowser->setPlainText("运行成功");
                 } else {
@@ -864,23 +868,49 @@ void MainWindow::on_actionCompileRunProject_triggered()
 }
 void MainWindow::on_actionAutoComplete_triggered()
 {
+    //自动补全
     emit autoComplete(ui->tabWidget->currentIndex());
 }
 
 void MainWindow::on_actionSelectAll_triggered()
 {
+    //全选
     emit editOperate(ui->tabWidget->currentIndex(),SelectAll);
 }
 
 void MainWindow::on_actionComment_triggered()
 {
+    //一键注释/反注释
     emit commentSelectedLines(ui->tabWidget->currentIndex());
 }
 
 void MainWindow::on_actionJumpLine_triggered()
 {
+    //跳转行
     bool ok=false;
     int line=QInputDialog::getInt(this,"跳转行","跳转行",1,0,2147483647,1,&ok);
     if(ok) emit jumpToLine(ui->tabWidget->currentIndex(),line);
 }
 
+void MainWindow::on_actionHelp_triggered()
+{
+    //打开帮助文档
+    QProcess *helpProcess=new QProcess(this);
+    QStringList argument("cppreference.chm");
+    helpProcess->start("hh.exe",argument);
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    //关于CEditor
+    QMessageBox::about(this,"关于CEditor",
+        QString("本项目为北京理工大学小学期软件工程综合实践IDE项目，由基因重组历时8天开发完成，具有一般IDE所具备的功能。\n"
+                "在此感谢所有开发者作出的贡献！\n"
+                "开发者：郑俊烽、陈玺、郭荆、蔡昕怡、吕春吉、马翊程"));
+}
+
+void MainWindow::on_actionAboutQt_triggered()
+{
+    //关于Qt
+    QMessageBox::aboutQt(this);
+}
