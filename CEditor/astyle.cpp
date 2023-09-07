@@ -29,6 +29,7 @@ void AStyle::aStyleFile(int id, Tab *targetTab, const QString &text)
 {
     AStyleThread *aStyleThread = new AStyleThread(id, m_aStyle->m_isDefault, m_aStyle->m_optionList, text);
     connect(aStyleThread, &AStyleThread::aStyleFinished, targetTab, &Tab::receiveAStyledText);
+    connect(aStyleThread,&AStyleThread::sendError,targetTab,&Tab::handleAStyleError);
     connect(aStyleThread, &QThread::finished, aStyleThread, &QThread::deleteLater);
     aStyleThread->start();
 }
@@ -133,6 +134,12 @@ void AStyleThread::run()
             qDebug()<<strtext;
             emit sendError(1, strtext);
         }
+        tempFile->close();
+        errorFile->close();
+        tempFile->remove();
+        tempFile->deleteLater();
+        errorFile->remove();
+        errorFile->deleteLater();
     }
     quit();
 }

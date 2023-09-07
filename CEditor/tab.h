@@ -39,6 +39,7 @@ public slots:
     void commentSelectedLines(int indexId);
     void prepareTextForAStyle(int indexId);
     void receiveAStyledText(QString str);
+    void handleAStyleError(int type, QString msg);
 
 signals:
     void returnTextForSave(int indexId, QString str);

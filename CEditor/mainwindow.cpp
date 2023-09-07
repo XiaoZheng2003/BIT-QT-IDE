@@ -899,6 +899,10 @@ void MainWindow::on_actionJumpLine_triggered()
 
 void MainWindow::on_actionAstyle_triggered()
 {
+    if (ui->tabWidget->count() == 0) {
+        QMessageBox::warning(this, "警告", "未打开任何文件");
+        return;
+    }
     emit startAStyle(ui->tabWidget->currentIndex());
 }
 

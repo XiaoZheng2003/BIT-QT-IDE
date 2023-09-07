@@ -169,6 +169,16 @@ void Tab::receiveAStyledText(QString str)
     ui->plainTextEdit->setPlainText(str);
 }
 
+void Tab::handleAStyleError(int type, QString msg)
+{
+    if(type == 0){
+        QMessageBox::critical(this, "格式化失败", "处理文件时发生错误");
+    }
+    else{
+        QMessageBox::critical(this, "格式化失败", msg);
+    }
+}
+
 void Tab::tabClosed(int indexId)
 {
     //关闭标签
