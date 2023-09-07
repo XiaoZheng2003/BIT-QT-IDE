@@ -384,6 +384,7 @@ void CodeEditor::undo()
         QString undoText=m_undoStack.top();
         this->setPlainText(undoText);
         moveCursorToPostion(findFirstDifference(currentText,undoText));
+        this->centerCursor();
     }
     //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
@@ -400,6 +401,7 @@ void CodeEditor::redo()
         m_undoStack.push(redoText);
         this->setPlainText(redoText);
         moveCursorToPostion(findFirstDifference(currentText,redoText));
+        this->centerCursor();
     }
     //重新连接信号和槽
     connect(this,&CodeEditor::textRealChanged,this,&CodeEditor::restartTimer);
@@ -407,7 +409,7 @@ void CodeEditor::redo()
 
 void CodeEditor::matchBrackets() {
     int current_length = 0;
-    QList<Brackets> stack1, stack2; // 储存两种括号匹配情况的栈
+    QList<Brackets> stack1, stack2, stack3; // 储存两种括号匹配情况的栈
     QTextDocument* document = this->document();
     int allrow = document->blockCount();
     bramap.clear();// 每一次匹配都清空之前的情况
@@ -431,6 +433,9 @@ void CodeEditor::matchBrackets() {
                     break;
                 case '(':
                     stack2.append(Brackets(current_length + j, -1, 2, i)); // 向栈内加入
+                    break;
+                case '[':
+                    stack3.append(Brackets(current_length + j, -1, 3, i)); // 向栈内加入
                     break;
                 case '}':
                     if (!stack1.isEmpty()) {
@@ -456,6 +461,19 @@ void CodeEditor::matchBrackets() {
                     else{
                         int end = current_length + j;
                         bramap.insert(end, Brackets(end, -1, -2, -1));
+                    }
+                    break;
+                case ']':
+                    if (!stack3.isEmpty()) {
+                        int end = current_length + j;
+                        int start = stack3.last().currentPos;
+                        bramap.insert(end, Brackets(end, start, -3, stack3.last().row)); // 加入两个括号匹配
+                        bramap.insert(start, Brackets(start, end, 3, i));
+                        stack3.removeLast();
+                    }
+                    else{
+                        int end = current_length + j;
+                        bramap.insert(end, Brackets(end, -1, -3, -1));
                     }
                     break;
                 case '/':
@@ -525,6 +543,10 @@ void CodeEditor::matchBrackets() {
     while(!stack2.empty()){
         bramap.insert(stack2.last().currentPos,stack2.last());
         stack2.removeLast();
+    }
+    while(!stack3.empty()){
+        bramap.insert(stack3.last().currentPos,stack3.last());
+        stack3.removeLast();
     }
     emit matchFinished();
 }
@@ -758,9 +780,9 @@ void CodeEditor::highlightMatchedBrackets()
     int pos=cursor.position();
     QChar before=document->characterAt(pos-1);
     QChar after=document->characterAt(pos);
-    if(before=='}'||before==')'){
+    if(before=='}'||before==')'||before==']'){
         int matchingPos = bramap.value(pos-1).correspondingPos;
-        qDebug()<<1<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
+        //qDebug()<<1<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         //匹配
         if(matchingPos != -1){
             highlightCursor.setPosition(pos-1);
@@ -772,9 +794,9 @@ void CodeEditor::highlightMatchedBrackets()
             highlightCursor.setCharFormat(highlightFormat);
         }
     }
-    if(after=='{'||after=='('){
+    if(after=='{'||after=='('||after=='['){
         int matchingPos = bramap.value(pos).correspondingPos;
-        qDebug()<<2<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
+        //qDebug()<<2<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         //匹配
         if(matchingPos != -1){
             highlightCursor.setPosition(pos);
@@ -885,7 +907,12 @@ void CodeEditor::commentSelectedLines()
         QString lineText = blockCursor.selectedText();
 
         // 切换注释状态
-        QString commentedLine = lineText.trimmed().startsWith("//") ? lineText.mid(2) : "//" + lineText;
+        QString commentedLine="//"+lineText;
+        if(lineText.trimmed().startsWith("//")){
+            int index=lineText.indexOf("//");
+            if(~index)
+                commentedLine=lineText.replace(index,2,"");
+        }
         blockCursor.setPosition(block.position());
         blockCursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
         blockCursor.removeSelectedText();
