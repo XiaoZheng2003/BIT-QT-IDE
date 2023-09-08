@@ -614,8 +614,7 @@ void CodeEditor::updateFoldListWidget()
     int totalRow = document->blockCount();
     m_foldListWidget->clear();
     clearAllLines();
-    int rowType[totalRow+1][3]; //0:type;1:end;3:level
-    memset(rowType, 0, sizeof(rowType));
+    QVector<QVector<int>> rowType(totalRow+1,QVector<int>(3)); //0:type;1:end;3:level
     for(int i=0;i<totalRow;i++)
     {
         QTextBlock line = this->document()->findBlockByNumber(i);

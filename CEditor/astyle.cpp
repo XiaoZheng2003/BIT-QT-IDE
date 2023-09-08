@@ -5,10 +5,10 @@ AStyle *AStyle::m_aStyle = nullptr;
 
 AStyle::AStyle(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AStyle)
+    ui(new Ui::AStyle),
+    m_isDefault(true)
 {
     ui->setupUi(this);
-    m_isDefault = true;
     m_optionList.insert("default","llvm");
     m_chineseToEnglish.insert("不缩进","None");
     m_chineseToEnglish.insert("缩进嵌套的命名空间","Inner");
@@ -156,13 +156,8 @@ void AStyle::on_buttonBox_accepted()
     setPresets();
 }
 
-AStyleThread::AStyleThread(int id, bool isDefault, const QHash<QString,QString> &optionList, const QString &text)
-{
-    m_id = id;
-    m_isDefault = isDefault;
-    m_optionList = optionList;
-    m_text=text;
-}
+AStyleThread::AStyleThread(int id, bool isDefault, const QHash<QString,QString> &optionList, const QString &text):
+    m_id(id),m_text(text),m_isDefault(isDefault),m_optionList(optionList){}
 
 void AStyleThread::run()
 {

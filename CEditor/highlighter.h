@@ -3,8 +3,6 @@
 
 #include "headers.h"
 
-class QTextDocument;
-
 class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT

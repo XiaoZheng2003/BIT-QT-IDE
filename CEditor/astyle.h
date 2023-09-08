@@ -4,12 +4,10 @@
 #include "headers.h"
 #include "tab.h"
 
-
 namespace Ui {
-class AStyle;
+    class AStyle;
+    class AStyleThread;
 }
-
-class AStyleThread;
 
 class AStyle : public QDialog
 {

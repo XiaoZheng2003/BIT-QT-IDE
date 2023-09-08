@@ -10,7 +10,7 @@ public:
     explicit FoldListWidgetItem(int itemType, QListWidget *parent = nullptr);
     int getType();
     bool isCollapsed();
-    void setCollapsed(bool collapsed);
+    void setCollapsed(bool c);
     int start = -1;
     int end = -1;
     int level = 0;
