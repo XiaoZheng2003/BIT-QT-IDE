@@ -65,3 +65,5 @@ OutputDir = $$OUT_PWD
 OutputDir = $$replace(OutputDir, /, \\)
 QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$helpFile $$OutputDir \
                 && $$QMAKE_COPY_FILE $$formatFile $$OutputDir
+
+RC_ICONS = icon.ico
