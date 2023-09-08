@@ -26,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->tabWidget, &QTabWidget::currentChanged, this,&MainWindow::createFunctionTree); //函数树
     //初始化项目右键菜单
     initProjectTreeMenu();
+    //打开格式配置文件
+    connect(m_astyle,&AStyle::openAStylePresetFile,this,&MainWindow::openFile);
+    //打开格式化窗口读取属性
+    connect(this,&MainWindow::openAStyleOption,m_astyle,&AStyle::readPrests);
 
 }
 
@@ -900,11 +904,16 @@ void MainWindow::on_actionJumpLine_triggered()
 
 void MainWindow::on_actionAstyle_triggered()
 {
+    if (ui->tabWidget->count() == 0) {
+        QMessageBox::warning(this, "警告", "未打开任何文件");
+        return;
+    }
     emit startAStyle(ui->tabWidget->currentIndex());
 }
 
 void MainWindow::on_actionAstyleOption_triggered()
 {
+    emit openAStyleOption();
     m_astyle->exec();
 }
 
