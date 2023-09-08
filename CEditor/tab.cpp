@@ -120,7 +120,6 @@ Tab::Tab(int index, QString text, QWidget *parent) :
     emit ui->plainTextEdit->initText(text);
 
     //自动补全设置
-    completer=new QCompleter(this);
     completer->setModel(modelFromFile(":/wordlist.txt"));
     completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
     completer->setCaseSensitivity(Qt::CaseInsensitive);

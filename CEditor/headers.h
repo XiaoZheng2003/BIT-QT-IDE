@@ -28,6 +28,7 @@
 #include <QListWidget>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QTextStream>
 #include <QApplication>
 #include <QInputDialog>
 #include <QStyleOption>
