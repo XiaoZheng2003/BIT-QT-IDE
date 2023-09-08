@@ -74,6 +74,8 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Backtab:
             event->ignore();
             return;
+        default:
+            break;
         }
     }
     if(event->matches(QKeySequence::Undo)){
@@ -429,7 +431,6 @@ void CodeEditor::matchBrackets() {
                 switch (currentChar.unicode()) {
                 case '{':
                     stack1.append(Brackets(current_length + j, -1, 1, i)); // 向栈内加入
-                    //qDebug()<<"stackrow:"<<i;
                     break;
                 case '(':
                     stack2.append(Brackets(current_length + j, -1, 2, i)); // 向栈内加入
@@ -533,8 +534,6 @@ void CodeEditor::matchBrackets() {
 
         current_length += string.length() + 1; // 回车符
     }
-//    stack1.clear();
-//    stack2.clear();
     // 插入栈内没匹配上的
     while(!stack1.empty()){
         bramap.insert(stack1.last().currentPos,stack1.last());
@@ -553,16 +552,6 @@ void CodeEditor::matchBrackets() {
 
 void CodeEditor::updateLineNumberArea()
 {
-    //qDebug()<<"*";
-    int digit=0,totalRow=blockCount();
-
-    QTextDocument *document=this->document();
-
-    while(totalRow!=0)
-    {
-        digit++;
-        totalRow/=10;
-    }
     //根据最大行数的位数调整大小
     QFont documentFont=this->font();
     QFontMetrics metrics(documentFont);
@@ -573,14 +562,12 @@ void CodeEditor::updateLineNumberArea()
     for(int row=0;row<=blockCount();row++)
     {
         if(this->document()->findBlockByNumber(row).isVisible()){
-            //qDebug()<<row;
             QListWidgetItem *item=new QListWidgetItem(QString::number(row+1),m_lineNumberArea);
             item->setFont(documentFont);
             item->setText(QString::number(row+1));
             int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
             if(itemSize>maxItemSize)
                 maxItemSize=itemSize;
-            //qDebug()<<"row"<<row<<qRound(blockBoundingGeometry(document->findBlockByLineNumber(row)).height());
             item->setSizeHint(QSize(this->width(),getLineHeight(row)));
             item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
             if(row==blockCount()-1)
@@ -596,7 +583,6 @@ void CodeEditor::updateLineNumberArea()
             m_lineNumberArea->addItem(item);
         }
     }
-    //qDebug()<<maxItemSize;
     //对字体过小的情况特殊处理
     if(maxItemSize>15)
     {
@@ -626,7 +612,6 @@ void CodeEditor::updateFoldListWidget()
     int current_length = 0;
     QTextDocument* document = this->document();
     int totalRow = document->blockCount();
-    //qDebug()<<"totalRow"<<totalRow;
     m_foldListWidget->clear();
     clearAllLines();
     int rowType[totalRow+1][3]; //0:type;1:end;3:level
@@ -638,7 +623,6 @@ void CodeEditor::updateFoldListWidget()
         for (int j = 0; j < string.length(); j++) { // 遍历每一个字符
             QChar currentChar = string.at(j);
             if(currentChar == '{'){
-                //qDebug()<<bramap.value(current_length + j).row;
                 if(bramap.value(current_length + j).row!=i&&bramap.value(current_length + j).row!=-1){
                     rowType[i][0]=1;
                     rowType[i][1]=bramap.value(current_length + j).row;
@@ -667,7 +651,6 @@ void CodeEditor::updateFoldListWidget()
                 }
             }
         }
-        //qDebug()<<"k:"<<i<<"rowType[k]:"<<rowType[i];
         current_length += string.length() + 1;
     }
     int typeFlag = 0;
@@ -680,25 +663,11 @@ void CodeEditor::updateFoldListWidget()
             typeFlag = 0;
         }
     }
-    /*for (int k=0; k<totalRow; k++){
-       qDebug()<<"row"<<k+1<<"type"<<rowType[k][0];
-    }*/
-    /*
-    FoldListWidgetItem *item2 = new FoldListWidgetItem(0);
-    m_foldListWidget->addItem(item2);
-    FoldListWidgetItem *item3 = new FoldListWidgetItem(2);
-    m_foldListWidget->addItem(item3);
-    FoldListWidgetItem *item4 = new FoldListWidgetItem(4);
-    m_foldListWidget->addItem(item4);*/
-    //
-    //根据最大行数的位数调整大小
 
+    //根据最大行数的位数调整大小
     for(int row=0;row<totalRow;row++)
     {
         if(this->document()->findBlockByNumber(row).isVisible()){
-
-            //qDebug()<<"row"<<row<<"test"<<rowType[row][0];
-
             FoldListWidgetItem *item=new FoldListWidgetItem(rowType[row][0]);
             if(rowType[row][0]==1){
                 if(rowType[row][2]==1){
@@ -712,13 +681,12 @@ void CodeEditor::updateFoldListWidget()
                   setLine(row, !qtb.isVisible());
                 }
             }
-            //qDebug()<<"row"<<row<<metrics.averageCharWidth()<<getLineHeight(row);
             item->setSizeHint(QSize(metrics.averageCharWidth(),getLineHeight(row)));
             m_foldListWidget->addItem(item);
         }
 
     }
-    m_foldListWidget->setMaximumWidth(metrics.maxWidth());
+    m_foldListWidget->setMaximumWidth(m_foldListWidget->item(0)->sizeHint().height());
     QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
 }
 
@@ -726,7 +694,6 @@ int CodeEditor::getLineHeight(int lineNumber)
 {
     int newLineHeight;
     newLineHeight = qRound(blockBoundingGeometry(this->document()->findBlockByNumber(lineNumber)).height());
-    //qDebug()<<lineNumber<<"newLineHeight"<<newLineHeight;
     if(newLineHeight==0){
        newLineHeight = lineHeight;
     }
@@ -782,7 +749,6 @@ void CodeEditor::highlightMatchedBrackets()
     QChar after=document->characterAt(pos);
     if(before=='}'||before==')'||before==']'){
         int matchingPos = bramap.value(pos-1).correspondingPos;
-        //qDebug()<<1<<"end"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         //匹配
         if(matchingPos != -1){
             highlightCursor.setPosition(pos-1);
@@ -796,7 +762,6 @@ void CodeEditor::highlightMatchedBrackets()
     }
     if(after=='{'||after=='('||after=='['){
         int matchingPos = bramap.value(pos).correspondingPos;
-        //qDebug()<<2<<"begin"<<"pos:"<<pos<<" matchingPos:"<<matchingPos;
         //匹配
         if(matchingPos != -1){
             highlightCursor.setPosition(pos);

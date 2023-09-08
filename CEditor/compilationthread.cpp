@@ -1,12 +1,7 @@
 #include "compilationthread.h"
 
 CompilationThread::CompilationThread(int flag, QString filePath, QStringList arguments, QObject *parent)
-    : QThread(parent), filePath(filePath)
-{
-    this->flag=flag;
-    this->filePath=filePath;
-    this->arguments=arguments;
-}
+    : QThread(parent), filePath(filePath), arguments(arguments), flag(flag){}
 
 void CompilationThread::run()
 {

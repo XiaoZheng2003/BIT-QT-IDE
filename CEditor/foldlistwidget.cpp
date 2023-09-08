@@ -17,7 +17,6 @@ void FoldListWidget::setRowVisible(int row, bool isVisible)
 void FoldListWidget::handleItemClicked(QListWidgetItem* item)
 {
     FoldListWidgetItem* foldListWidgetItem = dynamic_cast<FoldListWidgetItem*>(item);
-    //qDebug()<<"isCollapsed"<<foldListWidgetItem->isCollapsed();
     if (foldListWidgetItem)
     {
         foldListWidgetItem->setCollapsed(!foldListWidgetItem->isCollapsed());
@@ -29,7 +28,6 @@ void FoldListWidget::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter painter(viewport());
-    //qDebug()<<rowVisibility.size();
     for (int i = 0; i < count(); ++i)
     {
         FoldListWidgetItem* item = dynamic_cast<FoldListWidgetItem*>(this->item(i));
@@ -111,8 +109,6 @@ void FoldListWidget::paintEvent(QPaintEvent* event)
             break;
         }
     }
-
-
 
     QListWidget::paintEvent(event);
 }

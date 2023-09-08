@@ -18,7 +18,6 @@ AStyle::AStyle(QWidget *parent) :
             return;
         }
         m_optionList.insert("default",text);
-        qDebug()<<text;
         outputPreset();
         readPrests();
     });
@@ -241,7 +240,6 @@ void AStyleThread::run()
                 strtext = QTextCodec::codecForName( "GBK" )->toUnicode(strBytes);
             else
                 strtext = strBytes;
-            qDebug()<<strtext;
             emit sendError(1, strtext);
         }
         tempFile->close();
