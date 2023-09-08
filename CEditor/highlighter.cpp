@@ -55,7 +55,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
     //头文件
     singleLineCommentFormat.setForeground(Qt::darkGreen);
-    rule.pattern = QRegularExpression("\"[^\n]*\"");
+    rule.pattern = QRegularExpression("\"[^\n]*?\"");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
