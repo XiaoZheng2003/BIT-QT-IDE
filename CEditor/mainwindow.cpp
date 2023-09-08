@@ -218,7 +218,7 @@ void MainWindow::on_actionClose_triggered()
 {
     //关闭文件
     int curIndex=ui->tabWidget->currentIndex();
-    if(curIndex==-1)
+    if(curIndex!=-1)
         closeTab(curIndex);
     else
         QMessageBox::warning(this,"提示","当前未打开文件！");
