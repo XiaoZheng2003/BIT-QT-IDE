@@ -1,4 +1,5 @@
 #include "compilationthread.h"
+#include <QDebug>
 
 CompilationThread::CompilationThread(int flag, QString filePath, QStringList arguments, QObject *parent)
     : QThread(parent), filePath(filePath), arguments(arguments), flag(flag){}
@@ -16,7 +17,7 @@ void CompilationThread::run()
         QString outputFileName = fileInfo.path()+"info.txt";
         QProcess compileProcess;
         QStringList parameterList; // 参数列表
-        parameterList << filePath << "-o" << exePath << "-g";
+        parameterList << filePath << "-o" << exePath << "-g" << "-fexec-charset=GBK";
         // 设置标准输出和标准错误输出到临时文件
         compileProcess.setStandardOutputFile(outputFileName);
         compileProcess.setStandardErrorFile(outputFileName);
@@ -54,7 +55,8 @@ void CompilationThread::run()
     }
     else if(flag == 1){
         QString cmd = QString("%1").arg(filePath) + " && pause";
-        exitCode=system(cmd.toStdString().c_str());
+        //解决中文路径问题
+        exitCode=system(cmd.toLocal8Bit().data());
     }
     else if(flag == 2){
         // 可执行文件路径
