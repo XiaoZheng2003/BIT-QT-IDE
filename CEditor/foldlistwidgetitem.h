@@ -15,13 +15,8 @@ public:
     int end = -1;
     int level = 0;
 
-
-protected:
-//    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index);
-//    QSize sizeHint();
-
 signals:
-    void stateChanged(bool collapsed);
+    void stateChanged(bool c);
 
 private:
     bool collapsed = false;

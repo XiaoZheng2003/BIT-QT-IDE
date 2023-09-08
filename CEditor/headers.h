@@ -7,7 +7,6 @@
 #include <QFile>
 #include <QFont>
 #include <QList>
-#include <QDebug>
 #include <QLabel>
 #include <QStack>
 #include <QTimer>

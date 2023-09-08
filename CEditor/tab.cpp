@@ -22,6 +22,7 @@ Tab::Tab(int index, QString text, QWidget *parent) :
 
     //设置行数显示条与文本编辑块一起滚动
     connect(ui->plainTextEdit,&QPlainTextEdit::updateRequest,this,[=](QRect rec,int dy){
+        Q_UNUSED(rec);
         ui->lineNumberArea->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->value()-dy);
         if(ui->plainTextEdit->verticalScrollBar()->value()!=0){
             ui->lineNumberArea->setStyleSheet(m_lineNumberAreaStyleSheetOther);
@@ -221,14 +222,14 @@ void Tab::updateCursorPosition()
     QTextCursor cursor=ui->plainTextEdit->textCursor();
     int row=cursor.blockNumber()+1;
     int col=cursor.columnNumber()+1;
-    emit(updateCursorSignal(row,col));
+    emit updateCursorSignal(row,col);
 }
 
 void Tab::updateTotalLineCount()
 {
     //更新文本框内的总行数
     int totalLineCount=ui->plainTextEdit->blockCount();
-    emit(updateTotalLineSignal(totalLineCount));
+    emit updateTotalLineSignal(totalLineCount);
 
 }
 int Tab::getTotalLines()
@@ -276,7 +277,8 @@ void Tab::jumpToLine(int indexId, int line) {
 
                 //遍历目标行，找到第一个非空字符的位置
                 QString lineText=cursor.block().text();
-                int column=lineText.indexOf(QRegularExpression("\\S"));
+                static QRegularExpression re("\\S");
+                int column=lineText.indexOf(re);
                 if (column==-1) {
                     column=0; //如果该行没有字符，则将光标放在该行的第一列
                 }
@@ -329,10 +331,6 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
             highlight_cursor.movePosition(QTextCursor::End);
         }
 
-//        cursor.beginEditBlock();
-//        QTextCharFormat color_format(highlight_cursor.charFormat());
-//        color_format.setBackground(Qt::yellow);
-
         switch (state) {
         case 0:
             //向前搜索、不区分大小写、不全字匹配
@@ -366,11 +364,12 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
             //向后搜索、区分大小写、全字匹配
             highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
             break;
+        default:
+            break;
         }
         if (!highlight_cursor.isNull() && state < 0)//向前查找光标置于查找单词前
         {
             found = true;
-//            highlight_cursor.mergeCharFormat(color_format);
             int pos = highlight_cursor.position();
                 // 获取当前的光标对象
                 QTextCursor cs =ui->plainTextEdit->textCursor();
@@ -383,7 +382,6 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
         }
         else if (!highlight_cursor.isNull()){
             found = true;
-//            highlight_cursor.mergeCharFormat(color_format);
             int pos = highlight_cursor.position();
                 // 获取当前的光标对象
                 QTextCursor cs =ui->plainTextEdit->textCursor();
@@ -395,12 +393,8 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
                  ui->plainTextEdit->setTextCursor(cs);
         }
 
-//        cursor.endEditBlock();
-//        document->undo();
-//        qDebug("position=%d",ui->plainTextEdit->textCursor().position());
         if(found == false){
             QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
-            qDebug("not found");
         }
     }
 }
@@ -429,11 +423,6 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//继续�
         QTextCursor highlight_cursor(document);
         highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
 
-
-//        cursor.beginEditBlock();
-//        QTextCharFormat color_format(highlight_cursor.charFormat());
-//        color_format.setBackground(Qt::yellow);
-
         switch (state) {
         case 0:
             //向前搜索、不区分大小写、不全字匹配
@@ -467,11 +456,12 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//继续�
             //向后搜索、区分大小写、全字匹配
             highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindBackward|QTextDocument::FindWholeWords|QTextDocument::FindCaseSensitively);
             break;
+        default:
+            break;
         }
         if (!highlight_cursor.isNull() && state < 0)//向前查找光标置于查找单词前
         {
             found = true;
-//            highlight_cursor.mergeCharFormat(color_format);
             int pos = highlight_cursor.position();
                 // 获取当前的光标对象
                 QTextCursor cs =ui->plainTextEdit->textCursor();
@@ -484,7 +474,6 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//继续�
         }
         else if (!highlight_cursor.isNull()){
             found = true;
-//            highlight_cursor.mergeCharFormat(color_format);
             int pos = highlight_cursor.position();
                 // 获取当前的光标对象
                 QTextCursor cs =ui->plainTextEdit->textCursor();
@@ -496,12 +485,8 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//继续�
                  ui->plainTextEdit->setTextCursor(cs);
         }
 
-//        cursor.endEditBlock();
-//        document->undo();
-//        qDebug("position=%d",ui->plainTextEdit->textCursor().position());
         if(found == false){
             QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
-            qDebug("not found");
         }
     }
 }
@@ -516,7 +501,6 @@ void Tab::receiveCloseSearchDataForTab()
     cursor.setPosition(0);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     cursor.setCharFormat(clear_format);
-    qDebug("suc!");
 }
 
 void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int state)//开始替换指定字符串
@@ -528,7 +512,6 @@ void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int 
     QString real_search_str = sear;
 
     QTextDocument *document = ui->plainTextEdit->document();
-    QTextCursor cursor(document);
     bool found = false;
     QTextCursor highlight_cursor(document);
     highlight_cursor.setPosition(0);
@@ -542,17 +525,17 @@ void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int 
         case 2:
             highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
             break;
+        default:
+            break;
         }
         found = true;
         highlight_cursor.insertText(rep);
     }
     if(found == false){
-            QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
-            qDebug("not found");
+        QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
     }
     else{
-            qDebug() << "替换成功！";
-            QMessageBox::information(NULL, "信息", "替换成功");
+        QMessageBox::information(NULL, "信息", "替换成功");
     }
 }
 
@@ -564,7 +547,6 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
     ui->plainTextEdit->setFocus();
     QString real_search_str = sear;
     QTextDocument *document = ui->plainTextEdit->document();
-    QTextCursor cursor(document);
     bool found = false;
     QTextCursor highlight_cursor(document);
     highlight_cursor.setPosition(ui->plainTextEdit->textCursor().position());
@@ -577,6 +559,8 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
             break;
         case 2:
             highlight_cursor = document->find(real_search_str, highlight_cursor, QTextDocument::FindCaseSensitively);
+            break;
+        default:
             break;
         }
 
@@ -591,7 +575,6 @@ void Tab::receiveNextReplaceDataForTab(QString sear, QString rep, int index, int
 
     if (!found) {
         QMessageBox::information(this, tr("注意"), tr("没有找到内容"), QMessageBox::Ok);
-        qDebug("not found");
     }
 }
 
@@ -599,7 +582,6 @@ void Tab::handleFoldStateChanged(QListWidgetItem* item){
     ui->plainTextEdit->clearLineHighlight();
     FoldListWidgetItem* foldListWidgetItem = dynamic_cast<FoldListWidgetItem*>(item);
     bool flag = foldListWidgetItem->isCollapsed();
-    //qDebug()<<"flag"<<flag;
     setBlockVisible(!flag, foldListWidgetItem->start, foldListWidgetItem->end);
     ui->plainTextEdit->updateLineNumberArea();
     ui->plainTextEdit->updateFoldListWidget();
@@ -607,20 +589,13 @@ void Tab::handleFoldStateChanged(QListWidgetItem* item){
 
 void Tab::setBlockVisible(bool flag, int start, int end)
 {
-    //qDebug()<<flag<<start<<end;
     for(int i=start;i<=end;++i)
     {
         QTextBlock qtb = ui->plainTextEdit->document()->findBlockByNumber(i);
         qtb.setVisible(flag);
-        //ui->plainTextEdit->setLine(start-1, !flag);
-        //ui->foldListWidget->setRowVisible(i, flag);
-        //ui->lineNumberArea->setRowHidden(i, flag);
     }
     ui->plainTextEdit->viewport()->update(); //重绘
     ui->plainTextEdit->document()->adjustSize(); //重新适应大小
-    //
-    /*
-    */
 }
 
 void Tab::initrowVisibility(){

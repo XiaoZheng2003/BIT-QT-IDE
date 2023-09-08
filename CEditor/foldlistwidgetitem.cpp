@@ -8,18 +8,15 @@ FoldListWidgetItem::FoldListWidgetItem(int itemType, QListWidget *parent)
     collapsed = false;
     type = itemType;
 }
+
 int FoldListWidgetItem::getType(){
     return type;
 }
+
 bool FoldListWidgetItem::isCollapsed(){
     return collapsed;
 }
-void FoldListWidgetItem::setCollapsed(bool collapsed)
-{
-    //qDebug()<<"this->collapsed"<<this->collapsed<<"collapsed"<<collapsed;
-    if (this->collapsed != collapsed)
-    {
-        this->collapsed = collapsed;
-    }
-    //qDebug()<<"this->collapsed"<<this->collapsed;
+
+void FoldListWidgetItem::setCollapsed(bool c){
+    collapsed=c;
 }

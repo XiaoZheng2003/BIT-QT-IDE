@@ -5,7 +5,6 @@ Highlighter::Highlighter(QTextDocument *parent)
 {
     HighlightingRule rule;//引入高亮规则
 
-
     keywordFormat.setForeground(Qt::darkBlue);//设置关键字颜色
     keywordFormat.setFontWeight(QFont::Bold);//设置关键字粗体样式
     QStringList keywordPatterns;
@@ -29,14 +28,12 @@ Highlighter::Highlighter(QTextDocument *parent)
                     << "\\breinterpret_cast\\b" << "\\btrue\\b" << "\\btrue\\b"
                     << "\\busing\\b"  << "\\bexplicit\\b"<< "\\bexport\\b"
                     << "\\bwchar_t\\b" << "\\bmutable\\b"<< "\\bstatic_cast\\b"
-                    << "\\btypeid\\b" << "\\btypename\\b"   ;
+                    << "\\btypeid\\b" << "\\btypename\\b";
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
-
-
 
     //类名
     classFormat.setFontWeight(QFont::Bold);
@@ -52,7 +49,6 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
-
     //头文件
     singleLineCommentFormat.setForeground(Qt::darkGreen);
     rule.pattern = QRegularExpression("\"[^\n]*?\"");
@@ -64,8 +60,6 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-
-
     //单行注释
     singleLineCommentFormat.setForeground(Qt::darkGreen);
     rule.pattern = QRegularExpression("//[^\n]*");
@@ -75,17 +69,8 @@ Highlighter::Highlighter(QTextDocument *parent)
     //多行注释
     multiLineCommentFormat.setForeground(Qt::darkGreen);
 
-
-//    quotationFormat.setForeground(Qt::green);
-//    rule.pattern = QRegularExpression("\".*\"");
-//    rule.format = quotationFormat;
-//    highlightingRules.append(rule);
-
-
-
     //定义多行注释的标志
-   // commentStartExpression = QRegularExpression("/\\*");
-     commentStartExpression = QRegularExpression ("^\\s*/\\*");
+    commentStartExpression = QRegularExpression ("^\\s*/\\*");
     commentEndExpression = QRegularExpression("\\*/");
 }
 

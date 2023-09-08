@@ -153,7 +153,7 @@ void MainWindow::createProjectTree(QTreeWidgetItem *root, QString projectName, Q
     QStringList childrenNameList;
 
     //头文件处理
-    for(QFileInfo fileInfo:headerFileList){
+    for(QFileInfo &fileInfo:headerFileList){
         QString name=fileInfo.fileName();
         fileNameToPath.insert(projectName+"@"+name,fileInfo.absoluteFilePath());
 
@@ -165,7 +165,7 @@ void MainWindow::createProjectTree(QTreeWidgetItem *root, QString projectName, Q
     }
 
     //源文件处理
-    for(QFileInfo fileInfo:sourceFileList){
+    for(QFileInfo &fileInfo:sourceFileList){
         QString name=fileInfo.fileName();
         fileNameToPath.insert(projectName+"@"+name,fileInfo.absoluteFilePath());
 
@@ -342,6 +342,8 @@ bool MainWindow::closeTab(int index)
             return false;
         case QMessageBox::Save:
             on_actionSave_triggered();
+        default:
+            break;
         }
     }
     ui->tabWidget->removeTab(index);
@@ -596,7 +598,7 @@ void MainWindow::on_actionOpenProject_triggered()
         QMessageBox::information(this,"提示","同名项目已经打开！");
         return;
     }
-    QRegularExpression re("[\\x{4e00}-\\x{9fa5}]+");
+    static QRegularExpression re("[\\x{4e00}-\\x{9fa5}]+");
     QRegularExpressionMatch match = re.match(projectName);
     if(match.hasMatch()){
         QMessageBox::information(this,"提示","项目名禁止包含中文！");
@@ -929,7 +931,7 @@ void MainWindow::on_actionAbout_triggered()
 {
     //关于CEditor
     QMessageBox::about(this,"关于CEditor",
-        QString("本项目为北京理工大学小学期软件工程综合实践IDE项目，由基因重组历时8天开发完成，具有一般IDE所具备的功能。\n"
+        QString("本项目为北京理工大学小学期软件工程综合实践IDE项目，由基因重组历时2周开发完成，具有一般IDE所具备的功能。\n"
                 "在此感谢所有开发者作出的贡献！\n"
                 "开发者：郑俊烽、陈玺、郭荆、蔡昕怡、吕春吉、马翊程"));
 }
