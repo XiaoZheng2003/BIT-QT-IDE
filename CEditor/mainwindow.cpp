@@ -113,6 +113,8 @@ void MainWindow::on_actionOpen_triggered()
     }
 
     openFile(openFilePath);
+    //开启后自动保存，防止乱码
+    on_actionSave_triggered();
 }
 
 QString MainWindow::getCorrentUnicode(const QByteArray &text)
