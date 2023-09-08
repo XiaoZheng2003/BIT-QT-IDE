@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
-    <height>508</height>
+    <width>563</width>
+    <height>395</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,69 +24,63 @@
        <property name="title">
         <string>预设</string>
        </property>
-       <widget class="QWidget" name="horizontalLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>30</y>
-          <width>231</width>
-          <height>71</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>预设格式化风格</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="defaultStyle">
-           <item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>LLVM</string>
+             <string>预设格式化风格</string>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Google</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Chromium</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Mozilla</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>WebKit</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Microsoft</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>GNU</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>自定义</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="defaultStyle">
+            <item>
+             <property name="text">
+              <string>LLVM</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Google</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Chromium</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Mozilla</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>WebKit</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Microsoft</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>GNU</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>自定义</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
@@ -94,93 +88,58 @@
        <property name="title">
         <string>缩进</string>
        </property>
-       <widget class="QCheckBox" name="IndentCaseLabels">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>30</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>case标签</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="IndentCaseBlocks">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>70</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>case块</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="NamespaceIndentation">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>30</y>
-          <width>131</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string extracomment="None">不缩进</string>
-         </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="1" colspan="2">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>命名空间</string>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string extracomment="Inner">缩进嵌套的命名空间</string>
-         </property>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="IndentCaseLabels">
+          <property name="text">
+           <string>case标签</string>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string extracomment="All">缩进所有命名空间</string>
-         </property>
+        <item row="1" column="1" colspan="2">
+         <widget class="QComboBox" name="NamespaceIndentation">
+          <item>
+           <property name="text">
+            <string extracomment="None">不缩进</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string extracomment="Inner">缩进嵌套的命名空间</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string extracomment="All">缩进所有命名空间</string>
+           </property>
+          </item>
+         </widget>
         </item>
-       </widget>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>140</x>
-          <y>10</y>
-          <width>53</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>命名空间</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>70</y>
-          <width>61</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>缩进宽度</string>
-        </property>
-       </widget>
-       <widget class="QSpinBox" name="IndentWidth">
-        <property name="geometry">
-         <rect>
-          <x>180</x>
-          <y>70</y>
-          <width>42</width>
-          <height>22</height>
-         </rect>
-        </property>
-       </widget>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="IndentCaseBlocks">
+          <property name="text">
+           <string>case块</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>缩进宽度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QSpinBox" name="IndentWidth"/>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>
@@ -192,58 +151,36 @@
        <property name="title">
         <string>多行对齐</string>
        </property>
-       <widget class="QCheckBox" name="AlignConsecutiveDeclarations">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>40</y>
-          <width>111</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>对齐多行声明</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AlignConsecutiveBitFields">
-        <property name="geometry">
-         <rect>
-          <x>160</x>
-          <y>40</y>
-          <width>111</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>结构体位段对齐</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AlignConsecutiveAssignments">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>90</y>
-          <width>131</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>对齐多行赋值操作符</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AlignConsecutiveBitFields_2">
-        <property name="geometry">
-         <rect>
-          <x>160</x>
-          <y>90</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>对齐注释</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="AlignConsecutiveDeclarations">
+          <property name="text">
+           <string>对齐多行声明</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="AlignConsecutiveBitFields">
+          <property name="text">
+           <string>结构体位段对齐</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="AlignConsecutiveAssignments">
+          <property name="text">
+           <string>对齐多行赋值操作符</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="AlignConsecutiveBitFields_2">
+          <property name="text">
+           <string>对齐注释</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
@@ -251,110 +188,64 @@
        <property name="title">
         <string>大括号换行</string>
        </property>
-       <widget class="QCheckBox" name="AfterClass">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>20</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>类定义后</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AfterControlStatement">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>50</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>控制语句后</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AfterFunction">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>80</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>函数定义后</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AfterNamespace">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>20</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>命名空间后</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="BeforeElse">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>50</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>else前</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="IndentBraces">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>110</y>
-          <width>121</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>缩进换行的大括号</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="AfterCaseLabel">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>110</y>
-          <width>80</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>case后</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="BeforeWhile">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>80</y>
-          <width>121</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>while前 </string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="AfterClass">
+          <property name="text">
+           <string>类定义后</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="AfterNamespace">
+          <property name="text">
+           <string>命名空间后</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="AfterControlStatement">
+          <property name="text">
+           <string>控制语句后</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="BeforeElse">
+          <property name="text">
+           <string>else前</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="AfterFunction">
+          <property name="text">
+           <string>函数定义后</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="BeforeWhile">
+          <property name="text">
+           <string>while前 </string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QCheckBox" name="AfterCaseLabel">
+          <property name="text">
+           <string>case后</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="IndentBraces">
+          <property name="text">
+           <string>缩进换行的大括号</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>
@@ -364,78 +255,68 @@
      <property name="title">
       <string>其他</string>
      </property>
-     <widget class="QSpinBox" name="ColumnLimit">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>40</y>
-        <width>42</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>171</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>最大列数限制(0代表无限制)</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>100</x>
-        <y>90</y>
-        <width>53</width>
-        <height>15</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Tab宽度</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="TabWidth">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>90</y>
-        <width>42</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="ReflowComments">
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>40</y>
-        <width>111</width>
-        <height>19</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>重排注释</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="SortIncludes">
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>90</y>
-        <width>111</width>
-        <height>19</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>头文件排序</string>
-      </property>
-     </widget>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="TabWidth"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>最大列数限制(0代表无限制)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QCheckBox" name="ReflowComments">
+        <property name="text">
+         <string>重排注释</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QCheckBox" name="SortIncludes">
+        <property name="text">
+         <string>头文件排序</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Tab宽度</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="ColumnLimit"/>
+      </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
