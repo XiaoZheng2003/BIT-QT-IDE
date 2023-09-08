@@ -77,7 +77,7 @@ signals:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
-    void editOperate(int indexId, editType type);
+    void editOperate(int indexId, EditType type);
     void sendStartSearchDataToTab(QString,int,int state,int);  //把从搜索框接受的信息转发给指定页面
     void sendNextSearchDataToTab(QString,int,int state);  //把从搜索框接受的信息转发给指定页面
     void sendCloseSearchDataToTab();  //把从搜索框接受的信息转发给指定页面

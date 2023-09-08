@@ -218,7 +218,7 @@ void MainWindow::on_actionClose_triggered()
 {
     //关闭文件
     int curIndex=ui->tabWidget->currentIndex();
-    if(~curIndex)
+    if(curIndex==-1)
         closeTab(curIndex);
     else
         QMessageBox::warning(this,"提示","当前未打开文件！");
@@ -661,31 +661,31 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 void MainWindow::on_actionUndo_triggered()
 {
     //撤销
-    emit editOperate(ui->tabWidget->currentIndex(),Undo);
+    emit editOperate(ui->tabWidget->currentIndex(),EditType::Undo);
 }
 
 void MainWindow::on_actionRedo_triggered()
 {
     //恢复
-    emit editOperate(ui->tabWidget->currentIndex(),Redo);
+    emit editOperate(ui->tabWidget->currentIndex(),EditType::Redo);
 }
 
 void MainWindow::on_actionCut_triggered()
 {
     //剪切
-    emit editOperate(ui->tabWidget->currentIndex(),Cut);
+    emit editOperate(ui->tabWidget->currentIndex(),EditType::Cut);
 }
 
 void MainWindow::on_actionCopy_triggered()
 {
     //复制
-    emit editOperate(ui->tabWidget->currentIndex(),Copy);
+    emit editOperate(ui->tabWidget->currentIndex(),EditType::Copy);
 }
 
 void MainWindow::on_actionPaste_triggered()
 {
     //粘贴
-    emit editOperate(ui->tabWidget->currentIndex(),Paste);
+    emit editOperate(ui->tabWidget->currentIndex(),EditType::Paste);
 }
 
 void MainWindow::receiveStartSearchDataForMain(QString data,int state,int begin) //从搜索对话框接收搜索数据，发送给指定页面
@@ -887,7 +887,7 @@ void MainWindow::on_actionAutoComplete_triggered()
 void MainWindow::on_actionSelectAll_triggered()
 {
     //全选
-    emit editOperate(ui->tabWidget->currentIndex(),SelectAll);
+    emit editOperate(ui->tabWidget->currentIndex(),EditType::SelectAll);
 }
 
 void MainWindow::on_actionComment_triggered()

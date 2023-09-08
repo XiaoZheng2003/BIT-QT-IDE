@@ -37,7 +37,6 @@ HEADERS += \
     foldlistwidgetitem.h \
     headers.h \
     highlighter.h \
-    highlighttype.h \
     mainwindow.h \
     search.h \
     tab.h\

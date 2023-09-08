@@ -132,7 +132,6 @@ Tab::Tab(int index, QString text, QWidget *parent) :
         emit textChanged(curIndexId);
     });
 
-
     connect(ui->foldListWidget, &FoldListWidget::itemClicked, this, &Tab::handleFoldStateChanged);
     //初始化可见性
     connect(ui->plainTextEdit,&CodeEditor::matchFinished,this,&Tab::initrowVisibility);
@@ -191,26 +190,26 @@ void Tab::tabClosed(int indexId)
     if(indexId<curIndexId) curIndexId--;   //当前标签前面的标签被关闭
 }
 
-void Tab::editOperate(int indexId, editType type)
+void Tab::editOperate(int indexId, EditType type)
 {
     if(indexId!=curIndexId) return;
     switch(type){
-    case Undo:
+    case EditType::Undo:
         ui->plainTextEdit->undo();
         break;
-    case Redo:
+    case EditType::Redo:
         ui->plainTextEdit->redo();
         break;
-    case Cut:
+    case EditType::Cut:
         ui->plainTextEdit->cut();
         break;
-    case Copy:
+    case EditType::Copy:
         ui->plainTextEdit->copy();
         break;
-    case Paste:
+    case EditType::Paste:
         ui->plainTextEdit->paste();
         break;
-    case SelectAll:
+    case EditType::SelectAll:
         ui->plainTextEdit->selectAll();
         break;
     }
@@ -393,7 +392,7 @@ void Tab::receiveStartSearchDataForTab(QString data,int index,int state,int begi
                  ui->plainTextEdit->setTextCursor(cs);
         }
 
-        if(found == false){
+        if(!found){
             QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
         }
     }
@@ -485,7 +484,7 @@ void Tab::receiveNextSearchDataForTab(QString data,int index,int state)//继续�
                  ui->plainTextEdit->setTextCursor(cs);
         }
 
-        if(found == false){
+        if(!found){
             QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
         }
     }
@@ -531,7 +530,7 @@ void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int 
         found = true;
         highlight_cursor.insertText(rep);
     }
-    if(found == false){
+    if(!found){
         QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
     }
     else{

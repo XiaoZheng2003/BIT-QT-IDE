@@ -4,10 +4,7 @@
 #include "headers.h"
 #include "codeeditor.h"
 #include "highlighter.h"
-#include "highlighttype.h"
 #include "foldlistwidgetitem.h"
-
-class CodePlainTextEdit;
 
 namespace Ui {
 class Tab;
@@ -28,7 +25,7 @@ public slots:
     void prepareTextForSave(int indexId);
     void prepareTextForSaveAs(int indexId);
     void tabClosed(int indexId);
-    void editOperate(int indexId, editType type);
+    void editOperate(int indexId, EditType type);
     void receiveStartSearchDataForTab(QString,int,int state,int);
     void receiveCloseSearchDataForTab();
     void receiveNextSearchDataForTab(QString,int,int state);
@@ -58,9 +55,6 @@ private slots:
 private:
     Ui::Tab *ui;
     int curIndexId;
-    std::map<QString,HighLightType> codeTable;
-    std::map<HighLightType,QColor>* codeColor;
-    std::map<int,std::map<HighLightType,std::map<int,int>>>* allHighLightTable;
     Highlighter* highlighter;
     QCompleter* completer;
     QString m_lineNumberAreaStyleSheetOther = "QListWidget{background-color: rgb(246, 245, 244);border:1px solid rgb(192, 191, 188);border-right:none;padding-top:0px;color: rgb(170,170,170);font-weight:normal;}QListWidget::item:selected{background-color: transparent; color: rgb(80,80,80);font-weight:bold;}QListView::item:hover{background-color:transparent;}";

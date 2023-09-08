@@ -41,7 +41,7 @@
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
 
-enum editType{
+enum class EditType{
     Redo,
     Undo,
     Cut,
