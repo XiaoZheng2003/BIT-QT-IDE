@@ -23,7 +23,13 @@ Highlighter::Highlighter(QTextDocument *parent)
                     << "\\bprivate\\b"<< "\\bprotected\\b"<< "\\basm\\b"
                     << "\\bwhile\\b"<< "\\bcatch\\b"<< "\\bdelete\\b"
                     << "\\bpublic\\b"<< "\\bvolatile\\b"<< "\\bstruct\\b"
-                    << "\\bregister\\b" << "\\bextern\\b" << "\\breturn\\b";
+                    << "\\bregister\\b" << "\\bextern\\b" << "\\breturn\\b"
+                    << "\\bconst_cast\\b" << "\\bcontinue\\b" << "\\bdynamic_cast\\b"
+                    << "\\bbool\\b"<< "\\bfalse\\b" << "\\bnamespace\\b"
+                    << "\\breinterpret_cast\\b" << "\\btrue\\b" << "\\btrue\\b"
+                    << "\\busing\\b"  << "\\bexplicit\\b"<< "\\bexport\\b"
+                    << "\\bwchar_t\\b" << "\\bmutable\\b"<< "\\bstatic_cast\\b"
+                    << "\\btypeid\\b" << "\\btypename\\b"   ;
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
@@ -58,6 +64,14 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
+
+
+    //单行注释
+    singleLineCommentFormat.setForeground(Qt::darkGreen);
+    rule.pattern = QRegularExpression("//[^\n]*");
+    rule.format = singleLineCommentFormat;
+    highlightingRules.append(rule);
+
     //多行注释
     multiLineCommentFormat.setForeground(Qt::darkGreen);
 
@@ -73,12 +87,6 @@ Highlighter::Highlighter(QTextDocument *parent)
    // commentStartExpression = QRegularExpression("/\\*");
      commentStartExpression = QRegularExpression ("^\\s*/\\*");
     commentEndExpression = QRegularExpression("\\*/");
-
-    //单行注释
-    singleLineCommentFormat.setForeground(Qt::darkGreen);
-    rule.pattern = QRegularExpression("//[^\n]*");
-    rule.format = singleLineCommentFormat;
-    highlightingRules.append(rule);
 }
 
 void Highlighter::highlightBlock(const QString &text)
