@@ -336,7 +336,25 @@ void CodeEditor::resizeEvent(QResizeEvent *event)
 {
     QPlainTextEdit::resizeEvent(event);
 
-    updateLineNumberArea();
+    if(m_maxItemSize>15)
+    {
+        m_lineNumberArea->setMaximumSize(QSize(1.5*m_maxItemSize,this->height()));
+        m_lineNumberArea->resize(QSize(1.5*m_maxItemSize,this->height()));
+    }
+    else
+    {
+        if(m_maxItemSize*2.2>22)
+        {
+            m_lineNumberArea->setMaximumSize(QSize(22,this->height()));
+            m_lineNumberArea->resize(QSize(22,this->height()));
+        }
+        else
+        {
+            m_lineNumberArea->setMaximumSize(QSize(2.2*m_maxItemSize,this->height()));
+            m_lineNumberArea->resize(QSize(2.2*m_maxItemSize,this->height()));
+        }
+    }
+    QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
 }
 
 void CodeEditor::wheelEvent(QWheelEvent *event)
@@ -561,7 +579,7 @@ void CodeEditor::updateLineNumberArea()
     QFont documentFont=this->font();
     QFontMetrics metrics(documentFont);
     setTabStopDistance(metrics.averageCharWidth()*4);
-    int maxItemSize = metrics.size(Qt::TextSingleLine,maxSizeItemText,0).width();
+    m_maxItemSize = metrics.size(Qt::TextSingleLine,maxSizeItemText,0).width();
 
     m_lineNumberArea->clear();
     QTextBlock block = document()->findBlockByNumber(0);
@@ -587,22 +605,22 @@ void CodeEditor::updateLineNumberArea()
     item->setText("");
     m_lineNumberArea->addItem(item);
     //对字体过小的情况特殊处理
-    if(maxItemSize>15)
+    if(m_maxItemSize>15)
     {
-        m_lineNumberArea->setMaximumSize(QSize(1.5*maxItemSize,this->height()));
-        m_lineNumberArea->resize(QSize(1.5*maxItemSize,this->height()));
+        m_lineNumberArea->setMaximumSize(QSize(1.5*m_maxItemSize,this->height()));
+        m_lineNumberArea->resize(QSize(1.5*m_maxItemSize,this->height()));
     }
     else
     {
-        if(maxItemSize*2.2>22)
+        if(m_maxItemSize*2.2>22)
         {
             m_lineNumberArea->setMaximumSize(QSize(22,this->height()));
             m_lineNumberArea->resize(QSize(22,this->height()));
         }
         else
         {
-            m_lineNumberArea->setMaximumSize(QSize(2.2*maxItemSize,this->height()));
-            m_lineNumberArea->resize(QSize(2.2*maxItemSize,this->height()));
+            m_lineNumberArea->setMaximumSize(QSize(2.2*m_maxItemSize,this->height()));
+            m_lineNumberArea->resize(QSize(2.2*m_maxItemSize,this->height()));
         }
     }
     QTimer::singleShot(1,this,&CodeEditor::sendCurrentScrollBarValue);
