@@ -66,4 +66,16 @@ OutputDir = $$replace(OutputDir, /, \\)
 QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$helpFile $$OutputDir \
                 && $$QMAKE_COPY_FILE $$formatFile $$OutputDir
 
+#程序版本
+VERSION = 1.0.3
+#程序图标
 RC_ICONS = icon.ico
+#公司名称
+QMAKE_TARGET_COMPANY ="基因重组"
+#版权信息
+QMAKE_TARGET_COPYRIGHT = "Copyright(C) 2023"
+#程序名称
+QMAKE_TARGET_PRODUCT = "CEditor"
+#程序语言
+#0x0800代表和系统当前语言一致
+RC_LANG = 0x0800

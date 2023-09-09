@@ -257,47 +257,41 @@ void Tab::jumpToLine(int indexId, int line) {
         QMessageBox::critical(this, "提示", "该行不存在");
         return;
     }
-    QTextCursor cursor(ui->plainTextEdit->document());
-    int lineNumber=0;
-    while (!cursor.atEnd()) {
-        cursor.movePosition(QTextCursor::StartOfLine);
-        lineNumber++;
-        if (lineNumber==line) {
-            ui->plainTextEdit->setTextCursor(cursor);
+    QTextDocument *document=ui->plainTextEdit->document();
+    QTextCursor cursor(document);
+    int pos=document->findBlockByNumber(line-1).position();
+    cursor.setPosition(pos,QTextCursor::MoveAnchor);
+    ui->plainTextEdit->setTextCursor(cursor);
 
-            //获取目标行所在的列表项
-            QListWidgetItem* item=ui->lineNumberArea->item(lineNumber - 1);
-            if (item!=nullptr) {
-                //设置列表项为当前选中项
-                ui->lineNumberArea->setCurrentItem(item);
-                //行数进度条和文本框同步跳转
-                ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+    //获取目标行所在的列表项
+    QListWidgetItem* item=ui->lineNumberArea->item(line - 1);
+    if (item!=nullptr) {
+        //设置列表项为当前选中项
+        ui->lineNumberArea->setCurrentItem(item);
+        //行数进度条和文本框同步跳转
+        ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
 
-                //遍历目标行，找到第一个非空字符的位置
-                QString lineText=cursor.block().text();
-                static QRegularExpression re("\\S");
-                int column=lineText.indexOf(re);
-                if (column==-1) {
-                    column=0; //如果该行没有字符，则将光标放在该行的第一列
-                }
-
-                //将光标移动到目标行的第一个字符前面
-                QTextCursor targetLineCursor=ui->plainTextEdit->textCursor();
-                targetLineCursor.setPosition(cursor.block().position() + column);
-                ui->plainTextEdit->setTextCursor(targetLineCursor);
-
-                //将光标选中的行居中显示
-                ui->plainTextEdit->centerCursor();
-                ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
-
-
-                //设置编辑器的焦点
-                ui->plainTextEdit->setFocus();
-            }
-            break;
+        //遍历目标行，找到第一个非空字符的位置
+        QString lineText=cursor.block().text();
+        static QRegularExpression re("\\S");
+        int column=lineText.indexOf(re);
+        if (column==-1) {
+            column=0; //如果该行没有字符，则将光标放在该行的第一列
         }
-        cursor.movePosition(QTextCursor::NextBlock);
+
+        //将光标移动到目标行的第一个字符前面
+        QTextCursor targetLineCursor=ui->plainTextEdit->textCursor();
+        targetLineCursor.setPosition(cursor.block().position() + column);
+        ui->plainTextEdit->setTextCursor(targetLineCursor);
+
+        //将光标选中的行居中显示
+        ui->plainTextEdit->centerCursor();
+        ui->lineNumberArea->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+
+        //设置编辑器的焦点
+        ui->plainTextEdit->setFocus();
     }
+    cursor.movePosition(QTextCursor::NextBlock);
 }
 
 
