@@ -1,5 +1,4 @@
 ﻿#include "codeeditor.h"
-
 CodeEditor::CodeEditor(QWidget *parent):
     QPlainTextEdit(parent)
 {
@@ -552,37 +551,41 @@ void CodeEditor::matchBrackets() {
 
 void CodeEditor::updateLineNumberArea()
 {
+    QString maxSizeItemText = "";
+    int lineCount = blockCount();
+    while(lineCount != 0){
+        maxSizeItemText += "0";
+        lineCount /= 10;
+    }
     //根据最大行数的位数调整大小
     QFont documentFont=this->font();
     QFontMetrics metrics(documentFont);
     setTabStopDistance(metrics.averageCharWidth()*4);
-    int maxItemSize=0;
+    int maxItemSize = metrics.size(Qt::TextSingleLine,maxSizeItemText,0).width();
 
     m_lineNumberArea->clear();
-    for(int row=0;row<=blockCount();row++)
-    {
-        if(this->document()->findBlockByNumber(row).isVisible()){
-            QListWidgetItem *item=new QListWidgetItem(QString::number(row+1),m_lineNumberArea);
+    QTextBlock block = document()->findBlockByNumber(0);
+    while(block.blockNumber() != -1){
+        if(block.isVisible()){
+            QListWidgetItem *item=new QListWidgetItem(QString::number(block.blockNumber()+1),m_lineNumberArea);
             item->setFont(documentFont);
-            item->setText(QString::number(row+1));
-            int itemSize =metrics.size(Qt::TextSingleLine,QString::number(row+1),0).width();
-            if(itemSize>maxItemSize)
-                maxItemSize=itemSize;
-            item->setSizeHint(QSize(this->width(),getLineHeight(row)));
+            item->setText(QString::number(block.blockNumber()+1));
+            item->setSizeHint(QSize(this->width(),getLineHeight(block.blockNumber())));
             item->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
-            if(row==blockCount()-1)
+            if(block.blockNumber()==blockCount()-1)
             {
-                item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
-            }
-            if(row==blockCount())
-            {
-                item->setSizeHint(QSize(this->width(),this->fontMetrics().lineSpacing()));
-                item->setFlags(item->flags() & ~Qt::ItemIsEnabled & ~Qt::ItemIsSelectable);
-                item->setText("");
+                item->setSizeHint(QSize(this->width(),metrics.lineSpacing()));
             }
             m_lineNumberArea->addItem(item);
         }
+        block = block.next();
     }
+    QListWidgetItem *item=new QListWidgetItem(QString::number(block.blockNumber()+1),m_lineNumberArea);
+    item->setFont(documentFont);
+    item->setSizeHint(QSize(this->width(),metrics.lineSpacing()));
+    item->setFlags(item->flags() & ~Qt::ItemIsEnabled & ~Qt::ItemIsSelectable);
+    item->setText("");
+    m_lineNumberArea->addItem(item);
     //对字体过小的情况特殊处理
     if(maxItemSize>15)
     {
