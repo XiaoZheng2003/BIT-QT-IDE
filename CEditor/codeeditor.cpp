@@ -986,3 +986,9 @@ void CodeEditor::clearAllLines()
     linesToDraw.clear();
     update();
 }
+
+void CodeEditor::moveToChangedPlace(const QString &str1, const QString &str2)
+{
+    //移动到首个不同的地方
+    moveCursorToPostion(findFirstDifference(str1,str2));
+}
