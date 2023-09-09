@@ -501,32 +501,16 @@ void Tab::receiveAllReplaceDataForTab(QString sear, QString rep, int index, int 
         return;
     this->activateWindow();
     ui->plainTextEdit->setFocus();
-    QString real_search_str = sear;
 
-    QTextDocument *document = ui->plainTextEdit->document();
-    bool found = false;
-    QTextCursor highlight_cursor(document);
-    highlight_cursor.setPosition(0);
-
-    while(!highlight_cursor.isNull() && !highlight_cursor.atEnd())
-    {
-        switch (state) {
-        case 0:
-            highlight_cursor = document->find(real_search_str,highlight_cursor);
-            break;
-        case 2:
-            highlight_cursor = document->find(real_search_str,highlight_cursor, QTextDocument::FindCaseSensitively);
-            break;
-        default:
-            break;
-        }
-        found = true;
-        highlight_cursor.insertText(rep);
-    }
-    if(!found){
+    QString before=ui->plainTextEdit->toPlainText();
+    QString after=before;
+    after.replace(sear,rep,state==2?Qt::CaseSensitive:Qt::CaseInsensitive);
+    if(before==after){
         QMessageBox::information(this,tr("注意"),tr("没有找到内容"),QMessageBox::Ok);
     }
     else{
+        ui->plainTextEdit->setPlainText(after);
+        ui->plainTextEdit->moveToChangedPlace(before,after);
         QMessageBox::information(NULL, "信息", "替换成功");
     }
 }

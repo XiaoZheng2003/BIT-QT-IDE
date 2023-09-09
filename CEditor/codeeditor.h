@@ -52,6 +52,7 @@ public slots:
     void updateFoldListWidget();
     void handleTextChanged();
     void clearAllLines();
+    void moveToChangedPlace(const QString& str1, const QString& str2);
 
 private slots:
     void autoIndent();
