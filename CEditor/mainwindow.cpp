@@ -288,6 +288,13 @@ void MainWindow::initConnection(Tab *tab)
 void MainWindow::openFile(QString openFilePath)
 {
     //打开文件
+
+    //已打开文件
+    for(int i=0;i<filePath.length();i++)
+        if(openFilePath==filePath[i]){
+            ui->tabWidget->setCurrentIndex(i);
+            return;
+        }
     QFile openFile(openFilePath);
     if(!openFile.exists()){
         QMessageBox::warning(this,"提示","文件不存在！");
