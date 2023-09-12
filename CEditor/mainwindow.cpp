@@ -63,7 +63,7 @@ void MainWindow::returnTextForSaveAs(int indexId, QString str)
 {
     //另存为文件
     QString saveFilePath = QFileDialog::getSaveFileName(
-        this,"另存为一个文件",QDir::currentPath(),"所有文件(*.*);;C头文件(*.h *.hpp);;C源代码(*.c *.cpp)");
+        this,"另存为一个文件","","所有文件(*.*);;C头文件(*.h *.hpp);;C源代码(*.c *.cpp)");
     if(saveFilePath.isEmpty()){
         return;
     }
@@ -107,7 +107,7 @@ void MainWindow::on_actionOpen_triggered()
 {
     //打开文件
     QString openFilePath = QFileDialog::getOpenFileName(
-        this,"打开一个文件",QDir::currentPath(),"所有文件(*.*);;C头文件(*.h *.hpp);;C源代码(*.c *.cpp)");
+        this,"打开一个文件","","所有文件(*.*);;C头文件(*.h *.hpp);;C源代码(*.c *.cpp)");
     if(openFilePath.isEmpty()){
         return;
     }
@@ -186,7 +186,7 @@ void MainWindow::on_actionNewFile_triggered()
 {
     //新建文件
     QString newFilePath = QFileDialog::getSaveFileName(
-        this,"新建一个文件",QDir::currentPath(),"所有文件(*.*);;C头文件(*.h *.hpp);;C源代码(*.c *.cpp)");
+        this,"新建一个文件","","所有文件(*.*);;C头文件(*.h *.hpp);;C源代码(*.c *.cpp)");
     if(newFilePath.isEmpty()){
         return;
     }
@@ -596,7 +596,7 @@ void MainWindow::on_actionOpenProject_triggered()
 {
     //打开项目
     QString projectPath = QFileDialog::getExistingDirectory(
-        this,"打开一个项目",QDir::currentPath());
+        this,"打开一个项目","");
     if(projectPath.isEmpty()){
         return;
     }
