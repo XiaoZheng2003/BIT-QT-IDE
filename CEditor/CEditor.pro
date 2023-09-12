@@ -67,7 +67,7 @@ QMAKE_POST_LINK += $$QMAKE_COPY_FILE $$helpFile $$OutputDir \
                 && $$QMAKE_COPY_FILE $$formatFile $$OutputDir
 
 #程序版本
-VERSION = 1.0.3
+VERSION = 1.1.0
 #程序图标
 RC_ICONS = icon.ico
 #公司名称
